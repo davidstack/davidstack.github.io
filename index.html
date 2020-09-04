@@ -158,7 +158,7 @@
             <div class="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a  href="/">Homepage</a>
+                        <a  href="/">主页</a>
                     </li>
 		    
                     
@@ -238,6 +238,165 @@
                 <!-- Main Content -->
 
 
+
+
+<div class="w3-row-padding">
+	<a href="/2020/09/04/OpenJdk移除sun-image-codec-package/">
+        <h2 class="post-title">
+            OpenJdk移除sun.image.codec package
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+	</a>
+
+<div>
+
+    <a href="/2020/09/04/OpenJdk移除sun-image-codec-package/">
+
+        <div class="post-content-preview">
+            问题描述
+一个项目在windows下执行mvn package正常，但是放在Linux环境下，会出现找不到com.sun.image.codec的问题，如下所示
+1234567891011121314151617181920212223242526272829303132333435[ERROR] COMPILATION ERROR : [INFO] -----------------.........
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by 站着工程师 on
+            2020-09-04
+        </p>
+    
+
+</div>
+</div>
+<hr>
+
+
+<div class="w3-row-padding">
+	<a href="/2020/09/04/Alpine镜像内的Java时区问题/">
+        <h2 class="post-title">
+            Alpine镜像内的Java时区问题
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+	</a>
+
+<div>
+
+    <a href="/2020/09/04/Alpine镜像内的Java时区问题/">
+
+        <div class="post-content-preview">
+            docker的精简镜像alpine内没有时区信息，在基于该镜像制作应用镜像时，需要配置时区信息，之前的做法是在其他容器时将宿主机的时区配置挂载到容器，如下所示：
+docker run -itd -v /etc/localtime:/etc/localtime alpine bash进入到容器内，时间确实已经是东八区时间:
+bash-4.3# dateTue Aug  7 09:32:2.........
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by 站着工程师 on
+            2020-09-04
+        </p>
+    
+
+</div>
+</div>
+<hr>
+
+
+<div class="w3-row-padding">
+	<a href="/2020/09/04/Window是导入postgres-的sql文件/">
+        <h2 class="post-title">
+            Window是导入postgres 的sql文件
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+	</a>
+
+<div>
+
+    <a href="/2020/09/04/Window是导入postgres-的sql文件/">
+
+        <div class="post-content-preview">
+            postgres的windows客户端使用pgadmin，pgadmin没有直接导入sql的操作，需要命令行导入，在windows的命令行执行导入命令，会报以下错误：
+character with byte sequence 0xc2 0x90 in encoding GBK has noequivalent in encodeing utf8出现这种错误的原因，通常是psql的客户端.........
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by 站着工程师 on
+            2020-09-04
+        </p>
+    
+
+</div>
+</div>
+<hr>
+
+
+<div class="w3-row-padding">
+	<a href="/2020/09/04/nginx出现403-is-forbidden的4个原因/">
+        <h2 class="post-title">
+            nginx出现403 is forbidden的4个原因
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+	</a>
+
+<div>
+
+    <a href="/2020/09/04/nginx出现403-is-forbidden的4个原因/">
+
+        <div class="post-content-preview">
+            nginx缺少配置
+缺少index.html或者index.php文件，就是配置文件中index index.html index.htm这行中的指定的文件。
+server {listen 80;server_name localhost;index index.php index.html;root /var/www; } 如果在/ var/www下面没有index.php,inde.........
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by 站着工程师 on
+            2020-09-04
+        </p>
+    
+
+</div>
+</div>
+<hr>
+
+
+<div class="w3-row-padding">
+	<a href="/2020/09/04/Docker基础镜像debain的乱码问题/">
+        <h2 class="post-title">
+            Docker基础镜像debain的乱码问题
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+	</a>
+
+<div>
+
+    <a href="/2020/09/04/Docker基础镜像debain的乱码问题/">
+
+        <div class="post-content-preview">
+            问题
+公司内的项目在进行容器化并实现DevOps的时候，由于代码文件编码的问题，出现了乱码问题，在windows环境下，正常没有问题，首先看一下前期基于debain+nodejs+ionic构建的用于项目打包的基础镜像，镜像文件如下所示：
+FROM 10.10.70.65/base/andreptb/maven:3.3.9-jdk8COPY settings.xml /usr/shar.........
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by 站着工程师 on
+            2020-09-04
+        </p>
+    
+
+</div>
+</div>
+<hr>
 
 
 <div class="w3-row-padding">
@@ -395,7 +554,7 @@ docker rmi $(docker images | awk ‘/^/ { .........
 
 <section>
     <!-- no hr -->
-    <h5><a href="/tags/">Tags</a></h5>
+    <h5><a href="/tags/">标签云</a></h5>
     <div class="tags">
         
     </div>
@@ -405,7 +564,7 @@ docker rmi $(docker images | awk ‘/^/ { .........
     
         <!-- Short About -->
 <section class="visible-md visible-lg">
-    <h5><a href="/about/">About me</a></h5>
+    <h5><a href="/about/">关于</a></h5>
     <div class="short-about">
 
         
@@ -446,24 +605,28 @@ docker rmi $(docker images | awk ‘/^/ { .........
         <hr>
     
         
-  <h5>Recent posts</h3>
+  <h5>最近发表</h3>
   <div class="widget">
     <ul>
       
         <li>
-          <a href="/2020/09/03/Docker%E4%BD%BF%E7%94%A8%E8%BF%9B%E9%98%B6/">Docker使用进阶</a>
+          <a href="/2020/09/04/OpenJdk%E7%A7%BB%E9%99%A4sun-image-codec-package/">OpenJdk移除sun.image.codec package</a>
         </li>
       
         <li>
-          <a href="/2020/09/03/Docker%E4%B8%8E%E4%B8%BB%E6%9C%BA%E5%85%B3%E7%B3%BB/">Docker与主机关系</a>
+          <a href="/2020/09/04/Alpine%E9%95%9C%E5%83%8F%E5%86%85%E7%9A%84Java%E6%97%B6%E5%8C%BA%E9%97%AE%E9%A2%98/">Alpine镜像内的Java时区问题</a>
         </li>
       
         <li>
-          <a href="/2020/09/03/my-first-blog/">my first blog</a>
+          <a href="/2020/09/04/Window%E6%98%AF%E5%AF%BC%E5%85%A5postgres-%E7%9A%84sql%E6%96%87%E4%BB%B6/">Window是导入postgres 的sql文件</a>
         </li>
       
         <li>
-          <a href="/2020/09/03/hello-world/">Hello World</a>
+          <a href="/2020/09/04/nginx%E5%87%BA%E7%8E%B0403-is-forbidden%E7%9A%844%E4%B8%AA%E5%8E%9F%E5%9B%A0/">nginx出现403 is forbidden的4个原因</a>
+        </li>
+      
+        <li>
+          <a href="/2020/09/04/Docker%E5%9F%BA%E7%A1%80%E9%95%9C%E5%83%8Fdebain%E7%9A%84%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98/">Docker基础镜像debain的乱码问题</a>
         </li>
       
     </ul>
@@ -472,16 +635,16 @@ docker rmi $(docker images | awk ‘/^/ { .........
         <hr>
     
         
-    <h5>Achives</h5>
+    <h5>归档</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">4</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">9</span></li></ul>
     </div>
 
         <hr>
     
         <!-- Friends Blog -->
 
-<h5>Friends</h5>
+<h5>友链</h5>
 <ul class="list-inline">
 
     

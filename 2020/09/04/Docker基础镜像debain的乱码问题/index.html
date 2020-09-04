@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Docker使用进阶 - null
+          Docker基础镜像debain的乱码问题 - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/2020/09/03/Docker使用进阶/">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/04/Docker基础镜像debain的乱码问题/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -123,11 +123,11 @@
                         <div class="tags">
                             
                         </div>
-                        <h1>Docker使用进阶</h1>
+                        <h1>Docker基础镜像debain的乱码问题</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by 站着工程师 on
-                            2020-09-03
+                            2020-09-04
                         </span>
                     </div>
                 
@@ -236,61 +236,22 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h2 id="Docker不太常用的命令"><a href="#Docker不太常用的命令" class="headerlink" title="Docker不太常用的命令"></a>Docker不太常用的命令</h2><ul>
-<li>docker ps -s  #查看容器所占的磁盘大小</li>
-<li>docker rm ${docker ps -q -a} # 删除全部非运行态的容器</li>
-<li>docker system df  #查看docker存储的使用情况</li>
-<li>docker system prun #清理无用的容器、网络、数据集</li>
-<li>docker rmi $(docker images | awk ‘/^<none>/ { print $3 }’) #删除的镜像repositry为none的镜像</li>
-<li>删除 未被使用的镜像 docker rmi $(docker images | awk ‘ { print $3 }’)</li>
-</ul>
-<h2 id="Docker配置参数"><a href="#Docker配置参数" class="headerlink" title="Docker配置参数"></a>Docker配置参数</h2><ol>
-<li>–iptables ,该参数用于控制是否允许docker去管理iptables，当设置为true时，允许docker去管理iptbales表<ul>
-<li>通常在docker单独使用时，需要这样配置，如果配置为false，iptables被清空后，是无法自动创建的</li>
-<li>在基于Kubernetes等管理docker时，可以配置iptables=false</li>
-</ul>
-</li>
-<li>–ip-forward，该参数用于控主机容器与外部网络之间的相互通信，当设置为true时，允许容器被外部访问，当设置为false时，外部是无法访问到容器<ul>
-<li>当宿主机设置了ip_forward参数为1时，会以宿主机的配置为准，docker的改配置参数无效</li>
-</ul>
-</li>
-</ol>
-<h2 id="迁移Docker存储方式一"><a href="#迁移Docker存储方式一" class="headerlink" title="迁移Docker存储方式一"></a>迁移Docker存储方式一</h2><p>若Docker已经运行一段时间，并存在运行的容器，可以采用以下方法进行容器存储的迁移</p>
-<ol>
-<li>停止全部容器</li>
-<li>停止docker：systemctl stop docker</li>
-<li>mkdir -p /sl/docker/</li>
-<li>移动docker存储：mv /var/lib/docker/* /sl/docker/</li>
-<li>建立软连接：ln -s /sl/docker /var/lib/</li>
-<li>systemctl start docker</li>
-</ol>
-<p>==注意删除软连接是 rm /var/lib/docker  后面不能有斜杠，否则是删除整个目录)==</p>
-<h2 id="迁移Docker存储方式二"><a href="#迁移Docker存储方式二" class="headerlink" title="迁移Docker存储方式二"></a>迁移Docker存储方式二</h2><ol>
-<li>停止全部容器</li>
-<li>停止docker：systemctl stop docker</li>
-<li>cd /sl</li>
-<li>mkdir dockerdaemon</li>
-<li>cd /sl/dockerdaemon</li>
-<li>tar  -czvpf docker.tar.gz /var/lib/docker</li>
-<li>tar  zxvf docker.tar.gz -C /sl/dockerdaemon</li>
-<li>cd /sl/dockerdaemon/var/lib/</li>
-<li>mv docker/ ../../</li>
-<li>mv /var/lib/docker /sl/backup</li>
-<li>ln -s /sl/dockerdaemon/docker /var/lib/</li>
-</ol>
-<h2 id="基于操作系统制作Docker镜像"><a href="#基于操作系统制作Docker镜像" class="headerlink" title="基于操作系统制作Docker镜像"></a>基于操作系统制作Docker镜像</h2><p>执行以下操作</p>
-<ol>
-<li>tar –exclude=/usr/lib32  -cPvf fedora21-base.tar /home</li>
-</ol>
-<p>将本机运行的操作系统打成一个fedora21-base.tar包，其中–exclude参数是将不需要的目录排除，可以使用–exclude多个参数排除多个目录。</p>
-<ol start="2">
-<li>cat fedora21-base.tar | docker import - fedora21-base</li>
-</ol>
-<p>将tar包使用docker import编译导入镜像</p>
-<ol start="3">
-<li>docker run -i -t fedora21-base  /bin/bash</li>
-</ol>
-<p>启动镜像。-i 代表打开标准输入 -t 虚拟一个窗口 /bin/bash启动镜像执行的命令</p>
+                <p>问题</p>
+<p>公司内的项目在进行容器化并实现DevOps的时候，由于代码文件编码的问题，出现了乱码问题，在windows环境下，正常没有问题，首先看一下前期基于debain+nodejs+ionic构建的用于项目打包的基础镜像，镜像文件如下所示：</p>
+<p>FROM 10.10.70.65/base/andreptb/maven:3.3.9-jdk8<br>COPY settings.xml /usr/share/maven/conf/settings.xml<br>COPY linux-x64-57_binding.node /usr/local/<br>ENV SASS_BINARY_PATH=/usr/local/linux-x64-48_binding.node<br>COPY  node-v8.6.0-linux-x64.tar.gz /home/node-v8.6.0-linux-x64.tar.gz<br>WORKDIR /home/<br>RUN tar xvf node-v8.6.0-linux-x64.tar.gz <br>    &amp;&amp; mv node-v8.6.0-linux-x64/ /usr/local/<br>RUN echo ‘’ &gt; /etc/apt/sources.list.d/jessie-backports.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian">http://mirrors.aliyun.com/debian</a> jessie main contrib non-free” &gt; /etc/apt/sources.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian">http://mirrors.aliyun.com/debian</a> jessie-updates main contrib non-free” &gt;&gt; /etc/apt/sources.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian-security">http://mirrors.aliyun.com/debian-security</a> jessie/updates main contrib non-free” &gt;&gt; /etc/apt/sources.list</p>
+<p>RUN apt-get update &amp;&amp; apt-get install -y libltdl7<br>RUN  export PATH=/usr/local/node-v8.6.0-linux-x64/bin:$PATH <br>   &amp;&amp; npm config set registry <a target="_blank" rel="noopener" href="https://registry.npm.taobao.org/">https://registry.npm.taobao.org</a> <br>   &amp;&amp; npm install -g @angular/cli <br>   &amp;&amp; npm install uglify-js -g <br>   &amp;&amp; npm install -g cordova <br>   &amp;&amp; npm install -g ionic<br>ENV PATH=/usr/local/node-v8.6.0-linux-x64/bin:$PATH<br>基于上述镜像，制作的war包，对于中文，会出现乱码问题，如下所示</p>
+<pre><code>&lt;display-name&gt;????????????????????????&lt;/display-name&gt;
+&lt;context-param&gt;
+    &lt;param-name&gt;webAppRootKey&lt;/param-name&gt;
+    &lt;param-value&gt;dfweb.root&lt;/param-value&gt;
+&lt;/context-param&gt;</code></pre>
+<p>尝试在pom.xml上增加以下配置，并未解决问题，但是这应该是必须的配置<br>&lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;<br>在windows环境和centos 环境下进行了mvn package，都未出现乱码问题，最终怀疑是基础镜像的语言环境问题，查看Centos7的语言环境如下所示：<br>[root@RD65 ~]# locale<br>LANG=en_US.UTF-8<br>LC_CTYPE=”en_US.UTF-8”<br>LC_NUMERIC=”en_US.UTF-8”<br>LC_TIME=”en_US.UTF-8”<br>LC_COLLATE=”en_US.UTF-8”<br>LC_MONETARY=”en_US.UTF-8”<br>LC_MESSAGES=”en_US.UTF-8”<br>LC_PAPER=”en_US.UTF-8”<br>LC_NAME=”en_US.UTF-8”<br>LC_ADDRESS=”en_US.UTF-8”<br>LC_TELEPHONE=”en_US.UTF-8”<br>LC_MEASUREMENT=”en_US.UTF-8”<br>LC_IDENTIFICATION=”en_US.UTF-8”<br>LC_ALL=<br>查看基础镜像的语言环境如下所示：</p>
+<p>root@82f9c92e247c:/home# locale<br>LANG=<br>LANGUAGE=<br>LC_CTYPE=”POSIX”<br>LC_NUMERIC=”POSIX”<br>LC_TIME=”POSIX”<br>LC_COLLATE=”POSIX”<br>LC_MONETARY=”POSIX”<br>LC_MESSAGES=”POSIX”<br>LC_PAPER=”POSIX”<br>LC_NAME=”POSIX”<br>LC_ADDRESS=”POSIX”<br>LC_TELEPHONE=”POSIX”<br>LC_MEASUREMENT=”POSIX”<br>LC_IDENTIFICATION=”POSIX”<br>LC_ALL=</p>
+<p>解决方法</p>
+<p>修改基础镜像的Dockerfile</p>
+<p>FROM 10.10.70.65/base/andreptb/maven:3.3.9-jdk8<br>COPY settings.xml /usr/share/maven/conf/settings.xml<br>COPY linux-x64-57_binding.node /usr/local/<br>ENV SASS_BINARY_PATH=/usr/local/linux-x64-48_binding.node<br>COPY  node-v8.6.0-linux-x64.tar.gz /home/node-v8.6.0-linux-x64.tar.gz<br>WORKDIR /home/<br>RUN tar xvf node-v8.6.0-linux-x64.tar.gz <br>    &amp;&amp; mv node-v8.6.0-linux-x64/ /usr/local/<br>RUN echo ‘’ &gt; /etc/apt/sources.list.d/jessie-backports.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian">http://mirrors.aliyun.com/debian</a> jessie main contrib non-free” &gt; /etc/apt/sources.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian">http://mirrors.aliyun.com/debian</a> jessie-updates main contrib non-free” &gt;&gt; /etc/apt/sources.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian-security">http://mirrors.aliyun.com/debian-security</a> jessie/updates main contrib non-free” &gt;&gt; /etc/apt/sources.list</p>
+<p>RUN apt-get update &amp;&amp; apt-get install -y libltdl7<br>RUN  export PATH=/usr/local/node-v8.6.0-linux-x64/bin:$PATH <br>   &amp;&amp; npm config set registry <a target="_blank" rel="noopener" href="https://registry.npm.taobao.org/">https://registry.npm.taobao.org</a> <br>   &amp;&amp; npm install -g @angular/cli <br>   &amp;&amp; npm install uglify-js -g <br>   &amp;&amp; npm install -g cordova <br>   &amp;&amp; npm install -g ionic<br>ENV PATH=/usr/local/node-v8.6.0-linux-x64/bin:$PATH</p>
+<p>#config locale<br>RUN sed -i -e ‘s/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/‘ /etc/locale.gen &amp;&amp; <br>    locale-gen<br>ENV LANGUAGE=en_US.UTF-8<br>ENV LANG=en_US.UTF-8<br>ENV LC_ALL=en_US.UTF-8</p>
 
                 
 
@@ -299,12 +260,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2020/09/04/Docker基础镜像debain的乱码问题/" data-toggle="tooltip" data-placement="top" title="Docker基础镜像debain的乱码问题">&larr; 上一篇</a>
+                            <a href="/2020/09/04/nginx出现403-is-forbidden的4个原因/" data-toggle="tooltip" data-placement="top" title="nginx出现403 is forbidden的4个原因">&larr; 上一篇</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2020/09/03/Docker与主机关系/" data-toggle="tooltip" data-placement="top" title="Docker与主机关系">下一篇 &rarr;</a>
+                            <a href="/2020/09/03/Docker使用进阶/" data-toggle="tooltip" data-placement="top" title="Docker使用进阶">下一篇 &rarr;</a>
                         </li>
                     
                 </ul>
@@ -525,7 +486,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/2020/09/03/Docker%E4%BD%BF%E7%94%A8%E8%BF%9B%E9%98%B6/index.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/04/Docker%E5%9F%BA%E7%A1%80%E9%95%9C%E5%83%8Fdebain%E7%9A%84%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},

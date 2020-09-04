@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Docker使用进阶 - null
+          OpenJdk移除sun.image.codec package - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/2020/09/03/Docker使用进阶/">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/04/OpenJdk移除sun-image-codec-package/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -123,11 +123,11 @@
                         <div class="tags">
                             
                         </div>
-                        <h1>Docker使用进阶</h1>
+                        <h1>OpenJdk移除sun.image.codec package</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by 站着工程师 on
-                            2020-09-03
+                            2020-09-04
                         </span>
                     </div>
                 
@@ -236,61 +236,44 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h2 id="Docker不太常用的命令"><a href="#Docker不太常用的命令" class="headerlink" title="Docker不太常用的命令"></a>Docker不太常用的命令</h2><ul>
-<li>docker ps -s  #查看容器所占的磁盘大小</li>
-<li>docker rm ${docker ps -q -a} # 删除全部非运行态的容器</li>
-<li>docker system df  #查看docker存储的使用情况</li>
-<li>docker system prun #清理无用的容器、网络、数据集</li>
-<li>docker rmi $(docker images | awk ‘/^<none>/ { print $3 }’) #删除的镜像repositry为none的镜像</li>
-<li>删除 未被使用的镜像 docker rmi $(docker images | awk ‘ { print $3 }’)</li>
-</ul>
-<h2 id="Docker配置参数"><a href="#Docker配置参数" class="headerlink" title="Docker配置参数"></a>Docker配置参数</h2><ol>
-<li>–iptables ,该参数用于控制是否允许docker去管理iptables，当设置为true时，允许docker去管理iptbales表<ul>
-<li>通常在docker单独使用时，需要这样配置，如果配置为false，iptables被清空后，是无法自动创建的</li>
-<li>在基于Kubernetes等管理docker时，可以配置iptables=false</li>
-</ul>
-</li>
-<li>–ip-forward，该参数用于控主机容器与外部网络之间的相互通信，当设置为true时，允许容器被外部访问，当设置为false时，外部是无法访问到容器<ul>
-<li>当宿主机设置了ip_forward参数为1时，会以宿主机的配置为准，docker的改配置参数无效</li>
-</ul>
-</li>
-</ol>
-<h2 id="迁移Docker存储方式一"><a href="#迁移Docker存储方式一" class="headerlink" title="迁移Docker存储方式一"></a>迁移Docker存储方式一</h2><p>若Docker已经运行一段时间，并存在运行的容器，可以采用以下方法进行容器存储的迁移</p>
-<ol>
-<li>停止全部容器</li>
-<li>停止docker：systemctl stop docker</li>
-<li>mkdir -p /sl/docker/</li>
-<li>移动docker存储：mv /var/lib/docker/* /sl/docker/</li>
-<li>建立软连接：ln -s /sl/docker /var/lib/</li>
-<li>systemctl start docker</li>
-</ol>
-<p>==注意删除软连接是 rm /var/lib/docker  后面不能有斜杠，否则是删除整个目录)==</p>
-<h2 id="迁移Docker存储方式二"><a href="#迁移Docker存储方式二" class="headerlink" title="迁移Docker存储方式二"></a>迁移Docker存储方式二</h2><ol>
-<li>停止全部容器</li>
-<li>停止docker：systemctl stop docker</li>
-<li>cd /sl</li>
-<li>mkdir dockerdaemon</li>
-<li>cd /sl/dockerdaemon</li>
-<li>tar  -czvpf docker.tar.gz /var/lib/docker</li>
-<li>tar  zxvf docker.tar.gz -C /sl/dockerdaemon</li>
-<li>cd /sl/dockerdaemon/var/lib/</li>
-<li>mv docker/ ../../</li>
-<li>mv /var/lib/docker /sl/backup</li>
-<li>ln -s /sl/dockerdaemon/docker /var/lib/</li>
-</ol>
-<h2 id="基于操作系统制作Docker镜像"><a href="#基于操作系统制作Docker镜像" class="headerlink" title="基于操作系统制作Docker镜像"></a>基于操作系统制作Docker镜像</h2><p>执行以下操作</p>
-<ol>
-<li>tar –exclude=/usr/lib32  -cPvf fedora21-base.tar /home</li>
-</ol>
-<p>将本机运行的操作系统打成一个fedora21-base.tar包，其中–exclude参数是将不需要的目录排除，可以使用–exclude多个参数排除多个目录。</p>
-<ol start="2">
-<li>cat fedora21-base.tar | docker import - fedora21-base</li>
-</ol>
-<p>将tar包使用docker import编译导入镜像</p>
-<ol start="3">
-<li>docker run -i -t fedora21-base  /bin/bash</li>
-</ol>
-<p>启动镜像。-i 代表打开标准输入 -t 虚拟一个窗口 /bin/bash启动镜像执行的命令</p>
+                <p>问题描述</p>
+<p>一个项目在windows下执行mvn package正常，但是放在Linux环境下，会出现找不到com.sun.image.codec的问题，如下所示</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">[ERROR] COMPILATION ERROR : </span><br><span class="line">[INFO] -------------------------------------------------------------</span><br><span class="line">[ERROR] /home/ztzx/ztzx.service/src/main/java/com/telchina/ztzx/common/controller/UploadController2.java:[<span class="number">24</span>,<span class="number">40</span>] package com.sun.image.codec.jpeg does <span class="keyword">not</span> exist</span><br><span class="line">[ERROR] /home/ztzx/ztzx.service/src/main/java/com/telchina/ztzx/common/controller/UploadController2.java:[<span class="number">25</span>,<span class="number">40</span>] package com.sun.image.codec.jpeg does <span class="keyword">not</span> exist</span><br><span class="line">[ERROR] /home/ztzx/ztzx.service/src/main/java/com/telchina/ztzx/common/controller/UploadController.java:[<span class="number">25</span>,<span class="number">32</span>] package com.sun.image.codec.jpeg does <span class="keyword">not</span> exist</span><br><span class="line">[ERROR] /home/ztzx/ztzx.service/src/main/java/com/telchina/ztzx/common/controller/UploadController.java:[<span class="number">26</span>,<span class="number">32</span>] package com.sun.image.codec.jpeg does <span class="keyword">not</span> exist</span><br><span class="line">[INFO] <span class="number">4</span> errors </span><br><span class="line">[INFO] -------------------------------------------------------------</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] Reactor Summary:</span><br><span class="line">[INFO] </span><br><span class="line">[INFO] ztzx <span class="number">1.0</span><span class="number">.0</span> ......................................... SUCCESS [  <span class="number">0.007</span> s]</span><br><span class="line">[INFO] ztzx.service ....................................... FAILURE [<span class="number">02</span>:<span class="number">11</span> min]</span><br><span class="line">[INFO] ztzx.web <span class="number">1.0</span><span class="number">.0</span> ..................................... SKIPPED</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] BUILD FAILURE</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] Total time: <span class="number">02</span>:<span class="number">11</span> min</span><br><span class="line">[INFO] Finished at: <span class="number">2018</span><span class="number">-08</span><span class="number">-06</span>T01:<span class="number">51</span>:<span class="number">45</span>Z</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:<span class="number">3.1</span>:compile (default-compile) on project ztzx.service: Compilation failure: Compilation failure: </span><br><span class="line">[ERROR] /home/ztzx/ztzx.service/src/main/java/com/telchina/ztzx/common/controller/UploadController2.java:[<span class="number">24</span>,<span class="number">40</span>] package com.sun.image.codec.jpeg does <span class="keyword">not</span> exist</span><br><span class="line">[ERROR] /home/ztzx/ztzx.service/src/main/java/com/telchina/ztzx/common/controller/UploadController2.java:[<span class="number">25</span>,<span class="number">40</span>] package com.sun.image.codec.jpeg does <span class="keyword">not</span> exist</span><br><span class="line">[ERROR] /home/ztzx/ztzx.service/src/main/java/com/telchina/ztzx/common/controller/UploadController.java:[<span class="number">25</span>,<span class="number">32</span>] package com.sun.image.codec.jpeg does <span class="keyword">not</span> exist</span><br><span class="line">[ERROR] /home/ztzx/ztzx.service/src/main/java/com/telchina/ztzx/common/controller/UploadController.java:[<span class="number">26</span>,<span class="number">32</span>] package com.sun.image.codec.jpeg does <span class="keyword">not</span> exist</span><br><span class="line">[ERROR] -&gt; [Help 1]</span><br><span class="line">[ERROR] </span><br><span class="line">[ERROR] To see the full stack trace of the errors, re-run Maven <span class="keyword">with</span> the -e switch.</span><br><span class="line">[ERROR] Re-run Maven using the -X switch to enable full debug logging.</span><br><span class="line">[ERROR] </span><br><span class="line">[ERROR] For more information about the errors <span class="keyword">and</span> possible solutions, please read the following articles:</span><br><span class="line">[ERROR] [Help <span class="number">1</span>] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException</span><br><span class="line">[ERROR] </span><br><span class="line">[ERROR] After correcting the problems, you can resume the build <span class="keyword">with</span> the command</span><br><span class="line">[ERROR]   mvn &lt;goals&gt; -rf :ztzx.service</span><br></pre></td></tr></table></figure>
+<p>分析一</p>
+<p>按照Java官方的解释,sun.image.codec这个package已经被deprecated，建议不要使用，看官方的解释：</p>
+<p>Why Developers Should Not Write Programs That Call ‘sun’ Packages<br>The java., javax. and org.* packages documented in the Java Platform Standard Edition API Specification make up the official, supported, public interface. If a Java program directly calls only API in these packages, it will operate on all Java-compatible platforms, regardless of the underlying OS platform.</p>
+<p>The sun.* packages are not part of the supported, public interface. A Java program that directly calls into sun.* packages is not guaranteed to work on all Java-compatible platforms. In fact, such a program is not guaranteed to work even in future versions on the same platform. Each company that implements the Java platform will do so in their own private way. The classes in sun.* are present in the JDK to support Oracle’s implementation of the Java platform: the sun.* classes are what make the Java platform classes work “under the covers” for Oracle’s JDK. These classes will not in general be present on another vendor’s Java platform. If your Java program asks for a class “sun.package.Foo” by name, it may fail with ClassNotFoundError, and you will have lost a major advantage of developing in Java.</p>
+<p>Technically, nothing prevents your program from calling into sun.* by name. From one release to another, these classes may be removed, or they may be moved from one package to another, and it’s fairly likely that their interface (method names and signatures) will change. (From Oracle’s point of view, since we are committed to maintaining the Java platform, we need to be able to change sun.* to refine and enhance the platform.) In this case, even if you are willing to run only on Oracle’s implementation, you run the risk of a new version of the implementation breaking your program.</p>
+<p>In general, writing java programs that rely on sun.* is risky: those classes are not portable, and are not supported</p>
+<p>可以这样理解，Java已经被Oracle收购多年，里面再去出现sun的package算怎么回事。。O(∩_∩)O哈哈~，当然你还是可以去使用的，可以在pom.xml 经配置了下面的参数，排除无法引入jar包的问题，这个方法并不能解决我在Linux无法进行构建的的问题。</p>
+<pre><code>            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+                &lt;version&gt;3.1&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;source&gt;$&#123;jdkVersion&#125;&lt;/source&gt;
+                    &lt;target&gt;$&#123;jdkVersion&#125;&lt;/target&gt;
+                    &lt;compilerArguments&gt;
+                        &lt;verbose /&gt;
+                        &lt;bootclasspath&gt;$&#123;JAVA_HOME&#125;/jre/lib/rt.jar$&#123;path.separator&#125;$&#123;JAVA_HOME&#125;/jre/lib/jce.jar&lt;/bootclasspath&gt;
+                    &lt;/compilerArguments&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;</code></pre>
+<p>分析二</p>
+<p>查看mvn仓库信息</p>
+<p>root@30e8e1cd5962:/home/ztzx# mvn -version<br>Apache Maven 3.5.3 (3383c37e1f9e9b3bc3df5050c29c8aff9f295297; 2018-02-24T19:49:05Z)<br>Maven home: /usr/share/maven<br>Java version: 1.8.0_91, vendor: Oracle Corporation<br>Java home: /usr/lib/jvm/java-8-openjdk-amd64/jre<br>Default locale: en, platform encoding: UTF-8<br>OS name: “linux”, version: “3.10.0-693.el7.x86_64”, arch: “amd64”, family: “unix”<br>查看Java 信息</p>
+<p>root@30e8e1cd5962:/home/ztzx# java -version<br>openjdk version “1.8.0_91”<br>OpenJDK Runtime Environment (build 1.8.0_91-8u91-b14-1~bpo8+1-b14)<br>OpenJDK 64-Bit Server VM (build 25.91-b14, mixed mode)</p>
+<p>与windows的运行环境相比，出Java的小版本不同外，还有一个区别，就是Oracle Java与OpenJdk的区别，google资料，发现OpenJdk已经在1.7版本移除了该package。OpenJdk移除jepg的package，将Linux 默认的OpenJdk替换为Oracle的Jdk，即可以解决问题</p>
+<p>其他解决方法</p>
+<p>JPEGImageEncoder类是SUN公司私有类</p>
+<p>一般出现在这样的代码段中：<br>    FileOutputStream out = new FileOutputStream(dstName);<br>     JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);<br>     encoder.encode(dstImage);</p>
+<p>改写成：</p>
+<pre><code>String formatName = dstName.substring(dstName.lastIndexOf(&quot;.&quot;) + 1);
+ //FileOutputStream out = new FileOutputStream(dstName);
+ //JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+ //encoder.encode(dstImage);
+ ImageIO.write(dstImage, /*&quot;GIF&quot;*/ formatName /* format desired */ , new File(dstName) /* target */ );</code></pre>
+<p>都使用统一的ImageIO进行图像格式文件的读写，没有必要使用过时的实现类JPEGImageEncoder类。</p>
 
                 
 
@@ -298,13 +281,9 @@
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2020/09/04/Docker基础镜像debain的乱码问题/" data-toggle="tooltip" data-placement="top" title="Docker基础镜像debain的乱码问题">&larr; 上一篇</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2020/09/03/Docker与主机关系/" data-toggle="tooltip" data-placement="top" title="Docker与主机关系">下一篇 &rarr;</a>
+                            <a href="/2020/09/04/Alpine镜像内的Java时区问题/" data-toggle="tooltip" data-placement="top" title="Alpine镜像内的Java时区问题">下一篇 &rarr;</a>
                         </li>
                     
                 </ul>
@@ -525,7 +504,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/2020/09/03/Docker%E4%BD%BF%E7%94%A8%E8%BF%9B%E9%98%B6/index.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/04/OpenJdk%E7%A7%BB%E9%99%A4sun-image-codec-package/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},

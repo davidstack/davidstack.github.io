@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Docker使用进阶 - null
+          nginx出现403 is forbidden的4个原因 - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/2020/09/03/Docker使用进阶/">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/04/nginx出现403-is-forbidden的4个原因/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -123,11 +123,11 @@
                         <div class="tags">
                             
                         </div>
-                        <h1>Docker使用进阶</h1>
+                        <h1>nginx出现403 is forbidden的4个原因</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by 站着工程师 on
-                            2020-09-03
+                            2020-09-04
                         </span>
                     </div>
                 
@@ -236,61 +236,25 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h2 id="Docker不太常用的命令"><a href="#Docker不太常用的命令" class="headerlink" title="Docker不太常用的命令"></a>Docker不太常用的命令</h2><ul>
-<li>docker ps -s  #查看容器所占的磁盘大小</li>
-<li>docker rm ${docker ps -q -a} # 删除全部非运行态的容器</li>
-<li>docker system df  #查看docker存储的使用情况</li>
-<li>docker system prun #清理无用的容器、网络、数据集</li>
-<li>docker rmi $(docker images | awk ‘/^<none>/ { print $3 }’) #删除的镜像repositry为none的镜像</li>
-<li>删除 未被使用的镜像 docker rmi $(docker images | awk ‘ { print $3 }’)</li>
-</ul>
-<h2 id="Docker配置参数"><a href="#Docker配置参数" class="headerlink" title="Docker配置参数"></a>Docker配置参数</h2><ol>
-<li>–iptables ,该参数用于控制是否允许docker去管理iptables，当设置为true时，允许docker去管理iptbales表<ul>
-<li>通常在docker单独使用时，需要这样配置，如果配置为false，iptables被清空后，是无法自动创建的</li>
-<li>在基于Kubernetes等管理docker时，可以配置iptables=false</li>
-</ul>
-</li>
-<li>–ip-forward，该参数用于控主机容器与外部网络之间的相互通信，当设置为true时，允许容器被外部访问，当设置为false时，外部是无法访问到容器<ul>
-<li>当宿主机设置了ip_forward参数为1时，会以宿主机的配置为准，docker的改配置参数无效</li>
-</ul>
-</li>
-</ol>
-<h2 id="迁移Docker存储方式一"><a href="#迁移Docker存储方式一" class="headerlink" title="迁移Docker存储方式一"></a>迁移Docker存储方式一</h2><p>若Docker已经运行一段时间，并存在运行的容器，可以采用以下方法进行容器存储的迁移</p>
-<ol>
-<li>停止全部容器</li>
-<li>停止docker：systemctl stop docker</li>
-<li>mkdir -p /sl/docker/</li>
-<li>移动docker存储：mv /var/lib/docker/* /sl/docker/</li>
-<li>建立软连接：ln -s /sl/docker /var/lib/</li>
-<li>systemctl start docker</li>
-</ol>
-<p>==注意删除软连接是 rm /var/lib/docker  后面不能有斜杠，否则是删除整个目录)==</p>
-<h2 id="迁移Docker存储方式二"><a href="#迁移Docker存储方式二" class="headerlink" title="迁移Docker存储方式二"></a>迁移Docker存储方式二</h2><ol>
-<li>停止全部容器</li>
-<li>停止docker：systemctl stop docker</li>
-<li>cd /sl</li>
-<li>mkdir dockerdaemon</li>
-<li>cd /sl/dockerdaemon</li>
-<li>tar  -czvpf docker.tar.gz /var/lib/docker</li>
-<li>tar  zxvf docker.tar.gz -C /sl/dockerdaemon</li>
-<li>cd /sl/dockerdaemon/var/lib/</li>
-<li>mv docker/ ../../</li>
-<li>mv /var/lib/docker /sl/backup</li>
-<li>ln -s /sl/dockerdaemon/docker /var/lib/</li>
-</ol>
-<h2 id="基于操作系统制作Docker镜像"><a href="#基于操作系统制作Docker镜像" class="headerlink" title="基于操作系统制作Docker镜像"></a>基于操作系统制作Docker镜像</h2><p>执行以下操作</p>
-<ol>
-<li>tar –exclude=/usr/lib32  -cPvf fedora21-base.tar /home</li>
-</ol>
-<p>将本机运行的操作系统打成一个fedora21-base.tar包，其中–exclude参数是将不需要的目录排除，可以使用–exclude多个参数排除多个目录。</p>
-<ol start="2">
-<li>cat fedora21-base.tar | docker import - fedora21-base</li>
-</ol>
-<p>将tar包使用docker import编译导入镜像</p>
-<ol start="3">
-<li>docker run -i -t fedora21-base  /bin/bash</li>
-</ol>
-<p>启动镜像。-i 代表打开标准输入 -t 虚拟一个窗口 /bin/bash启动镜像执行的命令</p>
+                <p>nginx缺少配置</p>
+<p>缺少index.html或者index.php文件，就是配置文件中index index.html index.htm这行中的指定的文件。</p>
+<p>server {<br>listen 80;<br>server_name localhost;<br>index index.php index.html;<br>root /var/www; } 如果在/ var/www下面没有index.php,index.html的时候，直接访问域名，找不到文件，会报403 forbidden。</p>
+<p>权限问题</p>
+<p>如果nginx没有web目录的操作权限，也会出现403错误。</p>
+<p>解决办法：修改web目录的读写权限，或者是把nginx的启动用户改成目录的所属用户，重启Nginx即可解决</p>
+<p>chmod -R 755 /var/www</p>
+<p>Selinux</p>
+<p>SELinux设置为开启状态（enabled）的原因</p>
+<p>首先查看本机SELinux的开启状态，如果SELinux status参数为enabled即为开启状态</p>
+<p>/usr/sbin/sestatus -v 或者使用getenforce命令检查</p>
+<p>找到原因了，如何关闭 SELinux 呢</p>
+<p>1、临时关闭（不用重启）</p>
+<p>setenforce 0 2、修改配置文件 /etcselinux/config，将SELINUX=enforcing改为SELINUX=disabled</p>
+<p>vi /etc/selinux/config</p>
+<p>SELINUX=enforcing </p>
+<p>SELINUX=disabled</p>
+<p>文件被其他进程占用</p>
+<p>确认nginx的目录是否被其他程序占用，我这里出现的问题就是这个原因，tomcat 启动后加载了该目录，nginx也加载了该目录，就会出现无权限访问的问题</p>
 
                 
 
@@ -299,12 +263,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2020/09/04/Docker基础镜像debain的乱码问题/" data-toggle="tooltip" data-placement="top" title="Docker基础镜像debain的乱码问题">&larr; 上一篇</a>
+                            <a href="/2020/09/04/Window是导入postgres-的sql文件/" data-toggle="tooltip" data-placement="top" title="Window是导入postgres 的sql文件">&larr; 上一篇</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2020/09/03/Docker与主机关系/" data-toggle="tooltip" data-placement="top" title="Docker与主机关系">下一篇 &rarr;</a>
+                            <a href="/2020/09/04/Docker基础镜像debain的乱码问题/" data-toggle="tooltip" data-placement="top" title="Docker基础镜像debain的乱码问题">下一篇 &rarr;</a>
                         </li>
                     
                 </ul>
@@ -525,7 +489,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/2020/09/03/Docker%E4%BD%BF%E7%94%A8%E8%BF%9B%E9%98%B6/index.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/04/nginx%E5%87%BA%E7%8E%B0403-is-forbidden%E7%9A%844%E4%B8%AA%E5%8E%9F%E5%9B%A0/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},
