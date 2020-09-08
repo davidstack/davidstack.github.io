@@ -241,7 +241,7 @@
 <li>docker rm ${docker ps -q -a} # 删除全部非运行态的容器</li>
 <li>docker system df  #查看docker存储的使用情况</li>
 <li>docker system prun #清理无用的容器、网络、数据集</li>
-<li>docker rmi $(docker images | awk ‘/^<none>/ { print $3 }’) #删除的镜像repositry为none的镜像</li>
+<li>docker rmi $(docker images | awk ‘/^<none>/ { print $3 }’) #删除的镜像repositry为none的镜像</none></li>
 <li>删除 未被使用的镜像 docker rmi $(docker images | awk ‘ { print $3 }’)</li>
 </ul>
 <h2 id="Docker配置参数"><a href="#Docker配置参数" class="headerlink" title="Docker配置参数"></a>Docker配置参数</h2><ol>
