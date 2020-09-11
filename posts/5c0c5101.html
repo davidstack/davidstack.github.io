@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Window是导入postgres 的sql文件 - null
+          Docker与主机关系 - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/2020/09/04/Window是导入postgres-的sql文件/">
+    <link rel="canonical" href="http://damonyi.cc/posts/5c0c5101.html">
 
     <!-- Bootstrap Core CSS -->
 
@@ -123,11 +123,11 @@
                         <div class="tags">
                             
                         </div>
-                        <h1>Window是导入postgres 的sql文件</h1>
+                        <h1>Docker与主机关系</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by 站着工程师 on
-                            2020-09-04
+                            2020-09-03
                         </span>
                     </div>
                 
@@ -236,10 +236,7 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>postgres的windows客户端使用pgadmin，pgadmin没有直接导入sql的操作，需要命令行导入，在windows的命令行执行导入命令，会报以下错误：</p>
-<p>character with byte sequence 0xc2 0x90 in encoding GBK has no<br>equivalent in encodeing utf8<br>出现这种错误的原因，通常是psql的客户端编码与服务端的编码不一致导致的，可以使用以下操作，解决编码问题</p>
-<p>psql -u postgres -p 5432 -d slip -h 10.10.70.58<br>slip=#encoding UTF8;<br>slip=# \i ‘c:/public.sql’;</p>
-
+                
                 
 
                 <hr>
@@ -247,12 +244,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2020/09/04/Alpine镜像内的Java时区问题/" data-toggle="tooltip" data-placement="top" title="Alpine镜像内的Java时区问题">&larr; Previous post</a>
+                            <a href="/posts/230c739f.html" data-toggle="tooltip" data-placement="top" title="Docker使用进阶">&larr; Previous post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2020/09/04/nginx出现403-is-forbidden的4个原因/" data-toggle="tooltip" data-placement="top" title="nginx出现403 is forbidden的4个原因">Next post &rarr;</a>
+                            <a href="/posts/d63b390f.html" data-toggle="tooltip" data-placement="top" title="my first blog">Next post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -475,7 +472,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/2020/09/04/Window%E6%98%AF%E5%AF%BC%E5%85%A5postgres-%E7%9A%84sql%E6%96%87%E4%BB%B6/index.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/posts/5c0c5101.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},

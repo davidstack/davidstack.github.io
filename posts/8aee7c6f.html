@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          my first blog - null
+          Alpine镜像内的Java时区问题 - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/2020/09/03/my-first-blog/">
+    <link rel="canonical" href="http://damonyi.cc/posts/8aee7c6f.html">
 
     <!-- Bootstrap Core CSS -->
 
@@ -123,11 +123,11 @@
                         <div class="tags">
                             
                         </div>
-                        <h1>my first blog</h1>
+                        <h1>Alpine镜像内的Java时区问题</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by 站着工程师 on
-                            2020-09-03
+                            2020-09-04
                         </span>
                     </div>
                 
@@ -236,7 +236,18 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3>
+                <p>docker的精简镜像alpine内没有时区信息，在基于该镜像制作应用镜像时，需要配置时区信息，之前的做法是在其他容器时将宿主机的时区配置挂载到容器，如下所示：</p>
+<p>docker run -itd -v /etc/localtime:/etc/localtime alpine bash<br>进入到容器内，时间确实已经是东八区时间:</p>
+<p>bash-4.3# date<br>Tue Aug  7 09:32:21 CST 2018<br>但是对于Java应用来说，读取到的时间依然不是东八区时间，还需要挂载下面的时区文件才可以</p>
+<p>docker run -itd -v /etc/localtime:/etc/localtime -v /etc/timezone:/etc/timezone alpine bash<br>附 Java读取系统时区配置</p>
+<p>方法一</p>
+<p>在 tomcat的jvm 运行参数加上 -Duser.timezone=GMT+8，使用该配置，应用程序就会忽略系统设置的时区</p>
+<p>方法二</p>
+<p>配置文件/etc/sysconfig/clock，在文件内增加以下信息</p>
+<p>ZONE=”Asia/Shanghai”<br>UTC=false<br>ARC=false<br>方法三</p>
+<p>配置时区:</p>
+<p>cp /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime<br>echo “Asia/Shanghai”&gt;&gt;/etc/timezone</p>
+
                 
 
                 <hr>
@@ -244,12 +255,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2020/09/03/Docker与主机关系/" data-toggle="tooltip" data-placement="top" title="Docker与主机关系">&larr; Previous post</a>
+                            <a href="/posts/62b74a4d.html" data-toggle="tooltip" data-placement="top" title="OpenJdk移除sun.image.codec package">&larr; Previous post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2020/09/03/hello-world/" data-toggle="tooltip" data-placement="top" title="Hello World">Next post &rarr;</a>
+                            <a href="/posts/c3b0448d.html" data-toggle="tooltip" data-placement="top" title="Window是导入postgres 的sql文件">Next post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -472,7 +483,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/2020/09/03/my-first-blog/index.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/posts/8aee7c6f.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},
