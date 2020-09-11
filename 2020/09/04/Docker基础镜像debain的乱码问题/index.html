@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Alpine镜像内的Java时区问题 - null
+          Docker基础镜像debain的乱码问题 - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/posts/8aee7c6f.html">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/04/Docker基础镜像debain的乱码问题/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -123,7 +123,7 @@
                         <div class="tags">
                             
                         </div>
-                        <h1>Alpine镜像内的Java时区问题</h1>
+                        <h1>Docker基础镜像debain的乱码问题</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by 站着工程师 on
@@ -162,7 +162,7 @@
             <div class="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a  href="/">Homepage</a>
+                        <a  href="/">主页</a>
                     </li>
 		    
                     
@@ -236,17 +236,22 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>docker的精简镜像alpine内没有时区信息，在基于该镜像制作应用镜像时，需要配置时区信息，之前的做法是在其他容器时将宿主机的时区配置挂载到容器，如下所示：</p>
-<p>docker run -itd -v /etc/localtime:/etc/localtime alpine bash<br>进入到容器内，时间确实已经是东八区时间:</p>
-<p>bash-4.3# date<br>Tue Aug  7 09:32:21 CST 2018<br>但是对于Java应用来说，读取到的时间依然不是东八区时间，还需要挂载下面的时区文件才可以</p>
-<p>docker run -itd -v /etc/localtime:/etc/localtime -v /etc/timezone:/etc/timezone alpine bash<br>附 Java读取系统时区配置</p>
-<p>方法一</p>
-<p>在 tomcat的jvm 运行参数加上 -Duser.timezone=GMT+8，使用该配置，应用程序就会忽略系统设置的时区</p>
-<p>方法二</p>
-<p>配置文件/etc/sysconfig/clock，在文件内增加以下信息</p>
-<p>ZONE=”Asia/Shanghai”<br>UTC=false<br>ARC=false<br>方法三</p>
-<p>配置时区:</p>
-<p>cp /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime<br>echo “Asia/Shanghai”&gt;&gt;/etc/timezone</p>
+                <p>问题</p>
+<p>公司内的项目在进行容器化并实现DevOps的时候，由于代码文件编码的问题，出现了乱码问题，在windows环境下，正常没有问题，首先看一下前期基于debain+nodejs+ionic构建的用于项目打包的基础镜像，镜像文件如下所示：</p>
+<p>FROM 10.10.70.65/base/andreptb/maven:3.3.9-jdk8<br>COPY settings.xml /usr/share/maven/conf/settings.xml<br>COPY linux-x64-57_binding.node /usr/local/<br>ENV SASS_BINARY_PATH=/usr/local/linux-x64-48_binding.node<br>COPY  node-v8.6.0-linux-x64.tar.gz /home/node-v8.6.0-linux-x64.tar.gz<br>WORKDIR /home/<br>RUN tar xvf node-v8.6.0-linux-x64.tar.gz <br>    &amp;&amp; mv node-v8.6.0-linux-x64/ /usr/local/<br>RUN echo ‘’ &gt; /etc/apt/sources.list.d/jessie-backports.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian">http://mirrors.aliyun.com/debian</a> jessie main contrib non-free” &gt; /etc/apt/sources.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian">http://mirrors.aliyun.com/debian</a> jessie-updates main contrib non-free” &gt;&gt; /etc/apt/sources.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian-security">http://mirrors.aliyun.com/debian-security</a> jessie/updates main contrib non-free” &gt;&gt; /etc/apt/sources.list</p>
+<p>RUN apt-get update &amp;&amp; apt-get install -y libltdl7<br>RUN  export PATH=/usr/local/node-v8.6.0-linux-x64/bin:$PATH <br>   &amp;&amp; npm config set registry <a target="_blank" rel="noopener" href="https://registry.npm.taobao.org/">https://registry.npm.taobao.org</a> <br>   &amp;&amp; npm install -g @angular/cli <br>   &amp;&amp; npm install uglify-js -g <br>   &amp;&amp; npm install -g cordova <br>   &amp;&amp; npm install -g ionic<br>ENV PATH=/usr/local/node-v8.6.0-linux-x64/bin:$PATH<br>基于上述镜像，制作的war包，对于中文，会出现乱码问题，如下所示</p>
+<pre><code>&lt;display-name&gt;????????????????????????&lt;/display-name&gt;
+&lt;context-param&gt;
+    &lt;param-name&gt;webAppRootKey&lt;/param-name&gt;
+    &lt;param-value&gt;dfweb.root&lt;/param-value&gt;
+&lt;/context-param&gt;</code></pre>
+<p>尝试在pom.xml上增加以下配置，并未解决问题，但是这应该是必须的配置<br>&lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;<br>在windows环境和centos 环境下进行了mvn package，都未出现乱码问题，最终怀疑是基础镜像的语言环境问题，查看Centos7的语言环境如下所示：<br>[root@RD65 ~]# locale<br>LANG=en_US.UTF-8<br>LC_CTYPE=”en_US.UTF-8”<br>LC_NUMERIC=”en_US.UTF-8”<br>LC_TIME=”en_US.UTF-8”<br>LC_COLLATE=”en_US.UTF-8”<br>LC_MONETARY=”en_US.UTF-8”<br>LC_MESSAGES=”en_US.UTF-8”<br>LC_PAPER=”en_US.UTF-8”<br>LC_NAME=”en_US.UTF-8”<br>LC_ADDRESS=”en_US.UTF-8”<br>LC_TELEPHONE=”en_US.UTF-8”<br>LC_MEASUREMENT=”en_US.UTF-8”<br>LC_IDENTIFICATION=”en_US.UTF-8”<br>LC_ALL=<br>查看基础镜像的语言环境如下所示：</p>
+<p>root@82f9c92e247c:/home# locale<br>LANG=<br>LANGUAGE=<br>LC_CTYPE=”POSIX”<br>LC_NUMERIC=”POSIX”<br>LC_TIME=”POSIX”<br>LC_COLLATE=”POSIX”<br>LC_MONETARY=”POSIX”<br>LC_MESSAGES=”POSIX”<br>LC_PAPER=”POSIX”<br>LC_NAME=”POSIX”<br>LC_ADDRESS=”POSIX”<br>LC_TELEPHONE=”POSIX”<br>LC_MEASUREMENT=”POSIX”<br>LC_IDENTIFICATION=”POSIX”<br>LC_ALL=</p>
+<p>解决方法</p>
+<p>修改基础镜像的Dockerfile</p>
+<p>FROM 10.10.70.65/base/andreptb/maven:3.3.9-jdk8<br>COPY settings.xml /usr/share/maven/conf/settings.xml<br>COPY linux-x64-57_binding.node /usr/local/<br>ENV SASS_BINARY_PATH=/usr/local/linux-x64-48_binding.node<br>COPY  node-v8.6.0-linux-x64.tar.gz /home/node-v8.6.0-linux-x64.tar.gz<br>WORKDIR /home/<br>RUN tar xvf node-v8.6.0-linux-x64.tar.gz <br>    &amp;&amp; mv node-v8.6.0-linux-x64/ /usr/local/<br>RUN echo ‘’ &gt; /etc/apt/sources.list.d/jessie-backports.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian">http://mirrors.aliyun.com/debian</a> jessie main contrib non-free” &gt; /etc/apt/sources.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian">http://mirrors.aliyun.com/debian</a> jessie-updates main contrib non-free” &gt;&gt; /etc/apt/sources.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian-security">http://mirrors.aliyun.com/debian-security</a> jessie/updates main contrib non-free” &gt;&gt; /etc/apt/sources.list</p>
+<p>RUN apt-get update &amp;&amp; apt-get install -y libltdl7<br>RUN  export PATH=/usr/local/node-v8.6.0-linux-x64/bin:$PATH <br>   &amp;&amp; npm config set registry <a target="_blank" rel="noopener" href="https://registry.npm.taobao.org/">https://registry.npm.taobao.org</a> <br>   &amp;&amp; npm install -g @angular/cli <br>   &amp;&amp; npm install uglify-js -g <br>   &amp;&amp; npm install -g cordova <br>   &amp;&amp; npm install -g ionic<br>ENV PATH=/usr/local/node-v8.6.0-linux-x64/bin:$PATH</p>
+<p>#config locale<br>RUN sed -i -e ‘s/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/‘ /etc/locale.gen &amp;&amp; <br>    locale-gen<br>ENV LANGUAGE=en_US.UTF-8<br>ENV LANG=en_US.UTF-8<br>ENV LC_ALL=en_US.UTF-8</p>
 
                 
 
@@ -255,12 +260,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/posts/62b74a4d.html" data-toggle="tooltip" data-placement="top" title="OpenJdk移除sun.image.codec package">&larr; Previous post</a>
+                            <a href="/2020/09/04/nginx出现403-is-forbidden的4个原因/" data-toggle="tooltip" data-placement="top" title="nginx出现403 is forbidden的4个原因">&larr; 上一篇</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/posts/c3b0448d.html" data-toggle="tooltip" data-placement="top" title="Window是导入postgres 的sql文件">Next post &rarr;</a>
+                            <a href="/2020/09/03/Docker使用进阶/" data-toggle="tooltip" data-placement="top" title="Docker使用进阶">下一篇 &rarr;</a>
                         </li>
                     
                 </ul>
@@ -307,7 +312,7 @@
                 
                 <section>
                     <!-- no hr -->
-                    <h5><a href="/tags/">Tags</a></h5>
+                    <h5><a href="/tags/">标签云</a></h5>
                     <div class="tags">
                        
                     </div>
@@ -483,7 +488,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/posts/8aee7c6f.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/04/Docker%E5%9F%BA%E7%A1%80%E9%95%9C%E5%83%8Fdebain%E7%9A%84%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},

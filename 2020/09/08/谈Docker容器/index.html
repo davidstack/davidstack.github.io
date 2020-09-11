@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Docker匿名卷 - null
+          谈Docker容器 - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/posts/2a6e4db2.html">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/08/谈Docker容器/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -123,11 +123,11 @@
                         <div class="tags">
                             
                         </div>
-                        <h1>Docker匿名卷</h1>
+                        <h1>谈Docker容器</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by 站着工程师 on
-                            2020-09-04
+                            2020-09-08
                         </span>
                     </div>
                 
@@ -162,7 +162,7 @@
             <div class="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a  href="/">Homepage</a>
+                        <a  href="/">主页</a>
                     </li>
 		    
                     
@@ -236,20 +236,35 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>问题</p>
-<p>  在使用dockerhub中的镜像时，我通常会去查看一下该镜像的Dockerfile是如何编写的，看看有没有什么好的借鉴思路,经常会发现在Dockerfile里面定义Volume，如下面的Dockerfile</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">FROM davidcaste&#x2F;alpine-java-unlimited-jce:jdk8</span><br><span class="line"></span><br><span class="line">MAINTAINER David Castellanos &lt;davidcaste@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">ENV TOMCAT_MAJOR&#x3D;8 \</span><br><span class="line">    TOMCAT_VERSION&#x3D;8.5.3 \</span><br><span class="line">    TOMCAT_HOME&#x3D;&#x2F;opt&#x2F;tomcat \</span><br><span class="line">    CATALINA_HOME&#x3D;&#x2F;opt&#x2F;tomcat \</span><br><span class="line">    CATALINA_OUT&#x3D;&#x2F;dev&#x2F;null</span><br><span class="line"></span><br><span class="line">RUN apk upgrade --update &amp;&amp; \</span><br><span class="line">    apk add --update curl &amp;&amp; \</span><br><span class="line">    curl -jksSL -o &#x2F;tmp&#x2F;apache-tomcat.tar.gz http:&#x2F;&#x2F;archive.apache.org&#x2F;dist&#x2F;tomcat&#x2F;tomcat-$&#123;TOMCAT_MAJOR&#125;&#x2F;v$&#123;TOMCAT_VERSION&#125;&#x2F;bin&#x2F;apache-tomcat-$&#123;TOMCAT_VERSION&#125;.tar.gz &amp;&amp; \</span><br><span class="line">    gunzip &#x2F;tmp&#x2F;apache-tomcat.tar.gz &amp;&amp; \</span><br><span class="line">    tar -C &#x2F;opt -xf &#x2F;tmp&#x2F;apache-tomcat.tar &amp;&amp; \</span><br><span class="line">    ln -s &#x2F;opt&#x2F;apache-tomcat-$&#123;TOMCAT_VERSION&#125; $&#123;TOMCAT_HOME&#125; &amp;&amp; \</span><br><span class="line">    rm -rf $&#123;TOMCAT_HOME&#125;&#x2F;webapps&#x2F;* &amp;&amp; \</span><br><span class="line">    apk del curl &amp;&amp; \</span><br><span class="line">    rm -rf &#x2F;tmp&#x2F;* &#x2F;var&#x2F;cache&#x2F;apk&#x2F;*</span><br><span class="line"></span><br><span class="line">COPY logging.properties $&#123;TOMCAT_HOME&#125;&#x2F;conf&#x2F;logging.properties</span><br><span class="line">COPY server.xml $&#123;TOMCAT_HOME&#125;&#x2F;conf&#x2F;server.xml</span><br><span class="line"></span><br><span class="line">VOLUME [&quot;&#x2F;logs&quot;]</span><br><span class="line">EXPOSE 8080</span><br></pre></td></tr></table></figure>
-<p>   在上面的Dockerfile中就定义了 VOLUME [“/logs”],刚开始的时候并没有注意这个，以为就是提示作用而已，直到在自己的环境中出现了存储不足的问题，在环境中我将全部的镜像、容器 都删除了，但是只是释放了一点点的空间，使用下面的命令，进行查看，发现还是占用了很多空间,</p>
-<p>du -h –max-depth=1 /var/lib/docker<br>在服务器上执行了</p>
-<p>docker volume ls<br>发现存在大量的卷类型为local的卷，进入到这些目录，发现全是原容器内的/logs 目录的内容，虽然容器被删除了，但是/logs 目录以容器卷的方式被持久化下来了，这显示并不是我想要的现象。解释这个现象的就是Docker匿名卷了。</p>
-<p>Docker匿名卷</p>
-<p>Docker匿名卷的解释可以参考这里Docker匿名卷</p>
-<p>  匿名卷的目的是为了防止用户忘记将关键数据挂载到宿主机目录，为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在 Dockerfile中，我们可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据。</p>
-<p>VOLUME /data<br>  这里的 /data 目录就会在运行时自动挂载为匿名卷，任何向 /data 中写入的信息都不会记录进容器存储层，从而保证了容器存储层的无状态化。当然，运行时可以覆盖这个挂载设置。比如：</p>
-<p>docker run -d -v mydata:/data xxxx</p>
-<p>  在这行命令中，就使用了 mydata 这个命名卷挂载到了 /data 这个位置，替代了 Dockerfile 中定义的匿名卷的挂载配置。</p>
-<p>Summary</p>
-<p>Docker匿名卷使用还是的慎重，而且需要通知到使用者，不然存储莫名其妙的用光了</p>
+                <p>##什么是容器<br>  在云计算或者说虚拟机普及的过程中，用户常常会问虚拟机是什么？虚拟机有什么优势？性能如何？她是如何提高硬件利用率？。。。当然我们会给客户解释CPU与内存虚拟化、资源超分配、分布式存储等等概念。到现在，虚拟机完全被普及，虚拟机带来的优势适合诸多业务场景，逐渐打消了人们对虚拟机的各种疑虑。那么，被不少激进的IT人宣称的，会替代虚拟机的容器又是什么呢？<br>   网上许多关于容器的介绍都是针对Docker，其实容器并不是Docker，Docker只是容器技术的一种实现，或者说是就是把容器的管理以命令行的方式呈现出来。之前有个老外写了篇100行Golang代码实现容器（<a target="_blank" rel="noopener" href="https://www.infoq.com/articles/build-a-container-golang%EF%BC%89%EF%BC%8C">https://www.infoq.com/articles/build-a-container-golang），</a><br>   基于这个代码实现的容器，更能体现容器技术的本质，容器的核心应该是三个方面：</p>
+<ol>
+<li>命名空间：隔离，容器内的应用只能看到该容器内的资源（用户信息、进程信息，网络信息、挂载信息等）</li>
+<li>Cgroup：为不同的容器提供资源限制，定义容器对宿主机资源（CPU、内存等）的最大使用量。</li>
+<li>分层文件系统：基于写时复制(COW)、联合挂载的文件系统，为容器提供文件系统<br>再来看一下，以Docker（Moby）为代表的容器，官方的描述：   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A container image is a lightweight, stand-alone, executable package of a piece of software that includes everything needed to run it: code, runtime, system tools, system libraries, settings. Available for both Linux and Windows based apps, containerized software will always run the same, regardless of the environment. Containers isolate software from its surroundings, for example differences between development and staging environments and help reduce conflicts between teams running different software on the same infrastructure.</span><br></pre></td></tr></table></figure>
+翻译一下：<br><br> &nbsp;&nbsp;  容器镜像是一个轻量级、独立、可执行软件的打包，这个包内包含了需要运行该软件的代码、运行环境、系统工具、系统库、配置。基于Linux和Windows的应用，容器化后的软件可以运行在windows或者Linux，无需感知环境的变化。容器将软件与其他不想关的资源隔离，例如不区分开发环境、演示环境，减少不同团队在相同基础环境运行不同软件带来的冲突<br>##容器与镜像</li>
+</ol>
+<p>参考下面最经典的Docker技术架构图。 <br><br><img src="/2020/09/08/%E8%B0%88Docker%E5%AE%B9%E5%99%A8/docker.png" alt="BP"><br> !a(/img/f3fa4a6/docker.png)<br> <img src="/2020/09/08/%E8%B0%88Docker%E5%AE%B9%E5%99%A8/09/08/%E8%B0%88Docker%E5%AE%B9%E5%99%A8/docker.png" class title="123说明"></p>
+<p>###按照这幅图上的3个命令梳理一下</p>
+<ol>
+<li><p>docker build<br>如前文所说，Docker只是把容器管理以命令行的方式呈现，Docker对容器生态最大的贡献是他的镜像（Image）<br><br>容器镜像可以认为一个应用+运行环境的模板，和虚拟机模板类似，但是与虚拟机模板不同的是：这个镜像一般比较小，通常只是包含应用的执行文件以及特定的运行环境，不会包含操作系统的文件，制作镜像是需要定义一个描述镜像内容的描述文件就OK了，Docker里面叫做Dockerfile，不会像虚拟机模板那样，需要在虚拟化环境上进行一次操作系统安装，<br><br>镜像是平台无关的，平台无关就是制作了一次镜像，可以运行在windows、linux、阿里云、Vmware、华为云等等，不像虚拟机，你在阿里云上制作的虚拟机模板只能在阿里云使用，在AWS上制作的虚拟机模板只能在AWS使用。容器镜像的平台无关性是容器发展迅速的重要原因，这个特性解放了应用开发商与服务开发商，也让平台提供商有了新的发展方向。<br><br>回到这条命令上来，通常我们执行docker build 是需要编写Dockerfile文件，如下所示，是制作大数据Ambari Server镜像的Dockerfile文件</p>
+<p><img src="/2020/09/08/%E8%B0%88Docker%E5%AE%B9%E5%99%A8/dockerfile.png" alt="avatar"></p>
+<p><br>当定义了这个Dockerfile后，在命令行执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">   docker build . -t ambari-server:1.0</span><br><span class="line">&#96;&#96;&#96;&#96;  </span><br><span class="line">&amp;nbsp;&amp;nbsp; 就可以获取到我们制作的容器镜像了，制作完成后，只是放在了本地机器上了，需要执行一个命令</span><br></pre></td></tr></table></figure>
+<p>docker push  ambari-server:1.0 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">将镜像保存到镜像仓库（registry），这样其他主机才能使用到该镜像</span><br><span class="line"></span><br><span class="line">  2. docker pull</span><br><span class="line">    </span><br><span class="line">   这个命令就是在主机上将容器镜像从镜像仓库下载下来，实现了镜像的远程获取、分发能力。这个镜像下载并不是全量下载，而是只是把该主机上缺少的镜像下载下来，这里就涉及到容器镜像的分层特性，这里就不展开说了。</span><br><span class="line">     </span><br><span class="line">  3. docker run：</span><br><span class="line"></span><br><span class="line">那么容器是如何从镜像变为容器呢，我们只需要执行docker run 命令</span><br></pre></td></tr></table></figure>
+<p>docker run -itd  ambari-server:1.0  bash</p>
+<pre><code>执行这个命令后，
+1、Docker 会在宿主机上分配一个目录，将镜像的文件挂载到这个目录2  &lt;br /&gt;
+2、Docker会在Docker Daemon进程上fork出一个子进程，这个子进程是命名空间隔离的，你在容器内看不到宿主机的信息  &lt;br /&gt;
+3、Docker会为这个容器分配IP地址  &lt;br /&gt;
+</code></pre>
+</li>
+</ol>
+<p>登录到这个容器后，你看到的进程信息和网络信息如下<br> <img src="/2020/09/08/%E8%B0%88Docker%E5%AE%B9%E5%99%A8/net1.png" alt="avatar"></p>
+<p><img src="/2020/09/08/%E8%B0%88Docker%E5%AE%B9%E5%99%A8/net2.png" alt="avatar"></p>
+<p>##容器与应用</p>
+<p>   虚拟机强调资源的分配的管理，而容器更强调对应用的管理，随着容器的出现，容器逐渐开始影响软件架构。与虚拟机相比，容器有哪些优势？可以看下表的对比分析<br>    上表的对比一般都是各个容器厂商的宣传卖点，容器为应用真正带来了哪些？或者说应用的哪些需求推动了容器的普及？<br>###应用部署<br>   容器为应用部署带来的变化主要体现在开发环境、测试环境、生产环境的一致性上，依赖于Docker的镜像，在应用开发完成后，架构师就可以定义应用的镜像，这个镜像里面包含了应用的运行环境（Tomcat、JDK、Nginx等），也包含了应用的可执行文件（War文件、Jar文件等），将之前需要在项目现场做的工作交由最熟悉的架构师完成，交付人员在项目现场只需要执行一个简单的docker run命令就可以了。<br>###应用迁移<br>   将应用部署在虚拟机时，应用迁移一般有两种方式<br>   a.将应用所在的虚拟机以虚拟机模板的方式导出，如果是跨云的话，还需要做虚拟机模板的格式转化，将虚拟机模板再导入到另一个云环境,然后再去修改各种参数配置<br>   <br>b.虚拟机模板格式无法转化（例如从AWS迁移到阿里云），这时只能重新部署了。<br>      如果你使用容器转载你的应用，既不会存在这样的问题了，容器镜像与容器技术属于平台无关性，只要把镜像复制过去，然后启动容器就OK了。<br>###应用升级：<br>  应用升级对于复杂的系统是个很棘手的事情，升级前需要做备份，升级失败要做恢复，有了容器就简单多了，停掉旧版本的容器，启动新版本的容器，升级失败，只需要停掉新版本容器，启动旧版本容器就可以了。<br>       在IT领域，最重要的就是应用，或者说一个新的名词-SAAS，无论云计算、大数据还是机器学习，这些其实都是为应用提供支撑，让应用更好的运维、让应用更好的呈现数据价值、让应用能够进化到自我学习等。云计算的PAAS，其实就是为应用提供多种支撑的，只是由于多种因素，PAAS一直不温不火。。直到容器的出现，容器是为应用而生，更进一步说，容器是云时代的应用载体。</p>
+<p>，</p>
 
                 
 
@@ -258,12 +273,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/posts/bde6ab3c.html" data-toggle="tooltip" data-placement="top" title="容器内Tomcat的JVM内存配置">&larr; Previous post</a>
+                            <a href="/2020/09/11/tandocker/" data-toggle="tooltip" data-placement="top" title="̸Docker test">&larr; 上一篇</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/posts/62b74a4d.html" data-toggle="tooltip" data-placement="top" title="OpenJdk移除sun.image.codec package">Next post &rarr;</a>
+                            <a href="/2020/09/04/容器内Tomcat的JVM内存配置/" data-toggle="tooltip" data-placement="top" title="容器内Tomcat的JVM内存配置">下一篇 &rarr;</a>
                         </li>
                     
                 </ul>
@@ -310,7 +325,7 @@
                 
                 <section>
                     <!-- no hr -->
-                    <h5><a href="/tags/">Tags</a></h5>
+                    <h5><a href="/tags/">标签云</a></h5>
                     <div class="tags">
                        
                     </div>
@@ -486,7 +501,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/posts/2a6e4db2.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/08/%E8%B0%88Docker%E5%AE%B9%E5%99%A8/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},

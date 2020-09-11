@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          about - null
+          Docker使用进阶 - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/about/">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/03/Docker使用进阶/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -119,13 +119,17 @@
 			
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="z-index:2;">
                 
-				
-                    <div class="site-heading"  style="padding:40px">
-                        <h1>about</h1>
-                        <!--<hr class="small">-->
-                        <span class="subheading"></span>
+                    <div class="post-heading" style="padding:40px">
+                        <div class="tags">
+                            
+                        </div>
+                        <h1>Docker使用进阶</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 站着工程师 on
+                            2020-09-03
+                        </span>
                     </div>
-                
                 
                 </div>
             </div>
@@ -219,165 +223,194 @@
 
 
     <!-- Main Content -->
-    <!-- Main Content -->
-<div class="container">
-    <div class="row">
-        
+    <!-- Modify by Yu-Hsuan Yen -->
 
-<!-- USE SIDEBAR -->
-    <!-- Post Container -->
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
             <div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
-            
-	        
-                <p>davidstack</p>
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
 
-            
+                <h2 id="Docker不太常用的命令"><a href="#Docker不太常用的命令" class="headerlink" title="Docker不太常用的命令"></a>Docker不太常用的命令</h2><ul>
+<li>docker ps -s  #查看容器所占的磁盘大小</li>
+<li>docker rm ${docker ps -q -a} # 删除全部非运行态的容器</li>
+<li>docker system df  #查看docker存储的使用情况</li>
+<li>docker system prun #清理无用的容器、网络、数据集</li>
+<li>docker rmi $(docker images | awk ‘/^<none>/ { print $3 }’) #删除的镜像repositry为none的镜像</none></li>
+<li>删除 未被使用的镜像 docker rmi $(docker images | awk ‘ { print $3 }’)</li>
+</ul>
+<h2 id="Docker配置参数"><a href="#Docker配置参数" class="headerlink" title="Docker配置参数"></a>Docker配置参数</h2><ol>
+<li>–iptables ,该参数用于控制是否允许docker去管理iptables，当设置为true时，允许docker去管理iptbales表<ul>
+<li>通常在docker单独使用时，需要这样配置，如果配置为false，iptables被清空后，是无法自动创建的</li>
+<li>在基于Kubernetes等管理docker时，可以配置iptables=false</li>
+</ul>
+</li>
+<li>–ip-forward，该参数用于控主机容器与外部网络之间的相互通信，当设置为true时，允许容器被外部访问，当设置为false时，外部是无法访问到容器<ul>
+<li>当宿主机设置了ip_forward参数为1时，会以宿主机的配置为准，docker的改配置参数无效</li>
+</ul>
+</li>
+</ol>
+<h2 id="迁移Docker存储方式一"><a href="#迁移Docker存储方式一" class="headerlink" title="迁移Docker存储方式一"></a>迁移Docker存储方式一</h2><p>若Docker已经运行一段时间，并存在运行的容器，可以采用以下方法进行容器存储的迁移</p>
+<ol>
+<li>停止全部容器</li>
+<li>停止docker：systemctl stop docker</li>
+<li>mkdir -p /sl/docker/</li>
+<li>移动docker存储：mv /var/lib/docker/* /sl/docker/</li>
+<li>建立软连接：ln -s /sl/docker /var/lib/</li>
+<li>systemctl start docker</li>
+</ol>
+<p>==注意删除软连接是 rm /var/lib/docker  后面不能有斜杠，否则是删除整个目录)==</p>
+<h2 id="迁移Docker存储方式二"><a href="#迁移Docker存储方式二" class="headerlink" title="迁移Docker存储方式二"></a>迁移Docker存储方式二</h2><ol>
+<li>停止全部容器</li>
+<li>停止docker：systemctl stop docker</li>
+<li>cd /sl</li>
+<li>mkdir dockerdaemon</li>
+<li>cd /sl/dockerdaemon</li>
+<li>tar  -czvpf docker.tar.gz /var/lib/docker</li>
+<li>tar  zxvf docker.tar.gz -C /sl/dockerdaemon</li>
+<li>cd /sl/dockerdaemon/var/lib/</li>
+<li>mv docker/ ../../</li>
+<li>mv /var/lib/docker /sl/backup</li>
+<li>ln -s /sl/dockerdaemon/docker /var/lib/</li>
+</ol>
+<h2 id="基于操作系统制作Docker镜像"><a href="#基于操作系统制作Docker镜像" class="headerlink" title="基于操作系统制作Docker镜像"></a>基于操作系统制作Docker镜像</h2><p>执行以下操作</p>
+<ol>
+<li>tar –exclude=/usr/lib32  -cPvf fedora21-base.tar /home</li>
+</ol>
+<p>将本机运行的操作系统打成一个fedora21-base.tar包，其中–exclude参数是将不需要的目录排除，可以使用–exclude多个参数排除多个目录。</p>
+<ol start="2">
+<li>cat fedora21-base.tar | docker import - fedora21-base</li>
+</ol>
+<p>将tar包使用docker import编译导入镜像</p>
+<ol start="3">
+<li>docker run -i -t fedora21-base  /bin/bash</li>
+</ol>
+<p>启动镜像。-i 代表打开标准输入 -t 虚拟一个窗口 /bin/bash启动镜像执行的命令</p>
 
-
-
-                <!-- 如果开启评论功能 -->
                 
-                    <hr>
-                    
 
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
                     
-
-
+                        <li class="previous">
+                            <a href="/2020/09/04/Docker基础镜像debain的乱码问题/" data-toggle="tooltip" data-placement="top" title="Docker基础镜像debain的乱码问题">&larr; 上一篇</a>
+                        </li>
                     
-
                     
+                        <li class="next">
+                            <a href="/2020/09/03/Docker与主机关系/" data-toggle="tooltip" data-placement="top" title="Docker与主机关系">下一篇 &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
 
                 
+				
             </div>
 
-          <!-- Sidebar Container -->
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
-    
-        <!-- Featured Tags -->
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
 
-<section>
-    <!-- no hr -->
-    <h5><a href="/tags/">标签云</a></h5>
-    <div class="tags">
-        
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">标签云</a></h5>
+                    <div class="tags">
+                       
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                </ul>
+                
+            </div>
+        </div>
     </div>
-</section>
-
-        <hr>
-    
-        <!-- Short About -->
-<section class="visible-md visible-lg">
-    <h5><a href="/about/">关于</a></h5>
-    <div class="short-about">
-
-        
-            <img id = "avatar_pic" src="/img/avatar/logo.png" />
-        
-
-        
-            <p>站在巨人的肩膀上,依然云里雾里的前行</p>
-        
-
-        <!-- SNS Link -->
-        <ul class="list-inline">
-            
-            
-            
-
-            
-
-            
-
-            
-                <li>
-                    <a target="_blank"  href="https://github.com/davidstack">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-circle fa-stack-2x"></i>
-                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                        </span>
-                    </a>
-                </li>
-            
-            
-            
-            
-        </ul>
-    </div>
-</section>
-
-        <hr>
-    
-        
-  <h5>最近发表</h3>
-  <div class="widget">
-    <ul>
-      
-        <li>
-          <a href="/2020/09/11/tandocker/"≯Docker test</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/08/%E8%B0%88Docker%E5%AE%B9%E5%99%A8/">谈Docker容器</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/04/%E5%AE%B9%E5%99%A8%E5%86%85Tomcat%E7%9A%84JVM%E5%86%85%E5%AD%98%E9%85%8D%E7%BD%AE/">容器内Tomcat的JVM内存配置</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/04/Docker%E5%8C%BF%E5%90%8D%E5%8D%B7/">Docker匿名卷</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/04/OpenJdk%E7%A7%BB%E9%99%A4sun-image-codec-package/">OpenJdk移除sun.image.codec package</a>
-        </li>
-      
-    </ul>
-  </div>
-
-        <hr>
-    
-        
-    <h5>归档</h5>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">13</span></li></ul>
-    </div>
-
-        <hr>
-    
-        <!-- Friends Blog -->
-
-<h5>友链</h5>
-<ul class="list-inline">
-
-    
-</ul>
+</article>
 
 
-        <hr>
-    
-        <!-- Categories -->
-
-        <hr>
-    
-</div>
 
 
-        
-    </div>
-</div>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
 
 
     <!-- Footer -->
@@ -494,7 +527,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/about/index.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/03/Docker%E4%BD%BF%E7%94%A8%E8%BF%9B%E9%98%B6/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},

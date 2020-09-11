@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          容器内Tomcat的JVM内存配置 - null
+          my first blog - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/posts/bde6ab3c.html">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/03/my-first-blog/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -123,11 +123,11 @@
                         <div class="tags">
                             
                         </div>
-                        <h1>容器内Tomcat的JVM内存配置</h1>
+                        <h1>my first blog</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by 站着工程师 on
-                            2020-09-04
+                            2020-09-03
                         </span>
                     </div>
                 
@@ -162,7 +162,7 @@
             <div class="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a  href="/">Homepage</a>
+                        <a  href="/">主页</a>
                     </li>
 		    
                     
@@ -236,13 +236,7 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>1、<br>JVM内存分配机制</p>
-<p>编写测试Demo</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">docker run -itd -p 8080:8080 tomcat:8.5.29</span><br><span class="line">docker cp demo&#x2F; cas233af:&#x2F;usr&#x2F;local&#x2F;tomcat&#x2F;webapps</span><br><span class="line">docker restart cas233af</span><br><span class="line">curl http:&#x2F;&#x2F;127.0.0.1:8080&#x2F;demo&#x2F;jvm&#x2F;hello</span><br><span class="line">&#123;&quot;totalMemory&quot;:&quot;124 M&quot;,&quot;maxMemory&quot;:&quot;405 M&quot;,&quot;freeMemory&quot;:&quot;72 M&quot;&#125;</span><br><span class="line"></span><br><span class="line">[root@localhost tomcatjvm]# free -m</span><br><span class="line">                     total        used        free      shared  buff&#x2F;cache   available</span><br><span class="line">Mem:           1823         408        1028           8         386        1198</span><br><span class="line">Swap:          2047           0        2047</span><br></pre></td></tr></table></figure>
-
-<p>3、测试<br>基于社区的Tomcat进行测试</p>
-<p>4、修改<br> 容器启动时，获取该容器的内存，并进行修改JAVA的最大可用内存，下图为tomcat的内存配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash</span><br><span class="line">limit_in_bytes&#x3D;$(cat &#x2F;sys&#x2F;fs&#x2F;cgroup&#x2F;memory&#x2F;memory.limit_in_bytes)</span><br><span class="line">echo $limit_in_bytes</span><br><span class="line"># If not default limit_in_bytes in cgroup</span><br><span class="line">if [ &quot;$limit_in_bytes&quot; -ne &quot;9223372036854771712&quot; ]</span><br><span class="line">then</span><br><span class="line">        limit_in_megabytes&#x3D;&#96;expr $&#123;limit_in_bytes&#125; &#x2F; 1048576&#96;</span><br><span class="line">        echo $limit_in_megabytes</span><br><span class="line">        heap_size&#x3D;$limit_in_megabytes</span><br><span class="line">        export JAVA_OPTS&#x3D;&quot;-Xms$&#123;heap_size&#125;m -Xmx$&#123;heap_size&#125;m $JAVA_OPTS&quot;</span><br><span class="line">fi</span><br><span class="line">exec &#x2F;usr&#x2F;local&#x2F;tomcat&#x2F;bin&#x2F;catalina.sh run</span><br></pre></td></tr></table></figure>
+                <h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3>
                 
 
                 <hr>
@@ -250,12 +244,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/posts/f3fa4a6.html" data-toggle="tooltip" data-placement="top" title="谈Docker容器">&larr; Previous post</a>
+                            <a href="/2020/09/03/Docker与主机关系/" data-toggle="tooltip" data-placement="top" title="Docker与主机关系">&larr; 上一篇</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/posts/2a6e4db2.html" data-toggle="tooltip" data-placement="top" title="Docker匿名卷">Next post &rarr;</a>
+                            <a href="/2020/09/03/hello-world/" data-toggle="tooltip" data-placement="top" title="Hello World">下一篇 &rarr;</a>
                         </li>
                     
                 </ul>
@@ -302,7 +296,7 @@
                 
                 <section>
                     <!-- no hr -->
-                    <h5><a href="/tags/">Tags</a></h5>
+                    <h5><a href="/tags/">标签云</a></h5>
                     <div class="tags">
                        
                     </div>
@@ -478,7 +472,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/posts/bde6ab3c.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/03/my-first-blog/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},

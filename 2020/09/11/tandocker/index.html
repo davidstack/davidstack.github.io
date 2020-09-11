@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Docker基础镜像debain的乱码问题 - null
+          ̸Docker test - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/posts/772340f5.html">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/11/tandocker/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -123,11 +123,11 @@
                         <div class="tags">
                             
                         </div>
-                        <h1>Docker基础镜像debain的乱码问题</h1>
+                        <h1≯Docker test</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by 站着工程师 on
-                            2020-09-04
+                            2020-09-11
                         </span>
                     </div>
                 
@@ -162,7 +162,7 @@
             <div class="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a  href="/">Homepage</a>
+                        <a  href="/">主页</a>
                     </li>
 		    
                     
@@ -236,22 +236,35 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>问题</p>
-<p>公司内的项目在进行容器化并实现DevOps的时候，由于代码文件编码的问题，出现了乱码问题，在windows环境下，正常没有问题，首先看一下前期基于debain+nodejs+ionic构建的用于项目打包的基础镜像，镜像文件如下所示：</p>
-<p>FROM 10.10.70.65/base/andreptb/maven:3.3.9-jdk8<br>COPY settings.xml /usr/share/maven/conf/settings.xml<br>COPY linux-x64-57_binding.node /usr/local/<br>ENV SASS_BINARY_PATH=/usr/local/linux-x64-48_binding.node<br>COPY  node-v8.6.0-linux-x64.tar.gz /home/node-v8.6.0-linux-x64.tar.gz<br>WORKDIR /home/<br>RUN tar xvf node-v8.6.0-linux-x64.tar.gz <br>    &amp;&amp; mv node-v8.6.0-linux-x64/ /usr/local/<br>RUN echo ‘’ &gt; /etc/apt/sources.list.d/jessie-backports.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian">http://mirrors.aliyun.com/debian</a> jessie main contrib non-free” &gt; /etc/apt/sources.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian">http://mirrors.aliyun.com/debian</a> jessie-updates main contrib non-free” &gt;&gt; /etc/apt/sources.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian-security">http://mirrors.aliyun.com/debian-security</a> jessie/updates main contrib non-free” &gt;&gt; /etc/apt/sources.list</p>
-<p>RUN apt-get update &amp;&amp; apt-get install -y libltdl7<br>RUN  export PATH=/usr/local/node-v8.6.0-linux-x64/bin:$PATH <br>   &amp;&amp; npm config set registry <a target="_blank" rel="noopener" href="https://registry.npm.taobao.org/">https://registry.npm.taobao.org</a> <br>   &amp;&amp; npm install -g @angular/cli <br>   &amp;&amp; npm install uglify-js -g <br>   &amp;&amp; npm install -g cordova <br>   &amp;&amp; npm install -g ionic<br>ENV PATH=/usr/local/node-v8.6.0-linux-x64/bin:$PATH<br>基于上述镜像，制作的war包，对于中文，会出现乱码问题，如下所示</p>
-<pre><code>&lt;display-name&gt;????????????????????????&lt;/display-name&gt;
-&lt;context-param&gt;
-    &lt;param-name&gt;webAppRootKey&lt;/param-name&gt;
-    &lt;param-value&gt;dfweb.root&lt;/param-value&gt;
-&lt;/context-param&gt;</code></pre>
-<p>尝试在pom.xml上增加以下配置，并未解决问题，但是这应该是必须的配置<br>&lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;<br>在windows环境和centos 环境下进行了mvn package，都未出现乱码问题，最终怀疑是基础镜像的语言环境问题，查看Centos7的语言环境如下所示：<br>[root@RD65 ~]# locale<br>LANG=en_US.UTF-8<br>LC_CTYPE=”en_US.UTF-8”<br>LC_NUMERIC=”en_US.UTF-8”<br>LC_TIME=”en_US.UTF-8”<br>LC_COLLATE=”en_US.UTF-8”<br>LC_MONETARY=”en_US.UTF-8”<br>LC_MESSAGES=”en_US.UTF-8”<br>LC_PAPER=”en_US.UTF-8”<br>LC_NAME=”en_US.UTF-8”<br>LC_ADDRESS=”en_US.UTF-8”<br>LC_TELEPHONE=”en_US.UTF-8”<br>LC_MEASUREMENT=”en_US.UTF-8”<br>LC_IDENTIFICATION=”en_US.UTF-8”<br>LC_ALL=<br>查看基础镜像的语言环境如下所示：</p>
-<p>root@82f9c92e247c:/home# locale<br>LANG=<br>LANGUAGE=<br>LC_CTYPE=”POSIX”<br>LC_NUMERIC=”POSIX”<br>LC_TIME=”POSIX”<br>LC_COLLATE=”POSIX”<br>LC_MONETARY=”POSIX”<br>LC_MESSAGES=”POSIX”<br>LC_PAPER=”POSIX”<br>LC_NAME=”POSIX”<br>LC_ADDRESS=”POSIX”<br>LC_TELEPHONE=”POSIX”<br>LC_MEASUREMENT=”POSIX”<br>LC_IDENTIFICATION=”POSIX”<br>LC_ALL=</p>
-<p>解决方法</p>
-<p>修改基础镜像的Dockerfile</p>
-<p>FROM 10.10.70.65/base/andreptb/maven:3.3.9-jdk8<br>COPY settings.xml /usr/share/maven/conf/settings.xml<br>COPY linux-x64-57_binding.node /usr/local/<br>ENV SASS_BINARY_PATH=/usr/local/linux-x64-48_binding.node<br>COPY  node-v8.6.0-linux-x64.tar.gz /home/node-v8.6.0-linux-x64.tar.gz<br>WORKDIR /home/<br>RUN tar xvf node-v8.6.0-linux-x64.tar.gz <br>    &amp;&amp; mv node-v8.6.0-linux-x64/ /usr/local/<br>RUN echo ‘’ &gt; /etc/apt/sources.list.d/jessie-backports.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian">http://mirrors.aliyun.com/debian</a> jessie main contrib non-free” &gt; /etc/apt/sources.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian">http://mirrors.aliyun.com/debian</a> jessie-updates main contrib non-free” &gt;&gt; /etc/apt/sources.list <br>  &amp;&amp; echo “deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/debian-security">http://mirrors.aliyun.com/debian-security</a> jessie/updates main contrib non-free” &gt;&gt; /etc/apt/sources.list</p>
-<p>RUN apt-get update &amp;&amp; apt-get install -y libltdl7<br>RUN  export PATH=/usr/local/node-v8.6.0-linux-x64/bin:$PATH <br>   &amp;&amp; npm config set registry <a target="_blank" rel="noopener" href="https://registry.npm.taobao.org/">https://registry.npm.taobao.org</a> <br>   &amp;&amp; npm install -g @angular/cli <br>   &amp;&amp; npm install uglify-js -g <br>   &amp;&amp; npm install -g cordova <br>   &amp;&amp; npm install -g ionic<br>ENV PATH=/usr/local/node-v8.6.0-linux-x64/bin:$PATH</p>
-<p>#config locale<br>RUN sed -i -e ‘s/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/‘ /etc/locale.gen &amp;&amp; <br>    locale-gen<br>ENV LANGUAGE=en_US.UTF-8<br>ENV LANG=en_US.UTF-8<br>ENV LC_ALL=en_US.UTF-8</p>
+                <p>##ʲô������<br>  ���Ƽ������˵������ռ��Ĺ����У��û����������������ʲô���������ʲô���ƣ�������Σ�����������Ӳ�������ʣ���������Ȼ���ǻ���ͻ�����CPU���ڴ����⻯����Դ�����䡢�ֲ�ʽ�洢�ȵȸ�������ڣ��������ȫ���ռ�������������������ʺ����ҵ�񳡾����𽥴��������Ƕ�������ĸ������ǡ���ô�������ټ�����IT�����Ƶģ���������������������ʲô�أ�<br>   ����������������Ľ��ܶ������Docker����ʵ����������Docker��Dockerֻ������������һ��ʵ�֣�����˵�Ǿ��ǰ������Ĺ����������еķ�ʽ���ֳ�����֮ǰ�и�����д��ƪ100��Golang����ʵ��������<a target="_blank" rel="noopener" href="https://www.infoq.com/articles/build-a-container-golang%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD">https://www.infoq.com/articles/build-a-container-golang����</a><br>   �����������ʵ�ֵ������������������������ı��ʣ������ĺ���Ӧ�����������棺</p>
+<ol>
+<li>�����ռ䣺���룬�����ڵ�Ӧ��ֻ�ܿ����������ڵ���Դ���û���Ϣ��������Ϣ��������Ϣ��������Ϣ�ȣ�</li>
+<li>Cgroup��Ϊ��ͬ�������ṩ��Դ���ƣ�������������������Դ��CPU���ڴ�ȣ������ʹ������</li>
+<li>�ֲ��ļ�ϵͳ������дʱ����(COW)�����Ϲ��ص��ļ�ϵͳ��Ϊ�����ṩ�ļ�ϵͳ<br>������һ�£���Docker��Moby��Ϊ�������������ٷ���������   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A container image is a lightweight, stand-alone, executable package of a piece of software that includes everything needed to run it: code, runtime, system tools, system libraries, settings. Available for both Linux and Windows based apps, containerized software will always run the same, regardless of the environment. Containers isolate software from its surroundings, for example differences between development and staging environments and help reduce conflicts between teams running different software on the same infrastructure.</span><br></pre></td></tr></table></figure>
+����һ�£�<br><br> &nbsp;&nbsp;  ����������һ������������������ִ�������Ĵ����������ڰ�������Ҫ���и������Ĵ��롢���л�����ϵͳ���ߡ�ϵͳ�⡢���á�����Linux��Windows��Ӧ�ã������������������������windows����Linux�������֪�����ı仯����������������������ص���Դ���룬���粻���ֿ�����������ʾ���������ٲ�ͬ�Ŷ�����ͬ�����������в�ͬ���������ĳ�ͻ<br>##�����뾵��</li>
+</ol>
+<p>�ο���������Docker�����ܹ�ͼ�� <br><br><img src="/2020/09/11/tandocker/docker.png" alt="BP"><br> !a(/img/f3fa4a6/docker.png)<br> <img src="/2020/09/11/tandocker/09/11/tandocker/docker.png" class title="123˵��"></p>
+<p>###�������ͼ�ϵ�3����������һ��</p>
+<ol>
+<li><p>docker build<br>��ǰ����˵��Dockerֻ�ǰ����������������еķ�ʽ���֣�Docker��������̬���Ĺ��������ľ���Image��<br><br>�������������Ϊһ��Ӧ��+���л�����ģ�壬�������ģ�����ƣ������������ģ�岻ͬ���ǣ��������һ��Ƚ�С��ͨ��ֻ�ǰ���Ӧ�õ�ִ���ļ��Լ��ض������л����������������ϵͳ���ļ���������������Ҫ����һ�������������ݵ������ļ���OK�ˣ�Docker�������Dockerfile�������������ģ����������Ҫ�����⻯�����Ͻ���һ�β���ϵͳ��װ��<br><br>������ƽ̨�޹صģ�ƽ̨�޹ؾ���������һ�ξ��񣬿���������windows��linux�������ơ�Vmware����Ϊ�Ƶȵȣ���������������ڰ������������������ģ��ֻ���ڰ�����ʹ�ã���AWS�������������ģ��ֻ����AWSʹ�á����������ƽ̨�޹�����������չѸ�ٵ���Ҫԭ��������Խ����Ӧ�ÿ���������񿪷��̣�Ҳ��ƽ̨�ṩ�������µķ�չ����<br><br>�ص���������������ͨ������ִ��docker build ����Ҫ��дDockerfile�ļ���������ʾ��������������Ambari Server�����Dockerfile�ļ�</p>
+<p><img src="/2020/09/11/tandocker/dockerfile.png" alt="avatar"></p>
+<p><br>�����������Dockerfile����������ִ��</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">   docker build . -t ambari-server:1.0</span><br><span class="line">&#96;&#96;&#96;&#96;  </span><br><span class="line">&amp;nbsp;&amp;nbsp; �Ϳ��Ի�ȡ���������������������ˣ�������ɺ�ֻ�Ƿ����˱��ػ������ˣ���Ҫִ��һ������</span><br></pre></td></tr></table></figure>
+<p>docker push  ambari-server:1.0 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">�����񱣴浽����ֿ⣨registry��������������������ʹ�õ��þ���</span><br><span class="line"></span><br><span class="line">  2. docker pull</span><br><span class="line">    </span><br><span class="line">   �����������������Ͻ���������Ӿ���ֿ�����������ʵ���˾����Զ�̻�ȡ���ַ�����������������ز�����ȫ�����أ�����ֻ�ǰѸ�������ȱ�ٵľ�������������������漰����������ķֲ����ԣ�����Ͳ�չ��˵�ˡ�</span><br><span class="line">     </span><br><span class="line">  3. docker run��</span><br><span class="line"></span><br><span class="line">��ô��������δӾ����Ϊ�����أ�����ֻ��Ҫִ��docker run ����</span><br></pre></td></tr></table></figure>
+<p>docker run -itd  ambari-server:1.0  bash</p>
+<pre><code>ִ����������
+1��Docker �����������Ϸ���һ��Ŀ¼����������ļ����ص����Ŀ¼2  &lt;br /&gt;
+2��Docker����Docker Daemon������fork��һ���ӽ��̣�����ӽ����������ռ����ģ����������ڿ���������������Ϣ  &lt;br /&gt;
+3��Docker��Ϊ�����������IP��ַ  &lt;br /&gt;
+</code></pre>
+</li>
+</ol>
+<p>��¼������������㿴���Ľ�����Ϣ��������Ϣ����<br> <img src="/2020/09/11/tandocker/net1.png" alt="avatar"></p>
+<p><img src="/2020/09/11/tandocker/net2.png" alt="avatar"></p>
+<p>##������Ӧ��</p>
+<p>   �����ǿ����Դ�ķ���Ĺ�������������ǿ����Ӧ�õĹ��������������ĳ��֣������𽥿�ʼӰ�������ܹ������������ȣ���������Щ���ƣ����Կ��±��ĶԱȷ���<br>    �ϱ��ĶԱ�һ�㶼�Ǹ����������̵��������㣬����ΪӦ��������������Щ������˵Ӧ�õ���Щ�����ƶ����������ռ���<br>###Ӧ�ò���<br>   ����ΪӦ�ò�������ı仯��Ҫ�����ڿ������������Ի���������������һ�����ϣ�������Docker�ľ�����Ӧ�ÿ�����ɺ󣬼ܹ�ʦ�Ϳ��Զ���Ӧ�õľ�������������������Ӧ�õ����л�����Tomcat��JDK��Nginx�ȣ���Ҳ������Ӧ�õĿ�ִ���ļ���War�ļ���Jar�ļ��ȣ�����֮ǰ��Ҫ����Ŀ�ֳ����Ĺ�����������Ϥ�ļܹ�ʦ��ɣ�������Ա����Ŀ�ֳ�ֻ��Ҫִ��һ���򵥵�docker run����Ϳ����ˡ�<br>###Ӧ��Ǩ��<br>   ��Ӧ�ò����������ʱ��Ӧ��Ǩ��һ�������ַ�ʽ<br>   a.��Ӧ�����ڵ�������������ģ��ķ�ʽ����������ǿ��ƵĻ�������Ҫ�������ģ��ĸ�ʽת�����������ģ���ٵ��뵽��һ���ƻ���,Ȼ����ȥ�޸ĸ��ֲ�������<br>   <br>b.�����ģ���ʽ�޷�ת���������AWSǨ�Ƶ������ƣ�����ʱֻ�����²����ˡ�<br>      �����ʹ������ת�����Ӧ�ã��Ȳ�����������������ˣ�����������������������ƽ̨�޹��ԣ�ֻҪ�Ѿ����ƹ�ȥ��Ȼ������������OK�ˡ�<br>###Ӧ��������<br>  Ӧ���������ڸ��ӵ�ϵͳ�Ǹ��ܼ��ֵ����飬����ǰ��Ҫ�����ݣ�����ʧ��Ҫ���ָ������������ͼ򵥶��ˣ�ͣ���ɰ汾�������������°汾������������ʧ�ܣ�ֻ��Ҫͣ���°汾�����������ɰ汾�����Ϳ����ˡ�<br>       ��IT��������Ҫ�ľ���Ӧ�ã�����˵һ���µ�����-SAAS�������Ƽ��㡢�����ݻ��ǻ���ѧϰ����Щ��ʵ����ΪӦ���ṩ֧�ţ���Ӧ�ø��õ���ά����Ӧ�ø��õĳ������ݼ�ֵ����Ӧ���ܹ�����������ѧϰ�ȡ��Ƽ����PAAS����ʵ����ΪӦ���ṩ����֧�ŵģ�ֻ�����ڶ������أ�PAASһֱ���²��𡣡�ֱ�������ĳ��֣�������ΪӦ�ö���������һ��˵����������ʱ����Ӧ�����塣</p>
+<p>��</p>
 
                 
 
@@ -259,13 +272,9 @@
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/posts/1cb28745.html" data-toggle="tooltip" data-placement="top" title="nginx出现403 is forbidden的4个原因">&larr; Previous post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/posts/230c739f.html" data-toggle="tooltip" data-placement="top" title="Docker使用进阶">Next post &rarr;</a>
+                            <a href="/2020/09/08/谈Docker容器/" data-toggle="tooltip" data-placement="top" title="谈Docker容器">下一篇 &rarr;</a>
                         </li>
                     
                 </ul>
@@ -312,7 +321,7 @@
                 
                 <section>
                     <!-- no hr -->
-                    <h5><a href="/tags/">Tags</a></h5>
+                    <h5><a href="/tags/">标签云</a></h5>
                     <div class="tags">
                        
                     </div>
@@ -488,7 +497,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/posts/772340f5.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/11/tandocker/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},
