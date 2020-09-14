@@ -241,7 +241,27 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>最近</p>
+                <p>#问题<br>  最近遇到了不少需要容器镜像需要更新cuda版本的问题，宿主机安装了低版本的GPU 驱动，但是需要使用高版本的CUDA，通常下载driver时，都会选择cuda版本，然后再去下载对于的GPU 驱动。Nvidia 官方给出了低版本驱动兼容cuda 的兼容列表，<a target="_blank" rel="noopener" href="https://docs.nvidia.com/deploy/cuda-compatibility/index.html">参考</a></p>
+<p>  目前升级cuda的方式时，需要同时升级驱动，如下图所示 <img src="/2020/09/11/cuda%E4%B8%8Edriver%E7%89%88%E6%9C%AC%E5%85%B3%E7%B3%BB/1.png" alt="avatar"></p>
+<p>  cuda toolkit包含两个主要组件</p>
+<ol>
+<li><p>开发库，包括cuda runtime</p>
+</li>
+<li><p>驱动部分，驱动部分又进一步分为两类</p>
+<ol>
+<li>kernel 态相关组件（display driver）</li>
+<li>用户态组件（cuda driver、openGL driver等等）</li>
+</ol>
+<p>从cuda10.0开始，NVIDIA引入了一个前向升级的途径，能够在升级cuda driver的时候不修改内核态的组件。参考下图，这就能够基于已经存在的驱动，使用最新的cuda，从而降低驱动升级带来的风险。<img src="/2020/09/11/cuda%E4%B8%8Edriver%E7%89%88%E6%9C%AC%E5%85%B3%E7%B3%BB/2.png" alt="avatar"></p>
+</li>
+</ol>
+<p> #源码兼容性<br> 基于特定版本的库（SDK）编译的应用仍然能够正常编译和运行，跨不同版本的SDK，CUDA driver 和Cuda runtime 都不支持源码级别的兼容性。API可能被废弃或者移除，开发者需要通过官方文档来获取这些信息。</p>
+<p> #二进制兼容性<br> cuda driver（libcuda.so）提供了后向兼容性，例如，一个基于cuda3.2 SDK编译的应用仍然能够在现在的driver stack上正常运行，另一方面，cuda runtime不会做上述保证，如果你的应用动态链接到cuda9.2版本，那么这个应用只能运行在9.2的cuda runtime。如果应用是静态链接到runtime，那么他会在最小支持的driver上正常运行，下表列出了cuda 依赖的driver 版本信息<img src="/2020/09/11/cuda%E4%B8%8Edriver%E7%89%88%E6%9C%AC%E5%85%B3%E7%B3%BB/3.png" alt="avatar"></p>
+<p> #支持<br> ##硬件兼容性<br> 当前支持的硬件如下表所示：<br> <img src="/2020/09/11/cuda%E4%B8%8Edriver%E7%89%88%E6%9C%AC%E5%85%B3%E7%B3%BB/4.png" alt="avatar"></p>
+<p> ##前向兼容的升级途径<br> 新的升级cuda driver的方式是为了简化大规模系统的管理。当前这种升级方式只支持Tesla GPU。硬件支持是由kernel model driver 决定，新的cuda driver不会开启新的硬件支持</p>
+<p> ##cuda应用兼容性<br> 基于行的cuda toolkits 编译的应用可以在特别的企业版Tesla driver 分支上支持。下表列出了cuda 和driver的兼容列表<br> <img src="/2020/09/11/cuda%E4%B8%8Edriver%E7%89%88%E6%9C%AC%E5%85%B3%E7%B3%BB/5.png" alt="avatar"></p>
+<h2 id="特性支持"><a href="#特性支持" class="headerlink" title="特性支持"></a>特性支持</h2><p> cuda driver里面可能需要kernel-model的支持，而且可能只能使用新的kernel mode driver。 <img src="/2020/09/11/cuda%E4%B8%8Edriver%E7%89%88%E6%9C%AC%E5%85%B3%E7%B3%BB/6.png" alt="avatar"></p>
+<p> #cuda兼容性平台<br> 涉及到cuda兼容性的的文件（也就是对于已经安装完的系统，这些文件不能替换），这些主要包括libcuda.so.<em>(cuda driver)和libnvidia-ptxjitcompiler.so.</em>(用于PTX文件的JIT just in time 编译器)，为了减少部署，nvidia引入了一个新的软件包cuda-compat-11.0，这个软件包提供了cuda兼容性的平台<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install cuda-compat-11-0</span><br></pre></td></tr></table></figure></p>
 
                 
 
