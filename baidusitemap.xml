@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://damonyi.cc/2020/09/14/test/</loc>
+    <lastmod>2020-09-14</lastmod>
+  </url>
+  <url>
     <loc>http://damonyi.cc/2020/09/11/cuda%E4%B8%8Edriver%E7%89%88%E6%9C%AC%E5%85%B3%E7%B3%BB/</loc>
     <lastmod>2020-09-14</lastmod>
   </url>
