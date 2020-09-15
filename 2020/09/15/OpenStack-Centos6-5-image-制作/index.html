@@ -16,11 +16,11 @@
 </script>
     <title>
         
-          Docker与主机关系 - null
+          OpenStack Centos6.5 image 制作 - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/2020/09/03/Docker与主机关系/">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/15/OpenStack-Centos6-5-image-制作/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -124,12 +124,14 @@
                     <div class="post-heading" style="padding:40px">
                         <div class="tags">
                             
+                              <a class="tag" href="/tags/#OpenStack" title="OpenStack">OpenStack</a>
+                            
                         </div>
-                        <h1>Docker与主机关系</h1>
+                        <h1>OpenStack Centos6.5 image 制作</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by 站着工程师 on
-                            2020-09-03
+                            2020-09-15
                         </span>
                         <span  class="meta" id="busuanzi_container_page_pv">
                                 本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -241,7 +243,144 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                
+                <p>查找了很多资料，包括官方文档，几处资料结合起来终于制作好了Centos 6.5 的镜像。但是不能够进行硬盘伸缩，还待优化（但是个人觉得硬盘伸缩的作用不是很大，体验了阿里云、UnitedStack，都是固定了系统盘的大小（linux是20G、windows是40G的系统盘）） </p>
+<p>1、使用ubuntu12.04 server 64bits，首先安装kvm</p>
+<p>  sudo apt-get install kvm qemu libvirt-bin virtinst virt-manager virt-viewer</p>
+<p>2、创建kvm 虚拟机磁盘文件：</p>
+<p>     qemu-img create -f qcow2 centos.img 20G    //20G 是该虚拟机的硬盘大小</p>
+<p>3、挂载iso，安装centos系统</p>
+<p>    kvm -hda centos.img -cdrom /tmp/CentOS-6.5-x86_64-bin-DVD1.iso -m 768 -boot d -vnc :0<br>  使用vnc工具连接，在vnc中完成安装centos的操作。推荐使用TightVNC viewer。安装完成后，关闭虚拟机</p>
+<p>4、启动虚拟机，配置网络</p>
+<p>   kvm centos.img -m 768 -smp 2 -net nic -net tap,ifname=tap1,script=/etc/qemu-ifup -vnc :0 -daemonize</p>
+<p>  登录系统后，eth0网卡未启动，需要设置eth0 开机启动 文件/etc/sysconfig/network-scripts/ifcfg-eth0 设置ONBOOT=“yes”</p>
+<p>  重启网络</p>
+<p>5、更新操作：</p>
+<p>        yum update</p>
+<p>       yum upgrade</p>
+<p>6、网络配置</p>
+<p> 在网络接口配置里面注释或删除这行 #HWADDR= 一行，启用 DHCP：</p>
+<blockquote>
+<blockquote>
+<p># vi /etc/sysconfig/network-scripts/ifcfg-eth0</p>
+</blockquote>
+<blockquote>
+<p>DEVICE=”eth0”</p>
+</blockquote>
+<blockquote>
+<p>#UUID=fe8e2c29-a8d2-4529-accd-a5b4dabb892c</p>
+</blockquote>
+<blockquote>
+<p>#HWADDR=”00:11:22:12:34:56”</p>
+</blockquote>
+<blockquote>
+<p>NM_CONTROLLED=”yes”</p>
+</blockquote>
+<blockquote>
+<p>BOOTPROTO=dhcp</p>
+</blockquote>
+<blockquote>
+<p>ONBOOT=”yes”</p>
+</blockquote>
+</blockquote>
+<p>修改sshd配置</p>
+<blockquote>
+<blockquote>
+<p>sed -i ‘s/PasswordAuthentication no/PasswordAuthentication yes/g’ /etc/ssh/sshd_config </p>
+</blockquote>
+<blockquote>
+<p>sed -i ‘s/#PasswordAuthentication yes /PasswordAuthentication yes /g’ /etc/ssh/sshd_config </p>
+</blockquote>
+<blockquote>
+<p># vi /etc/ssh/sshd_config</p>
+</blockquote>
+<blockquote>
+<p>…</p>
+</blockquote>
+<blockquote>
+<p>PasswordAuthentication yes </p>
+</blockquote>
+<blockquote>
+<p>RSAAuthentication yes</p>
+</blockquote>
+<blockquote>
+<p>PubkeyAuthentication yes</p>
+</blockquote>
+<blockquote>
+<p>ChallengeResponseAuthentication no</p>
+</blockquote>
+</blockquote>
+<p>      service sshd restart</p>
+<p>需要关闭 SELINUX </p>
+<blockquote>
+<blockquote>
+<p># vi /etc/selinux/config</p>
+</blockquote>
+<blockquote>
+<p>SELINUX=disabled</p>
+</blockquote>
+<blockquote>
+<p>SELINUXTYPE=targeted</p>
+</blockquote>
+</blockquote>
+<p> 关闭防火墙服务</p>
+<blockquote>
+<blockquote>
+<p>service iptables stop &amp;&amp; chkconfig iptables off</p>
+</blockquote>
+<blockquote>
+<p>service ip6tables stop &amp;&amp; chkconfig ip6tables off</p>
+</blockquote>
+</blockquote>
+<p>清空文件（不是删除）：</p>
+<blockquote>
+<blockquote>
+<p>/etc/udev/rules.d/70-persistent-net.rules</p>
+</blockquote>
+<blockquote>
+<p>/lib/udev/rules.d/75-persistent-net-generator.rules</p>
+</blockquote>
+</blockquote>
+<p> 7、安装cloud-init,cloud-utils, cloud-initramfs-growroot cloud-init</p>
+<blockquote>
+<p>rpm -ivh <a target="_blank" rel="noopener" href="http://ftp-stud.hs-esslingen.de/pub/epel/6/x86/_64/epel-release-6-8.noarch.rpm">http://ftp-stud.hs-esslingen.de/pub/epel/6/x86\_64/epel-release-6-8.noarch.rpm</a></p>
+<p>yum install git parted cloud-utils  cloud-initramfs-growroot cloud-init</p>
+</blockquote>
+<p> 编辑/etc/cloud/cloud.cfg 文件,开启root 账号登陆：</p>
+<blockquote>
+<p> disable_root: 1</p>
+<p> ssh_pwauth:   1</p>
+</blockquote>
+<p> 8、修改grub，是系统启动日志能够通过OpenStack控制台输出</p>
+<p>   Vi  /boot/grub/grub.conf</p>
+<p>   增加 console=ttyS0</p>
+<blockquote>
+<blockquote>
+<p>default=0</p>
+</blockquote>
+<blockquote>
+<p>timeout=5</p>
+</blockquote>
+<blockquote>
+<p>splashimage=(hd0,0)/boot/grub/splash.xpm.gz</p>
+</blockquote>
+<blockquote>
+<p>hiddenmenu</p>
+</blockquote>
+<blockquote>
+<p>title CentOS (2.6.32-279.el6.x86_64)</p>
+</blockquote>
+<blockquote>
+<p>        root (hd0,0)</p>
+</blockquote>
+<blockquote>
+<p>        kernel /boot/vmlinuz-2.6.32-279.el6.x86_64 ro root=UUID=587a6161-e327-48b8-80a2-2fd5da0b3989 rd_NO_LUKS rd_NO_LVM LANG=en_US.UTF-8 rd_NO_MD SYSFONT=latarcyrheb-sun16 crashkernel=auto  KEYBOARDTYPE=pc KEYTABLE=us rd_NO_DM rhgb quiet console=tty0 console=ttyS0,115200n8</p>
+</blockquote>
+<blockquote>
+<p>        initrd /boot/initramfs-2.6.32-279.el6.x86_64.img</p>
+</blockquote>
+</blockquote>
+<p>现在就可以将centos.img 注册到OpenStack使用了。制作出来有2G，有需要的可以留言给我。</p>
+
                 
 
                 <hr>
@@ -249,12 +388,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2020/09/03/Docker使用进阶/" data-toggle="tooltip" data-placement="top" title="Docker使用进阶">&larr; 上一篇</a>
+                            <a href="/2020/09/15/OpenStack-源码中的OSLO/" data-toggle="tooltip" data-placement="top" title="OpenStack 源码中的OSLO">&larr; 上一篇</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2020/09/03/my-first-blog/" data-toggle="tooltip" data-placement="top" title="my first blog">下一篇 &rarr;</a>
+                            <a href="/2020/09/15/Restore-iSCSI-configuration-for-Cinder-Nova/" data-toggle="tooltip" data-placement="top" title="Restore iSCSI configuration for Cinder/Nova">下一篇 &rarr;</a>
                         </li>
                     
                 </ul>
@@ -304,6 +443,8 @@
                     <h5><a href="/tags/">标签云</a></h5>
                     <div class="tags">
                        
+                          <a class="tag" href="/tags/#OpenStack" title="OpenStack">OpenStack</a>
+                        
                     </div>
                 </section>
                 
@@ -482,7 +623,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/2020/09/03/Docker%E4%B8%8E%E4%B8%BB%E6%9C%BA%E5%85%B3%E7%B3%BB/index.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/15/OpenStack-Centos6-5-image-%E5%88%B6%E4%BD%9C/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},

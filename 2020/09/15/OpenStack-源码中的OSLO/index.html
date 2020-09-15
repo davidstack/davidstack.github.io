@@ -16,11 +16,11 @@
 </script>
     <title>
         
-          Docker与主机关系 - null
+          OpenStack 源码中的OSLO - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/2020/09/03/Docker与主机关系/">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/15/OpenStack-源码中的OSLO/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -124,12 +124,14 @@
                     <div class="post-heading" style="padding:40px">
                         <div class="tags">
                             
+                              <a class="tag" href="/tags/#OpenStack" title="OpenStack">OpenStack</a>
+                            
                         </div>
-                        <h1>Docker与主机关系</h1>
+                        <h1>OpenStack 源码中的OSLO</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by 站着工程师 on
-                            2020-09-03
+                            2020-09-15
                         </span>
                         <span  class="meta" id="busuanzi_container_page_pv">
                                 本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -241,20 +243,46 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                
+                <h3 id="Oslo"><a href="#Oslo" class="headerlink" title="Oslo"></a>Oslo</h3><p>在RYU的目录下可以找到cfg.py文件，这个文件中import了oslo的相关模块，以便调用时减少引用数目。从文件中可以发现oslo.config.cfg文件是关键文件，其在系统中的文件位置在：/usr/local/lib/python2.7/dist-packages/oslo/config/cfg.py。想查看源码的读者可以自行查看。在该cfg.py文件中 定义了ConfigOpts类，包含了_opts, _groups等成员变量。该类完成了命令行和配置参数的解析。</p>
+<p>如果要快速学习某一个知识，最好的办法就是把它用起来。所以首先我会介绍一个入门的教程。如果你没有看懂，可以去看原始的<a target="_blank" rel="noopener" href="http://www.giantflyingsaucer.com/blog/?p=4822">教程</a>。</p>
+<p>首先安装<a target="_blank" rel="noopener" href="https://virtualenv.pypa.io/en/latest/virtualenv.html">python-virtualenv</a>，此python库可以用于创建一个虚拟的，与外界隔离的运行环境，听起来和docker好像有点像。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install python-virtualenv</span><br><span class="line">virtualenv example-app</span><br><span class="line">cd example-app</span><br><span class="line">source bin&#x2F;activate</span><br><span class="line">pip install oslo.config</span><br><span class="line">touch app.py</span><br><span class="line">touch app.conf</span><br></pre></td></tr></table></figure>
+
+
+
+<p>然后修改app.conf。添加了两个group:simple和morestuff。simple组中有一个BoolOpt:enable。morestuff组有StrOpt, ListOpt, DictOpt, IntOpt,和FloatOpt。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[simple]</span><br><span class="line">enable &#x3D; True</span><br><span class="line">[morestuff]</span><br><span class="line"># StrOpt</span><br><span class="line">message &#x3D; Hello World</span><br><span class="line"># ListOpt</span><br><span class="line">usernames &#x3D; [&#39;Licheng&#39;, &#39;Muzixing&#39;, &#39;Distance&#39;]</span><br><span class="line"># DictOpt</span><br><span class="line">jobtitles &#x3D; &#123;&#39;Licheng&#39;: &#39;Manager&#39;, &#39;Muzixing&#39;: &#39;CEO&#39;, &#39;Distance&#39;: &#39;Security Guard&#39;&#125;</span><br><span class="line"># IntOpt</span><br><span class="line">payday &#x3D; 20</span><br><span class="line"># FloatOpt</span><br><span class="line">pi &#x3D; 3.14</span><br></pre></td></tr></table></figure>
+
+
+
+<p>修改app.py文件。首先定义两个group，再对两个group的option进行定义。最后使用register_group和register_opts函数来完成group和option的注册。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">from __future__ import print_function</span><br><span class="line">from oslo.config import cfg</span><br><span class="line">opt_simple_group &#x3D; cfg.OptGroup(name&#x3D;&#39;simple&#39;,</span><br><span class="line">                         title&#x3D;&#39;A Simple Example&#39;)</span><br><span class="line">opt_morestuff_group &#x3D; cfg.OptGroup(name&#x3D;&#39;morestuff&#39;,</span><br><span class="line">                         title&#x3D;&#39;A More Complex Example&#39;)</span><br><span class="line">simple_opts &#x3D; [</span><br><span class="line">    cfg.BoolOpt(&#39;enable&#39;, default&#x3D;False,</span><br><span class="line">                help&#x3D;(&#39;True enables, False disables&#39;))</span><br><span class="line">]</span><br><span class="line">morestuff_opts &#x3D; [</span><br><span class="line">    cfg.StrOpt(&#39;message&#39;, default&#x3D;&#39;No data&#39;,</span><br><span class="line">               help&#x3D;(&#39;A message&#39;)),</span><br><span class="line">    cfg.ListOpt(&#39;usernames&#39;, default&#x3D;None,</span><br><span class="line">                help&#x3D;(&#39;A list of usernames&#39;)),</span><br><span class="line">    cfg.DictOpt(&#39;jobtitles&#39;, default&#x3D;None,</span><br><span class="line">                help&#x3D;(&#39;A dictionary of usernames and job titles&#39;)),</span><br><span class="line">    cfg.IntOpt(&#39;payday&#39;, default&#x3D;30,</span><br><span class="line">                help&#x3D;(&#39;Default payday monthly date&#39;)),</span><br><span class="line">    cfg.FloatOpt(&#39;pi&#39;, default&#x3D;0.0,</span><br><span class="line">                help&#x3D;(&#39;The value of Pi&#39;))</span><br><span class="line">]</span><br><span class="line">CONF &#x3D; cfg.CONF</span><br><span class="line">CONF.register_group(opt_simple_group)</span><br><span class="line">CONF.register_opts(simple_opts, opt_simple_group)</span><br><span class="line">CONF.register_group(opt_morestuff_group)</span><br><span class="line">CONF.register_opts(morestuff_opts, opt_morestuff\_group)</span><br><span class="line">if __name__ &#x3D;&#x3D; &quot;__main__&quot;:</span><br><span class="line">    CONF(default_config_files&#x3D;[&#39;app.conf&#39;])</span><br><span class="line">    print(&#39;(simple) enable: &#123;&#125;&#39;.format(CONF.simple.enable))</span><br><span class="line">    print(&#39;(morestuff) message :&#123;&#125;&#39;.format(CONF.morestuff.message))</span><br><span class="line">    print(&#39;(morestuff) usernames: &#123;&#125;&#39;.format(CONF.morestuff.usernames))</span><br><span class="line">    print(&#39;(morestuff) jobtitles: &#123;&#125;&#39;.format(CONF.morestuff.jobtitles))</span><br><span class="line">    print(&#39;(morestuff) payday: &#123;&#125;&#39;.format(CONF.morestuff.payday))</span><br><span class="line">    print(&#39;(morestuff) pi: &#123;&#125;&#39;.format(CONF.morestuff.pi))</span><br></pre></td></tr></table></figure>
+
+
+
+
+<p>完成之后，运行app.py文件。可以查看到相关输出。</p>
+<p>回到RYU中，之前一篇<a target="_blank" rel="noopener" href="http://www.muzixing.com/pages/2014/12/10/ryuxue-xi-eventlet.html">博客</a>介绍了RYU的main函数。在ryu/ryu/cmd/manager.py文件中我们可以看到如下的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CONF.register_cli_opts([</span><br><span class="line">    cfg.ListOpt(&#39;app-lists&#39;, default&#x3D;[],</span><br><span class="line">                help&#x3D;&#39;application module name to run&#39;),</span><br><span class="line">    cfg.MultiStrOpt(&#39;app&#39;, positional&#x3D;True, default&#x3D;[],</span><br><span class="line">                    help&#x3D;&#39;application module name to run&#39;),</span><br><span class="line">    cfg.StrOpt(&#39;pid-file&#39;, default&#x3D;None, help&#x3D;&#39;pid file name&#39;),</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">以上的注册了三个Option，其中的app-lists和app参数是运行ryu-manager时的参数，即APP的名称。在以下的main函数中，我们可以看到首先获取了输入的参数，若参数为空，则默认开启ofp\_handler应用。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">def main(args&#x3D;None, prog&#x3D;None):</span><br><span class="line">    try:</span><br><span class="line">        CONF(args&#x3D;args, prog&#x3D;prog,</span><br><span class="line">             project&#x3D;&#39;ryu&#39;, version&#x3D;&#39;ryu-manager %s&#39; % version,</span><br><span class="line">             default_config_files&#x3D;[&#39;&#x2F;usr&#x2F;local&#x2F;etc&#x2F;ryu&#x2F;ryu.conf&#39;])</span><br><span class="line">    except cfg.ConfigFilesNotFoundError:</span><br><span class="line">        CONF(args&#x3D;args, prog&#x3D;prog,</span><br><span class="line">             project&#x3D;&#39;ryu&#39;, version&#x3D;&#39;ryu-manager %s&#39; % version)</span><br><span class="line"></span><br><span class="line">    log.init_log()</span><br><span class="line"></span><br><span class="line">    if CONF.pid_file:</span><br><span class="line">        import os</span><br><span class="line">        with open(CONF.pid_file, &#39;w&#39;) as pid\_file:</span><br><span class="line">            pid_file.write(str(os.getpid()))</span><br><span class="line"></span><br><span class="line">    app_lists &#x3D; CONF.app_lists + CONF.app</span><br><span class="line">    # keep old behaivor, run ofp if no application is specified.</span><br><span class="line">    if not app_lists:</span><br><span class="line">        app_lists &#x3D; [&#39;ryu.controller.ofp_handler&#39;]</span><br></pre></td></tr></table></figure>
+
+
+
+<p>oslo模块使用能够使得整个工程的不同模块可以使用同一个配置文件，从而减少了命令冲突的可能，此外，oslo提供的模板，可以让命令解析更方便。在oslo.config之外，还有oslo.db,oslo.messaging等。</p>
+<p>  针对OpenStack 多个组件，OpenStack社区开发了不少公共组件OSOL：<a target="_blank" rel="noopener" href="https://github.com/openstack/?query=oslo">https://github.com/openstack/?query=oslo</a></p>
+
                 
 
                 <hr>
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2020/09/03/Docker使用进阶/" data-toggle="tooltip" data-placement="top" title="Docker使用进阶">&larr; 上一篇</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2020/09/03/my-first-blog/" data-toggle="tooltip" data-placement="top" title="my first blog">下一篇 &rarr;</a>
+                            <a href="/2020/09/15/OpenStack-Centos6-5-image-制作/" data-toggle="tooltip" data-placement="top" title="OpenStack Centos6.5 image 制作">下一篇 &rarr;</a>
                         </li>
                     
                 </ul>
@@ -304,6 +332,8 @@
                     <h5><a href="/tags/">标签云</a></h5>
                     <div class="tags">
                        
+                          <a class="tag" href="/tags/#OpenStack" title="OpenStack">OpenStack</a>
+                        
                     </div>
                 </section>
                 
@@ -482,7 +512,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/2020/09/03/Docker%E4%B8%8E%E4%B8%BB%E6%9C%BA%E5%85%B3%E7%B3%BB/index.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/15/OpenStack-%E6%BA%90%E7%A0%81%E4%B8%AD%E7%9A%84OSLO/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},

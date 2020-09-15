@@ -16,11 +16,11 @@
 </script>
     <title>
         
-          Docker与主机关系 - null
+          Tensorflow中的placeholder和feed_dict - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/2020/09/03/Docker与主机关系/">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/15/Tensorflow中的placeholder和feed-dict/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -125,11 +125,11 @@
                         <div class="tags">
                             
                         </div>
-                        <h1>Docker与主机关系</h1>
+                        <h1>Tensorflow中的placeholder和feed_dict</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by 站着工程师 on
-                            2020-09-03
+                            2020-09-15
                         </span>
                         <span  class="meta" id="busuanzi_container_page_pv">
                                 本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -241,7 +241,15 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                
+                <p>TensorFlow 支持占位符placeholder。占位符并没有初始值，它只会分配必要的内存。在会话中，占位符可以使用 feed_dict 馈送数据。 feed_dict是一个字典，在字典中需要给出每一个用到的占位符的取值。 在训练神经网络时需要每次提供一个批量的训练样本，如果每次迭代选取的数据要通过常量表示，那么TensorFlow 的计算图会非常大。因为每增加一个常量，TensorFlow 都会在计算图中增加一个结点。所以说拥有几百万次迭代的神经网络会拥有极其庞大的计算图，而占位符却可以解决这一点，它只会拥有占位符这一个结点。 placeholder函数的定义为 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tf.placeholder(dtype, shape&#x3D;None, name&#x3D;None)&#96;</span><br></pre></td></tr></table></figure>
+<p>参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dtype：数据类型。常用的是tf.int32，tf.float32，tf.float64，tf.string等数据类型。 </span><br><span class="line">shape：数据形状。默认是None，也就是一维值。 也可以表示多维，比如要表示2行3列则应设为[2, 3]。 形如[None, 3]表示列是3，行不定。 </span><br><span class="line">name：名称。 返回：Tensor类型&#96; </span><br></pre></td></tr></table></figure>
+<p> ##例1 </p>
+<p> ```<br> import tensorflow as tf<br> x = tf.placeholder(tf.string)<br> with tf.Session() as sess:<br>   output = sess.run(x, feed_dict={x: ‘Hello World’})<br>   print(output)<br>   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> 运行结果：</span><br><span class="line">    &#96;Hello World&#96; </span><br><span class="line">##例2 </span><br></pre></td></tr></table></figure><br>import tensorflow as tf<br>x = tf.placeholder(tf.string)<br>y = tf.placeholder(tf.int32)<br>z = tf.placeholder(tf.float32)<br>with tf.Session() as sess:<br>  output = sess.run(x, feed_dict = {x :’Hello World’, y:123, z:45.67})<br>  print(output)<br>  output = sess.run(y, feed_dict = {x :’Hello World’, y:123, z:45.67})<br>  print(output)<br>  output = sess.run(z, feed_dict = {x :’Hello World’, y:123, z:45.67})<br>  print(output) </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">运行结果：</span><br></pre></td></tr></table></figure>
+<p>  Hello Word 123 45.66999816894531`<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">##例3： </span><br></pre></td></tr></table></figure><br> import tensorflow as tf<br> import numpy as np<br> x = tf.placeholder(tf.float32, shape=(3, 3))<br> y = tf.matmul(x, x) with tf.Session() as sess:<br>   rand_array = np.random.rand(3, 3)<br>   print(sess.run(y, feed_dict = {x: rand_array}))</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">运行结果：</span><br><span class="line">&#96;&#96;&#96;&#96; </span><br><span class="line">\[\[0.62475741 0.40487182 0.5968855 \] </span><br><span class="line">\[0.17491265 0.08546661 0.23616122\] </span><br><span class="line">\[0.53931886 0.24997233 0.56168258\]\]\</span><br></pre></td></tr></table></figure>
                 
 
                 <hr>
@@ -249,12 +257,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2020/09/03/Docker使用进阶/" data-toggle="tooltip" data-placement="top" title="Docker使用进阶">&larr; 上一篇</a>
+                            <a href="/2020/09/15/Spring的IOC与AOP（转载）/" data-toggle="tooltip" data-placement="top" title="Spring的IOC与AOP（转载）">&larr; 上一篇</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2020/09/03/my-first-blog/" data-toggle="tooltip" data-placement="top" title="my first blog">下一篇 &rarr;</a>
+                            <a href="/2020/09/15/WiWarden启动源码分析/" data-toggle="tooltip" data-placement="top" title="WiWarden启动源码分析">下一篇 &rarr;</a>
                         </li>
                     
                 </ul>
@@ -482,7 +490,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/2020/09/03/Docker%E4%B8%8E%E4%B8%BB%E6%9C%BA%E5%85%B3%E7%B3%BB/index.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/15/Tensorflow%E4%B8%AD%E7%9A%84placeholder%E5%92%8Cfeed-dict/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},
