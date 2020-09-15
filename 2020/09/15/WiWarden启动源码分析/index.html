@@ -16,11 +16,11 @@
 </script>
     <title>
         
-          Window是导入postgres 的sql文件 - null
+          WiWarden启动源码分析 - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/2020/09/04/Window是导入postgres-的sql文件/">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/15/WiWarden启动源码分析/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -125,11 +125,11 @@
                         <div class="tags">
                             
                         </div>
-                        <h1>Window是导入postgres 的sql文件</h1>
+                        <h1>WiWarden启动源码分析</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by 站着工程师 on
-                            2020-09-04
+                            2020-09-15
                         </span>
                         <span  class="meta" id="busuanzi_container_page_pv">
                                 本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -241,9 +241,107 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>postgres的windows客户端使用pgadmin，pgadmin没有直接导入sql的操作，需要命令行导入，在windows的命令行执行导入命令，会报以下错误：</p>
-<p>character with byte sequence 0xc2 0x90 in encoding GBK has no<br>equivalent in encodeing utf8<br>出现这种错误的原因，通常是psql的客户端编码与服务端的编码不一致导致的，可以使用以下操作，解决编码问题</p>
-<p>psql -u postgres -p 5432 -d slip -h 10.10.70.58<br>slip=#encoding UTF8;<br>slip=# \i ‘c:/public.sql’;</p>
+                <p>今天研究warden的源码，分析了启动流程，整理了一下。</p>
+<p>Warden 启动入口:src\warden\warden\lib\warden\server.rb  def self.run!</p>
+<p>  （1）Process.setrlimit(Process::RLIMIT_NOFILE, 32768):linux 内核资源限制，一个进程能够打开的最大文件数</p>
+<p>  （2）container_klass.setup(self.config)  调用src\warden\warden\lib\warden\container\linux.rb setup</p>
+<p>  （3）执行脚本\src\warden\warden\root\linux\setup.sh</p>
+<p>  （4） cgroup 控制</p>
+<p>           （4.1）创建 /tmp/warden/cgroup</p>
+<p>           （4.2）mount -t tmpfs none /tmp/warden/cgroup   创建虚拟文件系统（存储的内容在RM或者Swap空间）</p>
+<p>            (4.3)  挂载cgroup子系统</p>
+<p>                     none /tmp/warden/cgroup/cpu cgroup rw,relatime,cpu 0 0</p>
+<p>                     none /tmp/warden/cgroup/cpuacct cgroup rw,relatime,cpuacct 0 0</p>
+<p>                     none /tmp/warden/cgroup/devices cgroup rw,relatime,devices 0 0</p>
+<p>                     none /tmp/warden/cgroup/memory cgroup rw,relatime,memory 0 0</p>
+<p>   Cgroup子系统作用介绍</p>
+<p>   blkio : 这个子系统设置限制每个块设备的输入输出控制。例如:磁盘，光盘以及usb等等。</p>
+<p>   cpu  : 这个子系统使用调度程序为cgroup任务提供cpu的访问。</p>
+<p>   cpuacct : 产生cgroup任务的cpu资源报告。</p>
+<p>   cpuset : 如果是多核心的cpu，这个子系统会为cgroup任务分配单独的cpu和内存。</p>
+<p>   devices : 允许或拒绝cgroup任务对设备的访问。</p>
+<p>   freezer : 暂停和恢复cgroup任务。</p>
+<p>   memory : 设置每个cgroup的内存限制以及产生内存资源报告。</p>
+<p>   net_cls : 标记每个网络包以供cgroup方便使用。</p>
+<p>   ns    :   名称空间子系统。</p>
+<p>   perf_event:   增加了对每group的监测跟踪的能力，即可以监测属于某个特定的group的所有线程以及运行在特定CPU上的线程，此功能对于监测整个group非常有用</p>
+<p>（5） <!--\[endif\]-->网络配置，执行脚本src\warden\warden\root\linux\net.sh</p>
+<p>           （5.1）setup_filter: </p>
+<p>               iptables -N warden-forward 2&gt; /dev/null || iptables -F warden-forward</p>
+<p>               iptables -A warden-forward -j DROP   </p>
+<p>                     创建过滤链，增加过滤规则（丢弃封包不予处理，进行完此处理动作后，将不再比对其它规则，直接中断过滤程序）</p>
+<p>              iptables -N warden-default 2&gt; /dev/null || iptables -F warden-default</p>
+<p>                创建默认过滤链</p>
+<p>              iptables -A warden-default -m conntrack –ctstate ESTABLISHED,RELATED -j ACCEPT</p>
+<p>                默认过滤链增加规则，允许已经建立的连接到containers</p>
+<p>              iptables -A warden-default –destination “$n” –jump RETURN</p>
+<p>              iptables -A warden-default –destination “$n” –jump DROP</p>
+<p>                设置配置文件中配置的 被允许的网络，以及被禁止的网络</p>
+<p>              iptables -A FORWARD -i w-+ –jump warden-forward</p>
+<p>                     配置outbound traffic</p>
+<p>             default_interface=$(ip route show | grep default | cut -d’ ‘ -f5 | head -1)</p>
+<p>             iptables -I warden-forward -i $default_interface –jump ACCEPT</p>
+<p>                设置使用的网卡接口 设置inround traffic</p>
+<p>    (5.2)setup_nat</p>
+<p>        iptables -t nat -N warden-prerouting 2&gt; /dev/null || true</p>
+<p>            新建一个 nat规则表</p>
+<p>      (iptables -t nat -S PREROUTING | grep -q “\-j warden-prerouting\b”) ||</p>
+<p>      iptables -t nat -A PREROUTING \</p>
+<p>      –jump warden-prerouting</p>
+<p>     检查是否存在nat的prerouting 规则链 与warden-prerouting 绑定，如果没有将warden-prerouting  绑定到nat的prerouting规则链。</p>
+<p>    (iptables -t nat -S OUTPUT | grep -q “\-j warden-prerouting\b”) ||</p>
+<p>    iptables -t nat -A OUTPUT \</p>
+<p>      –out-interface “lo” \</p>
+<p>      –jump warden-prerouting</p>
+<p>  Bind chain to OUTPUT (for traffic originating from same host)</p>
+<p>  # Create postrouting chain</p>
+<p>  iptables -t nat -N ${nat_postrouting_chain} 2&gt; /dev/null || true</p>
+<p>  # Bind chain to POSTROUTING</p>
+<p>  (iptables -t nat -S POSTROUTING | grep -q “\-j ${nat_postrouting_chain}\b”) ||</p>
+<p>    iptables -t nat -A POSTROUTING \</p>
+<p>      –jump ${nat_postrouting_chain}</p>
+<p>  # Enable NAT for traffic coming from containers</p>
+<p>  (iptables -t nat -S ${nat_postrouting_chain} | grep -q “\-j SNAT\b”) ||</p>
+<p>    iptables -t nat -A ${nat_postrouting_chain} \</p>
+<p>      –source ${POOL_NETWORK} \</p>
+<p>      –jump SNAT \</p>
+<p>      –to $(external_ip)</p>
+<p> （6） 关闭AppArmor</p>
+<p> （7） 设置warden的配额</p>
+<p>        配置文件设置了quota:</p>
+<p>                          disk_quota_enabled: true</p>
+<p>         并且存放container的目录（/tmp/warden/containers）开启了配额管理</p>
+<p>           mount -o remount,usrjquota=aquota.user,grpjquota=aquota.group,jqfmt=vfsv0 $CONTAINER_DEPOT_MOUNT_POINT_PATH</p>
+<!--\[if !supportLists\]--> (8)<!--\[endif\]-->回到 src\\warden\\warden\\lib\\warden\\server.rb 执行：recover\_containers
+
+<p>   检查 /tmp/warden/containers 的container 状态</p>
+<p>       （1）将死去的container删除（destroy.sh）</p>
+<p>       （2）将仍然存活的container 启动(根据snapshot.json 中的信息恢复)</p>
+<!--\[if !supportLists\]-->（9） <!--\[endif\]-->启动warden 进程
+
+<p>        FileUtils.rm_f(unix_domain_path)</p>
+<p>          server = ::EM.start_unix_domain_server(unix_domain_path, ClientConnection)</p>
+<p>          ::EM.start_server(“127.0.0.1”, config.health_check_server[“port”],HealthCheck)</p>
+<p>（10）</p>
+<p>    @drainer = Drainer.new(server, “USR2”)</p>
+<p>    @drainer.on_complete do</p>
+<p>            Fiber.new do</p>
+<p>              logger.info(“Drain complete”)</p>
+<p>              # Serialize container state</p>
+<p>              container_klass.registry.each { |_, c| c.write_snapshot }</p>
+<p>              EM.stop</p>
+<p>            end.resume</p>
+<p>          End</p>
+<p>   目前还不清楚是做什么。</p>
+<p>（11） </p>
+<p>          FileUtils.chmod(unix_domain_permissions, unix_domain_path)</p>
+<p>          修改/tmp/warden.sock 文件属性为0777</p>
+<p>          # Let the world know Warden is ready for action.</p>
+<p>          logger.info(“Listening on #{unix_domain_path}”)</p>
+<p>          if pidfile = config.server[“pidfile”]</p>
+<p>            logger.info(“Writing pid #{Process.pid} to #{pidfile}”)</p>
+<p>            PidFile.new(piddir: File.dirname(pidfile), pidfile: File.basename(pidfile))</p>
+<p>          end</p>
 
                 
 
@@ -251,13 +349,9 @@
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2020/09/04/Alpine镜像内的Java时区问题/" data-toggle="tooltip" data-placement="top" title="Alpine镜像内的Java时区问题">&larr; Previous post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2020/09/04/nginx出现403-is-forbidden的4个原因/" data-toggle="tooltip" data-placement="top" title="nginx出现403 is forbidden的4个原因">Next post &rarr;</a>
+                            <a href="/2020/09/15/Win-208-R2——由于管理员设置的策略，该磁盘处于脱机状态/" data-toggle="tooltip" data-placement="top" title="Win 208 R2——由于管理员设置的策略，该磁盘处于脱机状态">Next post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -485,7 +579,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/2020/09/04/Window%E6%98%AF%E5%AF%BC%E5%85%A5postgres-%E7%9A%84sql%E6%96%87%E4%BB%B6/index.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/15/WiWarden%E5%90%AF%E5%8A%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},

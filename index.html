@@ -271,6 +271,115 @@
 
 
 <div class="w3-row-padding">
+	<a href="/2020/09/15/WiWarden启动源码分析/">
+        <h2 class="post-title">
+            WiWarden启动源码分析
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+	</a>
+
+<div>
+
+    <a href="/2020/09/15/WiWarden启动源码分析/">
+
+        <div class="post-content-preview">
+            今天研究warden的源码，分析了启动流程，整理了一下。
+Warden 启动入口:src\warden\warden\lib\warden\server.rb  def self.run!
+  （1）Process.setrlimit(Process::RLIMIT_NOFILE, 32768):linux 内核资源限制，一个进程能够打开的最大文件数
+  （2）container_kl.........
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by 站着工程师 on
+            2020-09-15
+        </p>
+             <p class="post-meta" id="busuanzi_container_page_pv">
+                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+            </p>
+    
+
+</div>
+</div>
+<hr>
+
+
+<div class="w3-row-padding">
+	<a href="/2020/09/15/Win-208-R2——由于管理员设置的策略，该磁盘处于脱机状态/">
+        <h2 class="post-title">
+            Win 208 R2——由于管理员设置的策略，该磁盘处于脱机状态
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+	</a>
+
+<div>
+
+    <a href="/2020/09/15/Win-208-R2——由于管理员设置的策略，该磁盘处于脱机状态/">
+
+        <div class="post-content-preview">
+            1.原系统为Windows 2012挂载了2T的存储，因业务要求重新安装为Windows 2008R2，并没有在磁盘存储空间上重新做映射。  
+2.系统安装完成，安装完多路径软件后，无法对挂载的分区进行操作。如下图除了删除卷和帮助其他的都是灰的。点击删除卷提示介质写入保护
+3.鼠标指向小叹号提示由于管理员设置的策略，该磁盘处于脱机状态。
+
+解决方案步骤如下：  
+使用DISKPART..........
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by 站着工程师 on
+            2020-09-15
+        </p>
+             <p class="post-meta" id="busuanzi_container_page_pv">
+                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+            </p>
+    
+
+</div>
+</div>
+<hr>
+
+
+<div class="w3-row-padding">
+	<a href="/2020/09/15/Window导入postgres的sql文件的encoding-错误/">
+        <h2 class="post-title">
+            Window导入postgres的sql文件的encoding 错误
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+	</a>
+
+<div>
+
+    <a href="/2020/09/15/Window导入postgres的sql文件的encoding-错误/">
+
+        <div class="post-content-preview">
+            postgres的windows客户端使用pgadmin，pgadmin没有直接导入sql的操作，需要命令行导入，在windows的命令行执行导入命令，会报以下错误：
+12character with byte sequence 0xc2 0x90 in encoding GBK has no equivalent in encodeing utf8 
+出现这种错误的原因，通常是psq.........
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by 站着工程师 on
+            2020-09-15
+        </p>
+             <p class="post-meta" id="busuanzi_container_page_pv">
+                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+            </p>
+    
+
+</div>
+</div>
+<hr>
+
+
+<div class="w3-row-padding">
 	<a href="/2020/09/14/test/">
         <h2 class="post-title">
             test
@@ -513,110 +622,6 @@ bash-4.3# dateTue Aug  7 09:32:2.........
 <hr>
 
 
-<div class="w3-row-padding">
-	<a href="/2020/09/04/Window是导入postgres-的sql文件/">
-        <h2 class="post-title">
-            Window是导入postgres 的sql文件
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-	</a>
-
-<div>
-
-    <a href="/2020/09/04/Window是导入postgres-的sql文件/">
-
-        <div class="post-content-preview">
-            postgres的windows客户端使用pgadmin，pgadmin没有直接导入sql的操作，需要命令行导入，在windows的命令行执行导入命令，会报以下错误：
-character with byte sequence 0xc2 0x90 in encoding GBK has noequivalent in encodeing utf8出现这种错误的原因，通常是psql的客户端.........
-        </div>
-    </a>
-    
-        <p class="post-meta">
-            Posted by 站着工程师 on
-            2020-09-04
-        </p>
-             <p class="post-meta" id="busuanzi_container_page_pv">
-                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
-            </p>
-    
-
-</div>
-</div>
-<hr>
-
-
-<div class="w3-row-padding">
-	<a href="/2020/09/04/nginx出现403-is-forbidden的4个原因/">
-        <h2 class="post-title">
-            nginx出现403 is forbidden的4个原因
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-	</a>
-
-<div>
-
-    <a href="/2020/09/04/nginx出现403-is-forbidden的4个原因/">
-
-        <div class="post-content-preview">
-            nginx缺少配置
-缺少index.html或者index.php文件，就是配置文件中index index.html index.htm这行中的指定的文件。
-server {listen 80;server_name localhost;index index.php index.html;root /var/www; } 如果在/ var/www下面没有index.php,inde.........
-        </div>
-    </a>
-    
-        <p class="post-meta">
-            Posted by 站着工程师 on
-            2020-09-04
-        </p>
-             <p class="post-meta" id="busuanzi_container_page_pv">
-                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
-            </p>
-    
-
-</div>
-</div>
-<hr>
-
-
-<div class="w3-row-padding">
-	<a href="/2020/09/04/Docker基础镜像debain的乱码问题/">
-        <h2 class="post-title">
-            Docker基础镜像debain的乱码问题
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-	</a>
-
-<div>
-
-    <a href="/2020/09/04/Docker基础镜像debain的乱码问题/">
-
-        <div class="post-content-preview">
-            问题
-公司内的项目在进行容器化并实现DevOps的时候，由于代码文件编码的问题，出现了乱码问题，在windows环境下，正常没有问题，首先看一下前期基于debain+nodejs+ionic构建的用于项目打包的基础镜像，镜像文件如下所示：
-FROM 10.10.70.65/base/andreptb/maven:3.3.9-jdk8COPY settings.xml /usr/shar.........
-        </div>
-    </a>
-    
-        <p class="post-meta">
-            Posted by 站着工程师 on
-            2020-09-04
-        </p>
-             <p class="post-meta" id="busuanzi_container_page_pv">
-                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
-            </p>
-    
-
-</div>
-</div>
-<hr>
-
-
 
 <!-- Pager -->
 
@@ -653,6 +658,10 @@ FROM 10.10.70.65/base/andreptb/maven:3.3.9-jdk8COPY settings.xml /usr/shar......
     <!-- no hr -->
     <h5><a href="/tags/">Tags</a></h5>
     <div class="tags">
+        
+            
+            <a href="/tags/#数据库" title="数据库" rel="1">数据库</a>
+            
         
     </div>
 </section>
@@ -707,23 +716,23 @@ FROM 10.10.70.65/base/andreptb/maven:3.3.9-jdk8COPY settings.xml /usr/shar......
     <ul>
       
         <li>
+          <a href="/2020/09/15/WiWarden%E5%90%AF%E5%8A%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">WiWarden启动源码分析</a>
+        </li>
+      
+        <li>
+          <a href="/2020/09/15/Win-208-R2%E2%80%94%E2%80%94%E7%94%B1%E4%BA%8E%E7%AE%A1%E7%90%86%E5%91%98%E8%AE%BE%E7%BD%AE%E7%9A%84%E7%AD%96%E7%95%A5%EF%BC%8C%E8%AF%A5%E7%A3%81%E7%9B%98%E5%A4%84%E4%BA%8E%E8%84%B1%E6%9C%BA%E7%8A%B6%E6%80%81/">Win 208 R2——由于管理员设置的策略，该磁盘处于脱机状态</a>
+        </li>
+      
+        <li>
+          <a href="/2020/09/15/Window%E5%AF%BC%E5%85%A5postgres%E7%9A%84sql%E6%96%87%E4%BB%B6%E7%9A%84encoding-%E9%94%99%E8%AF%AF/">Window导入postgres的sql文件的encoding 错误</a>
+        </li>
+      
+        <li>
           <a href="/2020/09/14/test/">test</a>
         </li>
       
         <li>
           <a href="/2020/09/11/cuda%E4%B8%8Edriver%E7%89%88%E6%9C%AC%E5%85%B3%E7%B3%BB/">cuda与driver版本关系</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/08/%E8%B0%88Docker%E5%AE%B9%E5%99%A8/">谈Docker容器</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/04/%E5%AE%B9%E5%99%A8%E5%86%85Tomcat%E7%9A%84JVM%E5%86%85%E5%AD%98%E9%85%8D%E7%BD%AE/">容器内Tomcat的JVM内存配置</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/04/Docker%E5%8C%BF%E5%90%8D%E5%8D%B7/">Docker匿名卷</a>
         </li>
       
     </ul>
@@ -734,7 +743,7 @@ FROM 10.10.70.65/base/andreptb/maven:3.3.9-jdk8COPY settings.xml /usr/shar......
         
     <h5>Achives</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">14</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">16</span></li></ul>
     </div>
 
         <hr>
