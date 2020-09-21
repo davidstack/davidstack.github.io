@@ -16,11 +16,11 @@
 </script>
     <title>
         
-          about - null
+          Linux执行df和du查看磁盘时占用结果不一致的解决办法 - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/about/">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/21/Linux执行df和du查看磁盘时占用结果不一致的解决办法/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -121,13 +121,22 @@
 			
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="z-index:2;">
                 
-				
-                    <div class="site-heading"  style="padding:40px">
-                        <h1>about</h1>
-                        <!--<hr class="small">-->
-                        <span class="subheading"></span>
+                    <div class="post-heading" style="padding:40px">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                            
+                        </div>
+                        <h1>Linux执行df和du查看磁盘时占用结果不一致的解决办法</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 站着工程师 on
+                            2020-09-21
+                        </span>
+                        <span  class="meta" id="busuanzi_container_page_pv">
+                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                         </span>
                     </div>
-                
                 
                 </div>
             </div>
@@ -221,207 +230,161 @@
 
 
     <!-- Main Content -->
-    <!-- Main Content -->
-<div class="container">
-    <div class="row">
-        
+    <!-- Modify by Yu-Hsuan Yen -->
 
-<!-- USE SIDEBAR -->
-    <!-- Post Container -->
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
             <div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
-            
-	        
-                <p>davidstack</p>
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
 
-            
-
-
-
-                <!-- 如果开启评论功能 -->
-                
-                    <hr>
-                    
-
-                    
-
-
-                    
-
-                    
+                <p><strong>问题现象</strong> </p>
+<p>1、执行 df -h 查看 ECS Linux 实例文件系统使用率，可以看到 /dev/xvdb1 磁盘占用了约27G，挂载目录为 /opt 。</p>
+<p><img src="http://p3.pstatp.com/large/pgc-image/1531049590662f3fa303a98" alt="Linux 执行 df 和 du 查看磁盘时占用结果不一致的解决办法"></p>
+<p>2、进入到 /opt 目录执行 du -sh ，显示空间总占用量约 2.4 G，即df 和du查看到的结果不一致。</p>
+<p><img src="http://p1.pstatp.com/large/pgc-image/1531049590682d3db0a9740" alt="Linux 执行 df 和 du 查看磁盘时占用结果不一致的解决办法"></p>
+<p><strong>原因分析</strong></p>
+<ul>
+<li><p>du 命令对统计文件逐个进行 fstat 系统调用，获取文件大小。它的数据是基于文件获取，可以跨多个分区操作。</p>
+</li>
+<li><p>df 命令使用 statfs 系统调用，直接读取分区的超级块信息获取分区使用情况。它的数据基于分区元数据，只能针对整个分区。</p>
+</li>
+<li><p>用户删除了大量的文件后，du 就不会在文件系统目录中统计这些文件。如果此时还有运行中的进程持有这个已经被删除的文件句柄，那么这个文件就不会真正在磁盘中被删除，分区超级块中的信息也就不会更改，df 仍会统计这个被删除的文件。</p>
+</li>
+<li><p>通过 lsof 查询处于 deleted 状态的文件，被删除的文件在系统中被标记为 deleted 。如果系统有大量 deleted 状态的文件，会导致 du 和 df 统计结果不一致。</p>
+</li>
+</ul>
+<p>##解决方案<br>  1、根据 lsof 列出的 pid，kill 相应进程或者重启相应的服务，如：#kill -9 692。 </p>
+<p>  2、重启服务器。重启服务器系统会退出现有的进程，开机后重新加载，过程中会释放调用的 deleted 文件的句柄。</p>
 
                 
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/09/21/Kubernets-详解-Volume/" data-toggle="tooltip" data-placement="top" title="Kubernets 详解--Volume">&larr; Previous post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/09/21/Nginx代理端口丢失问题/" data-toggle="tooltip" data-placement="top" title="Nginx代理端口丢失问题">Next post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+				
             </div>
 
-          <!-- Sidebar Container -->
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
-    
-        <!-- Featured Tags -->
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
 
-<section>
-    <!-- no hr -->
-    <h5><a href="/tags/">Tags</a></h5>
-    <div class="tags">
-        
-            
-            <a href="/tags/#Kubernetes" title="Kubernetes" rel="5">Kubernetes</a>
-            
-        
-            
-            <a href="/tags/#云计算" title="云计算" rel="3">云计算</a>
-            
-        
-            
-            <a href="/tags/#kubernetes 网络" title="kubernetes 网络" rel="1">kubernetes 网络</a>
-            
-        
-            
-            <a href="/tags/#Docker" title="Docker" rel="1">Docker</a>
-            
-        
-            
-            <a href="/tags/#Pod" title="Pod" rel="1">Pod</a>
-            
-        
-            
-            <a href="/tags/#Linux" title="Linux" rel="1">Linux</a>
-            
-        
-            
-            <a href="/tags/#OpenStack" title="OpenStack" rel="2">OpenStack</a>
-            
-        
-            
-            <a href="/tags/#Spring" title="Spring" rel="1">Spring</a>
-            
-        
-            
-            <a href="/tags/#容器" title="容器" rel="1">容器</a>
-            
-        
-            
-            <a href="/tags/#数据库" title="数据库" rel="1">数据库</a>
-            
-        
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">Tags</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
     </div>
-</section>
-
-        <hr>
-    
-        <!-- Short About -->
-<section class="visible-md visible-lg">
-    <h5><a href="/about/">About me</a></h5>
-    <div class="short-about">
-
-        
-            <img id = "avatar_pic" src="/img/avatar/logo.png" />
-        
-
-        
-            <p>站在巨人的肩膀上,依然云里雾里的前行</p>
-        
-
-        <!-- SNS Link -->
-        <ul class="list-inline">
-            
-            
-            
-
-            
-
-            
-
-            
-                <li>
-                    <a target="_blank"  href="https://github.com/davidstack">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-circle fa-stack-2x"></i>
-                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                        </span>
-                    </a>
-                </li>
-            
-            
-            
-            
-        </ul>
-    </div>
-</section>
-
-        <hr>
-    
-        
-  <h5>Recent posts</h3>
-  <div class="widget">
-    <ul>
-      
-        <li>
-          <a href="/2020/09/21/Golang-%E8%AF%BB%E5%8F%96%E5%86%99%E5%85%A5Etcd%E6%95%B0%E6%8D%AE%E5%BA%93/">Golang 读取写入Etcd数据库</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Kubernetes-%E4%B8%AD%E7%9A%84port%E3%80%81nodePort%E3%80%81targetPort/">Kubernetes 中的port、nodePort、targetPort</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Kubernetes%E4%B8%AD%E7%9A%84Source-Ip%E6%9C%BA%E5%88%B6/">Kubernetes中的Source Ip机制</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Kubernetes-%E8%AF%A6%E8%A7%A3-%E7%AE%80%E4%BB%8B/">Kubernetes 详解--简介</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Kubernetes%E8%AF%A6%E8%A7%A3-Pod/">Kubernetes详解--Pod</a>
-        </li>
-      
-    </ul>
-  </div>
-
-        <hr>
-    
-        
-    <h5>Achives</h5>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">32</span></li></ul>
-    </div>
-
-        <hr>
-    
-        <!-- Friends Blog -->
-
-<h5>Friends</h5>
-<ul class="list-inline">
-
-    
-        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
-    
-</ul>
+</article>
 
 
-        <hr>
-    
-        <!-- Categories -->
-
-        <hr>
-    
-</div>
 
 
-        
-    </div>
-</div>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
 
 
     <!-- Footer -->
@@ -543,7 +506,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/about/index.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/21/Linux%E6%89%A7%E8%A1%8Cdf%E5%92%8Cdu%E6%9F%A5%E7%9C%8B%E7%A3%81%E7%9B%98%E6%97%B6%E5%8D%A0%E7%94%A8%E7%BB%93%E6%9E%9C%E4%B8%8D%E4%B8%80%E8%87%B4%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},

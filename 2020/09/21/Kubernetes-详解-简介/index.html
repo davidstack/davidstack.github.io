@@ -16,11 +16,11 @@
 </script>
     <title>
         
-          about - null
+          Kubernetes 详解--简介 - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/about/">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/21/Kubernetes-详解-简介/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -121,13 +121,22 @@
 			
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="z-index:2;">
                 
-				
-                    <div class="site-heading"  style="padding:40px">
-                        <h1>about</h1>
-                        <!--<hr class="small">-->
-                        <span class="subheading"></span>
+                    <div class="post-heading" style="padding:40px">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#云计算" title="云计算">云计算</a>
+                            
+                        </div>
+                        <h1>Kubernetes 详解--简介</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 站着工程师 on
+                            2020-09-21
+                        </span>
+                        <span  class="meta" id="busuanzi_container_page_pv">
+                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                         </span>
                     </div>
-                
                 
                 </div>
             </div>
@@ -221,207 +230,179 @@
 
 
     <!-- Main Content -->
-    <!-- Main Content -->
-<div class="container">
-    <div class="row">
-        
+    <!-- Modify by Yu-Hsuan Yen -->
 
-<!-- USE SIDEBAR -->
-    <!-- Post Container -->
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
             <div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
-            
-	        
-                <p>davidstack</p>
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
 
-            
+                <p>K8s 开源平台：跨集群主机的自动化部署、伸缩、应用管理，提供以容器为中心的基础设施。</p>
+<p>1、迅速部署应用或者定时部署</p>
+<p>2、伸缩应用</p>
+<p>3、无缝升级回滚应用</p>
+<p>4、最大化利用硬件资源（每个应用只分配它所需要的资源）</p>
+<p>容器相对于虚拟机的优势：</p>
+<p>1、应用的敏捷创建和部署：得益于容器镜像的轻量级</p>
+<p>2、持续的部署、集成、部署：提供可靠搞笑的容器镜像制作和部署，易于回滚(基于镜像部署时，镜像并不会改变)</p>
+<p>3、Dev和ops 分离：在编译发布阶段创建容器镜像，而不是在部署阶段。能够将应用的运行和基础设施分离</p>
+<p>4、开发、测试、生产三种场景，可以在笔记本也可以在公有云</p>
+<p>5、不感知操作系统：Centos、Ubuntu，各种容器引擎，都可以。</p>
+<p>6、以应用为中心的管理：不感知底层资源（基于虚拟机还是物理机）</p>
+<p>7、松散，分布式、弹性、无约束的微服务</p>
+<p>8、资源隔离：应用性能可以预测</p>
+<p>9、资源利用率：高效率和密集度的资源利用</p>
+<p>Kubernets可以将运行在物理或者虚拟机集群，可以将应用从主机架构的基础设施迁移到以容器为中心的基础设施。Kubernets 主要是构建以容器为中心的基础设施。Kubernets满足了将应用运行到生产环境的大部分需求：</p>
+<p>1、容器级别的进程协作:组合复杂应用，同时保留 一个应用一个容器的模型，参考Kubernets POD的概念</p>
+<p>2、挂载存储</p>
+<p>3、密钥管理</p>
+<p>4、应用健康检查</p>
+<p>5、水平弹性伸缩</p>
+<p>6、命名和服务发现</p>
+<p>7、负载均衡</p>
+<p>8、滚动升级</p>
+<p>9、资源监控</p>
+<p>10、日志收集</p>
+<p>11、<a target="_blank" rel="noopener" href="http://kubernetes.io/docs/user-guide/introspection-and-debugging/">support for introspection and debugging</a></p>
+<p>12、认证和权限控制</p>
+<p>l  Kubernets 不是一个传统的，全部包含的Paas。K8s不限制运行在k8s的应用运行环境，不区分应用和服务这两个概念。K8s目标是能够支持极端多样的负载，包含无状态、有状态、数据处理流。如果一个应用能够运行在Container，那么它就能够运行在K8s</p>
+<p>l  K8s不提供中间件服务，消息中间件，数据处理框架、数据库，不提供集群存储并不会内置到K8s，但是这些服务可以运行到K8s</p>
+<p>l  K8s 不提供一键部署的Service Market</p>
+<p>l  K8s 不会部署源码，不会build 应用。CI因人而已</p>
+<p>l  K8s 允许用户选择日志，监控，告警</p>
+<p>l  K8s 没有提供，也没有强制一个综合的应用管理系统</p>
+<p>l  K8s 没有提供也没有采用任何复杂的集群配置、维护、管理、自愈系统</p>
+<p>K8s主要进行应用级别的管理，提供一些通用的应用管理特性：部署、扩容、负载均衡、日志、监控。然而k8s并不是单一的整理，这些默认的解决方案都是可选，可插拔的</p>
 
-
-
-                <!-- 如果开启评论功能 -->
                 
-                    <hr>
-                    
 
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
                     
-
-
+                        <li class="previous">
+                            <a href="/2020/09/21/Kubernetes中的Source-Ip机制/" data-toggle="tooltip" data-placement="top" title="Kubernetes中的Source Ip机制">&larr; Previous post</a>
+                        </li>
                     
-
                     
+                        <li class="next">
+                            <a href="/2020/09/21/Kubernetes详解-Pod/" data-toggle="tooltip" data-placement="top" title="Kubernetes详解--Pod">Next post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
 
                 
+				
             </div>
 
-          <!-- Sidebar Container -->
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
-    
-        <!-- Featured Tags -->
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
 
-<section>
-    <!-- no hr -->
-    <h5><a href="/tags/">Tags</a></h5>
-    <div class="tags">
-        
-            
-            <a href="/tags/#Kubernetes" title="Kubernetes" rel="5">Kubernetes</a>
-            
-        
-            
-            <a href="/tags/#云计算" title="云计算" rel="3">云计算</a>
-            
-        
-            
-            <a href="/tags/#kubernetes 网络" title="kubernetes 网络" rel="1">kubernetes 网络</a>
-            
-        
-            
-            <a href="/tags/#Docker" title="Docker" rel="1">Docker</a>
-            
-        
-            
-            <a href="/tags/#Pod" title="Pod" rel="1">Pod</a>
-            
-        
-            
-            <a href="/tags/#Linux" title="Linux" rel="1">Linux</a>
-            
-        
-            
-            <a href="/tags/#OpenStack" title="OpenStack" rel="2">OpenStack</a>
-            
-        
-            
-            <a href="/tags/#Spring" title="Spring" rel="1">Spring</a>
-            
-        
-            
-            <a href="/tags/#容器" title="容器" rel="1">容器</a>
-            
-        
-            
-            <a href="/tags/#数据库" title="数据库" rel="1">数据库</a>
-            
-        
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">Tags</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#云计算" title="云计算">云计算</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
     </div>
-</section>
-
-        <hr>
-    
-        <!-- Short About -->
-<section class="visible-md visible-lg">
-    <h5><a href="/about/">About me</a></h5>
-    <div class="short-about">
-
-        
-            <img id = "avatar_pic" src="/img/avatar/logo.png" />
-        
-
-        
-            <p>站在巨人的肩膀上,依然云里雾里的前行</p>
-        
-
-        <!-- SNS Link -->
-        <ul class="list-inline">
-            
-            
-            
-
-            
-
-            
-
-            
-                <li>
-                    <a target="_blank"  href="https://github.com/davidstack">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-circle fa-stack-2x"></i>
-                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                        </span>
-                    </a>
-                </li>
-            
-            
-            
-            
-        </ul>
-    </div>
-</section>
-
-        <hr>
-    
-        
-  <h5>Recent posts</h3>
-  <div class="widget">
-    <ul>
-      
-        <li>
-          <a href="/2020/09/21/Golang-%E8%AF%BB%E5%8F%96%E5%86%99%E5%85%A5Etcd%E6%95%B0%E6%8D%AE%E5%BA%93/">Golang 读取写入Etcd数据库</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Kubernetes-%E4%B8%AD%E7%9A%84port%E3%80%81nodePort%E3%80%81targetPort/">Kubernetes 中的port、nodePort、targetPort</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Kubernetes%E4%B8%AD%E7%9A%84Source-Ip%E6%9C%BA%E5%88%B6/">Kubernetes中的Source Ip机制</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Kubernetes-%E8%AF%A6%E8%A7%A3-%E7%AE%80%E4%BB%8B/">Kubernetes 详解--简介</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Kubernetes%E8%AF%A6%E8%A7%A3-Pod/">Kubernetes详解--Pod</a>
-        </li>
-      
-    </ul>
-  </div>
-
-        <hr>
-    
-        
-    <h5>Achives</h5>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">32</span></li></ul>
-    </div>
-
-        <hr>
-    
-        <!-- Friends Blog -->
-
-<h5>Friends</h5>
-<ul class="list-inline">
-
-    
-        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
-    
-</ul>
+</article>
 
 
-        <hr>
-    
-        <!-- Categories -->
-
-        <hr>
-    
-</div>
 
 
-        
-    </div>
-</div>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
 
 
     <!-- Footer -->
@@ -543,7 +524,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/about/index.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/21/Kubernetes-%E8%AF%A6%E8%A7%A3-%E7%AE%80%E4%BB%8B/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},

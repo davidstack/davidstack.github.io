@@ -1,1 +1,1 @@
-http://damonyi.cc/2020/09/15/OpenStack-%E6%BA%90%E7%A0%81%E4%B8%AD%E7%9A%84OSLO/
+http://damonyi.cc/2020/09/21/Golang-%E8%AF%BB%E5%8F%96%E5%86%99%E5%85%A5Etcd%E6%95%B0%E6%8D%AE%E5%BA%93/

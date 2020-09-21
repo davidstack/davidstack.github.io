@@ -16,11 +16,11 @@
 </script>
     <title>
         
-          about - null
+          Nginx代理端口丢失问题 - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/about/">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/21/Nginx代理端口丢失问题/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -121,13 +121,22 @@
 			
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="z-index:2;">
                 
-				
-                    <div class="site-heading"  style="padding:40px">
-                        <h1>about</h1>
-                        <!--<hr class="small">-->
-                        <span class="subheading"></span>
+                    <div class="post-heading" style="padding:40px">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                            
+                        </div>
+                        <h1>Nginx代理端口丢失问题</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 站着工程师 on
+                            2020-09-21
+                        </span>
+                        <span  class="meta" id="busuanzi_container_page_pv">
+                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                         </span>
                     </div>
-                
                 
                 </div>
             </div>
@@ -221,207 +230,155 @@
 
 
     <!-- Main Content -->
-    <!-- Main Content -->
-<div class="container">
-    <div class="row">
-        
+    <!-- Modify by Yu-Hsuan Yen -->
 
-<!-- USE SIDEBAR -->
-    <!-- Post Container -->
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
             <div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
-            
-	        
-                <p>davidstack</p>
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
 
-            
+                <p>     Kubernetes环境中在使用Nginx进行代理，在进行端口代理时，总是出现端口丢失的问题，例如访问</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">  </span><br><span class="line">http:&#x2F;&#x2F;10.10.70.58:32007&#x2F;demo</span><br></pre></td></tr></table></figure>
+
+<p>地址会跳转到 <a target="_blank" rel="noopener" href="http://10.10.70.58:32007/demo"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;10.10.70.58:32007&#x2F;demo</span><br></pre></td></tr></table></figure>
+
+<p>查看代理配置如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">upstream archdemo &#123;</span><br><span class="line">        server 10.10.70.61:32007;</span><br><span class="line">        server 10.10.70.62:32007;</span><br><span class="line">&#125;</span><br><span class="line">server&#123;</span><br><span class="line">    listen 32007;</span><br><span class="line">    location &#x2F; &#123;</span><br><span class="line">        proxy\_pass         http:&#x2F;&#x2F;archdemo; </span><br><span class="line">        server\_name\_in\_redirect off;</span><br><span class="line">        proxy\_set\_header X-Real-IP $remote\_addr;</span><br><span class="line">        proxy\_set\_header REMOTE-HOST $remote\_addr;</span><br><span class="line">        proxy\_set\_header X-Forwarded-For $proxy\_add\_x\_forwarded\_for;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 
-                <!-- 如果开启评论功能 -->
+<p>这里经过“面向搜索引擎的编程“，解决该问题，在进行代理配置是需要使用以下配置  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">upstream archdemo &#123;</span><br><span class="line">        server 10.10.70.61:32007;</span><br><span class="line">        server 10.10.70.62:32007;</span><br><span class="line">&#125;</span><br><span class="line">server&#123;</span><br><span class="line">    listen 32007;</span><br><span class="line">        server\_name\_in\_redirect off;</span><br><span class="line">        proxy\_set\_header Host $host:$server\_port;</span><br><span class="line">        proxy\_set\_header X-Real-IP $remote\_addr;</span><br><span class="line">        proxy\_set\_header REMOTE-HOST $remote\_addr;</span><br><span class="line">        proxy\_set\_header X-Forwarded-For $proxy\_add\_x\_forwarded\_for;</span><br><span class="line">    location &#x2F; &#123;</span><br><span class="line">        proxy\_pass         http:&#x2F;&#x2F;archdemo;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
                 
-                    <hr>
-                    
 
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
                     
-
-
+                        <li class="previous">
+                            <a href="/2020/09/21/Linux执行df和du查看磁盘时占用结果不一致的解决办法/" data-toggle="tooltip" data-placement="top" title="Linux执行df和du查看磁盘时占用结果不一致的解决办法">&larr; Previous post</a>
+                        </li>
                     
-
                     
+                        <li class="next">
+                            <a href="/2020/09/21/OpenShift基础功能测试和验证/" data-toggle="tooltip" data-placement="top" title="OpenShift基础功能测试和验证">Next post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
 
                 
+				
             </div>
 
-          <!-- Sidebar Container -->
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
-    
-        <!-- Featured Tags -->
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
 
-<section>
-    <!-- no hr -->
-    <h5><a href="/tags/">Tags</a></h5>
-    <div class="tags">
-        
-            
-            <a href="/tags/#Kubernetes" title="Kubernetes" rel="5">Kubernetes</a>
-            
-        
-            
-            <a href="/tags/#云计算" title="云计算" rel="3">云计算</a>
-            
-        
-            
-            <a href="/tags/#kubernetes 网络" title="kubernetes 网络" rel="1">kubernetes 网络</a>
-            
-        
-            
-            <a href="/tags/#Docker" title="Docker" rel="1">Docker</a>
-            
-        
-            
-            <a href="/tags/#Pod" title="Pod" rel="1">Pod</a>
-            
-        
-            
-            <a href="/tags/#Linux" title="Linux" rel="1">Linux</a>
-            
-        
-            
-            <a href="/tags/#OpenStack" title="OpenStack" rel="2">OpenStack</a>
-            
-        
-            
-            <a href="/tags/#Spring" title="Spring" rel="1">Spring</a>
-            
-        
-            
-            <a href="/tags/#容器" title="容器" rel="1">容器</a>
-            
-        
-            
-            <a href="/tags/#数据库" title="数据库" rel="1">数据库</a>
-            
-        
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">Tags</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
     </div>
-</section>
-
-        <hr>
-    
-        <!-- Short About -->
-<section class="visible-md visible-lg">
-    <h5><a href="/about/">About me</a></h5>
-    <div class="short-about">
-
-        
-            <img id = "avatar_pic" src="/img/avatar/logo.png" />
-        
-
-        
-            <p>站在巨人的肩膀上,依然云里雾里的前行</p>
-        
-
-        <!-- SNS Link -->
-        <ul class="list-inline">
-            
-            
-            
-
-            
-
-            
-
-            
-                <li>
-                    <a target="_blank"  href="https://github.com/davidstack">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-circle fa-stack-2x"></i>
-                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                        </span>
-                    </a>
-                </li>
-            
-            
-            
-            
-        </ul>
-    </div>
-</section>
-
-        <hr>
-    
-        
-  <h5>Recent posts</h3>
-  <div class="widget">
-    <ul>
-      
-        <li>
-          <a href="/2020/09/21/Golang-%E8%AF%BB%E5%8F%96%E5%86%99%E5%85%A5Etcd%E6%95%B0%E6%8D%AE%E5%BA%93/">Golang 读取写入Etcd数据库</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Kubernetes-%E4%B8%AD%E7%9A%84port%E3%80%81nodePort%E3%80%81targetPort/">Kubernetes 中的port、nodePort、targetPort</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Kubernetes%E4%B8%AD%E7%9A%84Source-Ip%E6%9C%BA%E5%88%B6/">Kubernetes中的Source Ip机制</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Kubernetes-%E8%AF%A6%E8%A7%A3-%E7%AE%80%E4%BB%8B/">Kubernetes 详解--简介</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Kubernetes%E8%AF%A6%E8%A7%A3-Pod/">Kubernetes详解--Pod</a>
-        </li>
-      
-    </ul>
-  </div>
-
-        <hr>
-    
-        
-    <h5>Achives</h5>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">32</span></li></ul>
-    </div>
-
-        <hr>
-    
-        <!-- Friends Blog -->
-
-<h5>Friends</h5>
-<ul class="list-inline">
-
-    
-        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
-    
-</ul>
+</article>
 
 
-        <hr>
-    
-        <!-- Categories -->
-
-        <hr>
-    
-</div>
 
 
-        
-    </div>
-</div>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
 
 
     <!-- Footer -->
@@ -543,7 +500,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/about/index.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/21/Nginx%E4%BB%A3%E7%90%86%E7%AB%AF%E5%8F%A3%E4%B8%A2%E5%A4%B1%E9%97%AE%E9%A2%98/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},

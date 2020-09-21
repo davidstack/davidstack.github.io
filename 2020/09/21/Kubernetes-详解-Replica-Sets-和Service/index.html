@@ -16,11 +16,11 @@
 </script>
     <title>
         
-          OpenStack 源码中的OSLO - null
+          Kubernetes 详解-Replica Sets 和Service - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/2020/09/15/OpenStack-源码中的OSLO/">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/21/Kubernetes-详解-Replica-Sets-和Service/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -124,14 +124,16 @@
                     <div class="post-heading" style="padding:40px">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#OpenStack" title="OpenStack">OpenStack</a>
+                              <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                            
+                              <a class="tag" href="/tags/#云计算" title="云计算">云计算</a>
                             
                         </div>
-                        <h1>OpenStack 源码中的OSLO</h1>
+                        <h1>Kubernetes 详解-Replica Sets 和Service</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by 站着工程师 on
-                            2020-09-15
+                            2020-09-21
                         </span>
                         <span  class="meta" id="busuanzi_container_page_pv">
                                 本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -243,36 +245,100 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h3 id="Oslo"><a href="#Oslo" class="headerlink" title="Oslo"></a>Oslo</h3><p>在RYU的目录下可以找到cfg.py文件，这个文件中import了oslo的相关模块，以便调用时减少引用数目。从文件中可以发现oslo.config.cfg文件是关键文件，其在系统中的文件位置在：/usr/local/lib/python2.7/dist-packages/oslo/config/cfg.py。想查看源码的读者可以自行查看。在该cfg.py文件中 定义了ConfigOpts类，包含了_opts, _groups等成员变量。该类完成了命令行和配置参数的解析。</p>
-<p>如果要快速学习某一个知识，最好的办法就是把它用起来。所以首先我会介绍一个入门的教程。如果你没有看懂，可以去看原始的<a target="_blank" rel="noopener" href="http://www.giantflyingsaucer.com/blog/?p=4822">教程</a>。</p>
-<p>首先安装<a target="_blank" rel="noopener" href="https://virtualenv.pypa.io/en/latest/virtualenv.html">python-virtualenv</a>，此python库可以用于创建一个虚拟的，与外界隔离的运行环境，听起来和docker好像有点像。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install python-virtualenv</span><br><span class="line">virtualenv example-app</span><br><span class="line">cd example-app</span><br><span class="line">source bin&#x2F;activate</span><br><span class="line">pip install oslo.config</span><br><span class="line">touch app.py</span><br><span class="line">touch app.conf</span><br></pre></td></tr></table></figure>
-
-
-
-<p>然后修改app.conf。添加了两个group:simple和morestuff。simple组中有一个BoolOpt:enable。morestuff组有StrOpt, ListOpt, DictOpt, IntOpt,和FloatOpt。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[simple]</span><br><span class="line">enable &#x3D; True</span><br><span class="line">[morestuff]</span><br><span class="line"># StrOpt</span><br><span class="line">message &#x3D; Hello World</span><br><span class="line"># ListOpt</span><br><span class="line">usernames &#x3D; [&#39;Licheng&#39;, &#39;Muzixing&#39;, &#39;Distance&#39;]</span><br><span class="line"># DictOpt</span><br><span class="line">jobtitles &#x3D; &#123;&#39;Licheng&#39;: &#39;Manager&#39;, &#39;Muzixing&#39;: &#39;CEO&#39;, &#39;Distance&#39;: &#39;Security Guard&#39;&#125;</span><br><span class="line"># IntOpt</span><br><span class="line">payday &#x3D; 20</span><br><span class="line"># FloatOpt</span><br><span class="line">pi &#x3D; 3.14</span><br></pre></td></tr></table></figure>
-
-
-
-<p>修改app.py文件。首先定义两个group，再对两个group的option进行定义。最后使用register_group和register_opts函数来完成group和option的注册。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">from __future__ import print_function</span><br><span class="line">from oslo.config import cfg</span><br><span class="line">opt_simple_group &#x3D; cfg.OptGroup(name&#x3D;&#39;simple&#39;,</span><br><span class="line">                         title&#x3D;&#39;A Simple Example&#39;)</span><br><span class="line">opt_morestuff_group &#x3D; cfg.OptGroup(name&#x3D;&#39;morestuff&#39;,</span><br><span class="line">                         title&#x3D;&#39;A More Complex Example&#39;)</span><br><span class="line">simple_opts &#x3D; [</span><br><span class="line">    cfg.BoolOpt(&#39;enable&#39;, default&#x3D;False,</span><br><span class="line">                help&#x3D;(&#39;True enables, False disables&#39;))</span><br><span class="line">]</span><br><span class="line">morestuff_opts &#x3D; [</span><br><span class="line">    cfg.StrOpt(&#39;message&#39;, default&#x3D;&#39;No data&#39;,</span><br><span class="line">               help&#x3D;(&#39;A message&#39;)),</span><br><span class="line">    cfg.ListOpt(&#39;usernames&#39;, default&#x3D;None,</span><br><span class="line">                help&#x3D;(&#39;A list of usernames&#39;)),</span><br><span class="line">    cfg.DictOpt(&#39;jobtitles&#39;, default&#x3D;None,</span><br><span class="line">                help&#x3D;(&#39;A dictionary of usernames and job titles&#39;)),</span><br><span class="line">    cfg.IntOpt(&#39;payday&#39;, default&#x3D;30,</span><br><span class="line">                help&#x3D;(&#39;Default payday monthly date&#39;)),</span><br><span class="line">    cfg.FloatOpt(&#39;pi&#39;, default&#x3D;0.0,</span><br><span class="line">                help&#x3D;(&#39;The value of Pi&#39;))</span><br><span class="line">]</span><br><span class="line">CONF &#x3D; cfg.CONF</span><br><span class="line">CONF.register_group(opt_simple_group)</span><br><span class="line">CONF.register_opts(simple_opts, opt_simple_group)</span><br><span class="line">CONF.register_group(opt_morestuff_group)</span><br><span class="line">CONF.register_opts(morestuff_opts, opt_morestuff\_group)</span><br><span class="line">if __name__ &#x3D;&#x3D; &quot;__main__&quot;:</span><br><span class="line">    CONF(default_config_files&#x3D;[&#39;app.conf&#39;])</span><br><span class="line">    print(&#39;(simple) enable: &#123;&#125;&#39;.format(CONF.simple.enable))</span><br><span class="line">    print(&#39;(morestuff) message :&#123;&#125;&#39;.format(CONF.morestuff.message))</span><br><span class="line">    print(&#39;(morestuff) usernames: &#123;&#125;&#39;.format(CONF.morestuff.usernames))</span><br><span class="line">    print(&#39;(morestuff) jobtitles: &#123;&#125;&#39;.format(CONF.morestuff.jobtitles))</span><br><span class="line">    print(&#39;(morestuff) payday: &#123;&#125;&#39;.format(CONF.morestuff.payday))</span><br><span class="line">    print(&#39;(morestuff) pi: &#123;&#125;&#39;.format(CONF.morestuff.pi))</span><br></pre></td></tr></table></figure>
-
-
-
-
-<p>完成之后，运行app.py文件。可以查看到相关输出。</p>
-<p>回到RYU中，之前一篇<a target="_blank" rel="noopener" href="http://www.muzixing.com/pages/2014/12/10/ryuxue-xi-eventlet.html">博客</a>介绍了RYU的main函数。在ryu/ryu/cmd/manager.py文件中我们可以看到如下的代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CONF.register_cli_opts([</span><br><span class="line">    cfg.ListOpt(&#39;app-lists&#39;, default&#x3D;[],</span><br><span class="line">                help&#x3D;&#39;application module name to run&#39;),</span><br><span class="line">    cfg.MultiStrOpt(&#39;app&#39;, positional&#x3D;True, default&#x3D;[],</span><br><span class="line">                    help&#x3D;&#39;application module name to run&#39;),</span><br><span class="line">    cfg.StrOpt(&#39;pid-file&#39;, default&#x3D;None, help&#x3D;&#39;pid file name&#39;),</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">以上的注册了三个Option，其中的app-lists和app参数是运行ryu-manager时的参数，即APP的名称。在以下的main函数中，我们可以看到首先获取了输入的参数，若参数为空，则默认开启ofp\_handler应用。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">def main(args&#x3D;None, prog&#x3D;None):</span><br><span class="line">    try:</span><br><span class="line">        CONF(args&#x3D;args, prog&#x3D;prog,</span><br><span class="line">             project&#x3D;&#39;ryu&#39;, version&#x3D;&#39;ryu-manager %s&#39; % version,</span><br><span class="line">             default_config_files&#x3D;[&#39;&#x2F;usr&#x2F;local&#x2F;etc&#x2F;ryu&#x2F;ryu.conf&#39;])</span><br><span class="line">    except cfg.ConfigFilesNotFoundError:</span><br><span class="line">        CONF(args&#x3D;args, prog&#x3D;prog,</span><br><span class="line">             project&#x3D;&#39;ryu&#39;, version&#x3D;&#39;ryu-manager %s&#39; % version)</span><br><span class="line"></span><br><span class="line">    log.init_log()</span><br><span class="line"></span><br><span class="line">    if CONF.pid_file:</span><br><span class="line">        import os</span><br><span class="line">        with open(CONF.pid_file, &#39;w&#39;) as pid\_file:</span><br><span class="line">            pid_file.write(str(os.getpid()))</span><br><span class="line"></span><br><span class="line">    app_lists &#x3D; CONF.app_lists + CONF.app</span><br><span class="line">    # keep old behaivor, run ofp if no application is specified.</span><br><span class="line">    if not app_lists:</span><br><span class="line">        app_lists &#x3D; [&#39;ryu.controller.ofp_handler&#39;]</span><br></pre></td></tr></table></figure>
-
-
-
-<p>oslo模块使用能够使得整个工程的不同模块可以使用同一个配置文件，从而减少了命令冲突的可能，此外，oslo提供的模板，可以让命令解析更方便。在oslo.config之外，还有oslo.db,oslo.messaging等。</p>
-<p>  针对OpenStack 多个组件，OpenStack社区开发了不少公共组件OSOL：<a target="_blank" rel="noopener" href="https://github.com/openstack/?query=oslo">https://github.com/openstack/?query=oslo</a></p>
+                <h2 id="1-1-Replica-Sets"><a href="#1-1-Replica-Sets" class="headerlink" title="1.1 Replica Sets"></a>1.1 Replica Sets</h2><p>下一代的Replication Controller，两者的区别主要在选择器selector,Replica 支持集合级别的选择器，而前期的Replication Controller，支持在等号描述的选择器，kubectl命令支持使用replica sets （目前kubectl命令中的rolling-update 还不支持），目前replica sets主要用于deployment中</p>
+<p>Replica Sets 能够确保在某个时间点上，一定数量的Pod在运行。然而Deployment 是Replica Sets更高一层的抽象，用于更新Pods 以及其他一些特性。推荐使用Deployment而不是直接使用Replica Set进行编排Pods。</p>
+<h2 id="1-2-Service"><a href="#1-2-Service" class="headerlink" title="1.2 Service"></a>1.2 Service</h2><p>由于Pod的IP会变化，提供某些功能的POD如果IP发生变化，会导致其他Pod无法发现这些功能，因此 引入了Service的功能。</p>
+<p>Service是一组逻辑Pod的抽象，定义了一个访问这些Pod的策略（或者叫做微服务），这些Service 通常通过Label Selector指向这些Pod。</p>
+<p>举个例子：一个提供镜像处理的后端有三个运行的副本，这些副本是可以取代的，但是前端并不需要感知，这时就需要Service作为抽象</p>
+<p>对于可以部署在K8s内部应用，K8s通过Endpoints Api更新Service对应的Pod集合，对于那些没K8s外部的应用，K8s提供了虚拟IP桥接到Service，然后Service重定向到Pod集合。</p>
+<h3 id="1-2-1-Service-定义"><a href="#1-2-1-Service-定义" class="headerlink" title="1.2.1 Service 定义"></a>1.2.1 Service 定义</h3><p><strong>{</strong></p>
+<p> <strong>“kind”**</strong>:**  <strong>“Service”**</strong>,**</p>
+<p> <strong>“apiVersion”**</strong>:**  <strong>“v1”**</strong>,**</p>
+<p> <strong>“metadata”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“name”**</strong>:**  <strong>“my-service”</strong></p>
+<p> <strong>},</strong></p>
+<p> <strong>“spec”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“selector”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“app”**</strong>:**  <strong>“MyApp”</strong></p>
+<p> <strong>},</strong></p>
+<p> <strong>“ports”**</strong>:**  <strong>[</strong></p>
+<p> <strong>{</strong></p>
+<p> <strong>“protocol”**</strong>:**  <strong>“TCP”**</strong>,**</p>
+<p> <strong>“port”**</strong>:**  <strong>80**</strong>,**</p>
+<p> <strong>“targetPort”**</strong>:**  <strong>9376</strong></p>
+<p> <strong>}</strong></p>
+<p> <strong>]</strong></p>
+<p> <strong>}</strong></p>
+<p><strong>}</strong></p>
+<p>该Service 对应的Pod集合：带有label app=Myapp，对外暴露端口9376</p>
+<p>Service 能将任意的流入Port 重定向到targetPort,默认情况下，targetPort和Port为相同值，不同的Pod 可以对应不同的端口号（例如，在你应用的下一个版本中会使用不同的端口号，但是并不应用之前版本的使用）</p>
+<p>Service 支持UDP和TCP，默认是TCP</p>
+<h3 id="1-2-2-Service-without-selector"><a href="#1-2-2-Service-without-selector" class="headerlink" title="1.2.2 Service without selector"></a>1.2.2 Service without selector</h3><p>Service可以抽象访问Pod集群，同时 Service也可以抽象其他后端</p>
+<p>1、 在生产环境中使用外部数据库，在测试环境中使用自己的数据库</p>
+<p>2、 将自己的Service指向其他集群或者其他命名空间的Service</p>
+<p>3、 迁移应用到k8s，但是还是有些应用运行在k8s之外</p>
+<p>通过定义不包含selector的Service实现</p>
+<p><strong>{</strong></p>
+<p> <strong>“kind”**</strong>:**  <strong>“Service”**</strong>,**</p>
+<p> <strong>“apiVersion”**</strong>:**  <strong>“v1”**</strong>,**</p>
+<p> <strong>“metadata”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“name”**</strong>:**  <strong>“my-service”</strong></p>
+<p> <strong>},</strong></p>
+<p> <strong>“spec”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“ports”**</strong>:**  <strong>[</strong></p>
+<p> <strong>{</strong></p>
+<p> <strong>“protocol”**</strong>:**  <strong>“TCP”**</strong>,**</p>
+<p> <strong>“port”**</strong>:**  <strong>80**</strong>,**</p>
+<p> <strong>“targetPort”**</strong>:**  <strong>9376</strong></p>
+<p> <strong>}</strong></p>
+<p><strong>]</strong></p>
+<p> <strong>}</strong></p>
+<p><strong>}</strong></p>
+<p>Service 没有Selector，K8s不会创建Endpoints，你可以通过手动创建Endpoint指向自己的endpoint</p>
+<p><strong>{</strong></p>
+<p> <strong>“kind”**</strong>:**  <strong>“Endpoints”**</strong>,**</p>
+<p> <strong>“apiVersion”**</strong>:**  <strong>“v1”**</strong>,**</p>
+<p> <strong>“metadata”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“name”**</strong>:**  <strong>“my-service”</strong></p>
+<p> <strong>},</strong></p>
+<p> <strong>“subsets”**</strong>:**  <strong>[</strong></p>
+<p> <strong>{</strong></p>
+<p> <strong>“addresses”**</strong>:**  <strong>[</strong></p>
+<p> <strong>{</strong>  <strong>“ip”**</strong>:**  <strong>“1.2.3.4”</strong>  <strong>}</strong></p>
+<p> <strong>],</strong></p>
+<p> <strong>“ports”**</strong>:**  <strong>[</strong></p>
+<p> <strong>{</strong>  <strong>“port”**</strong>:**  <strong>9376</strong>  <strong>}</strong></p>
+<p> <strong>]</strong></p>
+<p> <strong>}</strong></p>
+<p> <strong>]</strong></p>
+<p><strong>}</strong></p>
+<p>Endpoint的IP不能是loopback（127.0.0.1/8），link-local（169.254.0.0/16）, link-local multicast (224.0.0.0/24).</p>
+<p>访问不含有selector的Service和访问含有Selector的Service 方式一样，都会讲流向重定向的endpoint</p>
+<p> 其他命名空间的服务是一个特例，他不会定义ports和endpoint，他只是返回一个访问外部服务的别名</p>
+<p><strong>{</strong></p>
+<p> <strong>“kind”**</strong>:**  <strong>“Service”**</strong>,**</p>
+<p> <strong>“apiVersion”**</strong>:**  <strong>“v1”**</strong>,**</p>
+<p> <strong>“metadata”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“name”**</strong>:**  <strong>“my-service”**</strong>,**</p>
+<p> <strong>“namespace”**</strong>:**  <strong>“prod”</strong></p>
+<p> <strong>},</strong></p>
+<p> <strong>“spec”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“type”**</strong>:**  <strong>“ExternalName”**</strong>,**</p>
+<p> <strong>“externalName”**</strong>:**  <strong>“my.database.example.com”</strong></p>
+<p> <strong>}</strong></p>
+<p><strong>}</strong></p>
+<p>当你访问服务<strong>my-service.prod.svc.CLUSTER**</strong>时，**<strong>cluster**</strong>的**<strong>dns**</strong>服务会返回记录**<strong>my.database.example.com</strong> <strong>的**</strong>CNAME**<strong>，这个重定向是发生在**</strong>dns**<strong>解析阶段。</strong></p>
+<h3 id="1-2-3-虚拟IP-和服务代理"><a href="#1-2-3-虚拟IP-和服务代理" class="headerlink" title="1.2.3 虚拟IP 和服务代理"></a>1.2.3 虚拟IP 和服务代理</h3><h4 id="1-2-3-1-代理"><a href="#1-2-3-1-代理" class="headerlink" title="1.2.3.1 代理"></a>1.2.3.1 代理</h4><p>K8s集群内每个节点都会运行kube-proxy，负责实现服务的虚拟机IP（不是externalName）。1.0版本的代理模式在是userspace，1.1增加了iptables proxy，从1.2开始 iptables 代理是默认的模式</p>
+<p>K8s 1.0的service是四层（TCP/UDP），从k8s1.1开始，增加了Ingress，实现七层（HTTP）服务</p>
+<p><strong>用户空间的代理模式</strong></p>
+<p>Kube-proxy监控k8s master节点来发现Service、Endpointd的增加和删除，对于Service，在本地打开一个随机端口作为代理端口，任何访问改代理端口的连接都会被指向Service对象的Pod集合，最终指向哪个Pod取决于Service的SessionAffinity，最后，他会配置iptables，捕获流向Service 的Cluster IP 和Port的连接，并重定向到这个代理端口。</p>
+<p>最终结果，任何到Service Cluster Ip 和port的流量都会指向合适的Pod</p>
+<p>默认情况下，都是轮训算法选择后端，也可以通过设置service.spec.sessionAffinity 为ClientIP，将选择算法改为Client-IP based session affinity</p>
+<p><strong>Iptables**</strong>的代理模式**</p>
+<p>该模式与userspace模式类似，只是没有这个代理端口</p>
+<p>比userspace方式更快更可靠，然后与userspace方式不同，当选择的pod异常时，该方式无法自动尝试选择其他Pod。</p>
+<p>1、userspace模式只不适合大规模集群使用（数千个服务）</p>
+<p>2、userspace模式隐藏了访问服务的源IP，iptables模式虽然没有隐藏源IP，但是也是通过负载均衡或者nodeport 影响了客户端输入</p>
 
                 
 
@@ -281,12 +347,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2020/09/21/OpenShift基础功能测试和验证/" data-toggle="tooltip" data-placement="top" title="OpenShift基础功能测试和验证">&larr; Previous post</a>
+                            <a href="/2020/09/21/Kubernetes详解-Pod/" data-toggle="tooltip" data-placement="top" title="Kubernetes详解--Pod">&larr; Previous post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2020/09/15/OpenStack-Centos6-5-image-制作/" data-toggle="tooltip" data-placement="top" title="OpenStack Centos6.5 image 制作">Next post &rarr;</a>
+                            <a href="/2020/09/21/Kubernetes-Dashboard开发说明/" data-toggle="tooltip" data-placement="top" title="Kubernetes Dashboard开发说明">Next post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -336,7 +402,9 @@
                     <h5><a href="/tags/">Tags</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#OpenStack" title="OpenStack">OpenStack</a>
+                          <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                        
+                          <a class="tag" href="/tags/#云计算" title="云计算">云计算</a>
                         
                     </div>
                 </section>
@@ -518,7 +586,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/2020/09/15/OpenStack-%E6%BA%90%E7%A0%81%E4%B8%AD%E7%9A%84OSLO/index.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/21/Kubernetes-%E8%AF%A6%E8%A7%A3-Replica-Sets-%E5%92%8CService/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},
