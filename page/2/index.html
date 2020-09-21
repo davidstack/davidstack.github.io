@@ -160,7 +160,7 @@
             <div class="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a  href="/">Homepage</a>
+                        <a  href="/">主页</a>
                     </li>
 		    
                     
@@ -271,9 +271,9 @@
 
 
 <div class="w3-row-padding">
-	<a href="/2020/09/21/OpenShift基础功能测试和验证/">
+	<a href="/2020/09/21/Docker-Volume-Plugin-开发及Golang实现/">
         <h2 class="post-title">
-            OpenShift基础功能测试和验证
+            Docker Volume Plugin 开发及Golang实现
         </h2>
         <h3 class="post-subtitle">
             
@@ -282,12 +282,12 @@
 
 <div>
 
-    <a href="/2020/09/21/OpenShift基础功能测试和验证/">
+    <a href="/2020/09/21/Docker-Volume-Plugin-开发及Golang实现/">
 
         <div class="post-content-preview">
-            OpenShiftOpenShift 分布式部署OpenShift Slave节点配置0、 节点ssh互信设置
-Maste节点执行
-123456ssh-keygen# for host in master.example.com \\    node1.example.com \\    node2.example.com; \\    do ssh-copy-id -i ~&#x2F.........
+                  该项目要用于生产环境了，完善加固了一下代码，顺便更新一下文章。
+     在加固项目的代码时候 ，调整了卷创建的顺序，调用docker volume create的时候，就把lv创建出来，并挂载到了本地目录，中间遇到了一个很奇怪的问题，挂载lv代码
+123456err &#x3D; syscall.Mount(lvdiskname, mountPoint, &quot;xf.........
         </div>
     </a>
     
@@ -306,9 +306,9 @@ Maste节点执行
 
 
 <div class="w3-row-padding">
-	<a href="/2020/09/15/OpenStack-源码中的OSLO/">
+	<a href="/2020/09/21/Etcd的db文件很大/">
         <h2 class="post-title">
-            OpenStack 源码中的OSLO
+            Etcd的db文件很大
         </h2>
         <h3 class="post-subtitle">
             
@@ -317,16 +317,17 @@ Maste节点执行
 
 <div>
 
-    <a href="/2020/09/15/OpenStack-源码中的OSLO/">
+    <a href="/2020/09/21/Etcd的db文件很大/">
 
         <div class="post-content-preview">
-            Oslo在RYU的目录下可以找到cfg.py文件，这个文件中import了oslo的相关模块，以便调用时减少引用数目。从文件中可以发现oslo.config.cfg文件是关键文件，其在系统中的文件位置在：/usr/local/lib/python2.7/dist-packages/oslo/config/cfg.py。想查看源码的读者可以自行查看。在该cfg.py文件中 定义了Conf.........
+                 Etcd运行一段时间后，发现db占用的空间很大，将etcd内的数据导出，发现只有180多k,为什么会占用这么多空间呢？
+12345678910[root@node3 snap]# pwd&#x2F;var&#x2F;lib&#x2F;etcd&#x2F;member&#x2F;snap[root@node3 snap]# ll -lhtotal 509M-rw-r--r-- .........
         </div>
     </a>
     
         <p class="post-meta">
             Posted by 站着工程师 on
-            2020-09-15
+            2020-09-21
         </p>
              <p class="post-meta" id="busuanzi_container_page_pv">
                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -339,9 +340,9 @@ Maste节点执行
 
 
 <div class="w3-row-padding">
-	<a href="/2020/09/15/OpenStack-Centos6-5-image-制作/">
+	<a href="/2020/09/21/Golang-读取写入Etcd数据库/">
         <h2 class="post-title">
-            OpenStack Centos6.5 image 制作
+            Golang 读取写入Etcd数据库
         </h2>
         <h3 class="post-subtitle">
             
@@ -350,18 +351,18 @@ Maste节点执行
 
 <div>
 
-    <a href="/2020/09/15/OpenStack-Centos6-5-image-制作/">
+    <a href="/2020/09/21/Golang-读取写入Etcd数据库/">
 
         <div class="post-content-preview">
-            查找了很多资料，包括官方文档，几处资料结合起来终于制作好了Centos 6.5 的镜像。但是不能够进行硬盘伸缩，还待优化（但是个人觉得硬盘伸缩的作用不是很大，体验了阿里云、UnitedStack，都是固定了系统盘的大小（linux是20G、windows是40G的系统盘）） 
-1、使用ubuntu12.04 server 64bits，首先安装kvm
-  sudo apt-get in.........
+                       项目中用到Etcd数据库来存储容器的信息和应用的域名信息，将操作Etcd的golang代码整理了一下
+1、将Container信息写入到指定目录
+12345678910111213141516171819202122232425c, err :&#x3D; common.GetEtcdClient()	if err !&#x3D; nil &#123;		beeg.........
         </div>
     </a>
     
         <p class="post-meta">
             Posted by 站着工程师 on
-            2020-09-15
+            2020-09-21
         </p>
              <p class="post-meta" id="busuanzi_container_page_pv">
                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -374,9 +375,9 @@ Maste节点执行
 
 
 <div class="w3-row-padding">
-	<a href="/2020/09/15/Restore-iSCSI-configuration-for-Cinder-Nova/">
+	<a href="/2020/09/21/Kubernetes-中的port、nodePort、targetPort/">
         <h2 class="post-title">
-            Restore iSCSI configuration for Cinder/Nova
+            Kubernetes 中的port、nodePort、targetPort
         </h2>
         <h3 class="post-subtitle">
             
@@ -385,16 +386,17 @@ Maste节点执行
 
 <div>
 
-    <a href="/2020/09/15/Restore-iSCSI-configuration-for-Cinder-Nova/">
+    <a href="/2020/09/21/Kubernetes-中的port、nodePort、targetPort/">
 
         <div class="post-content-preview">
-            Restore iSCSI configuration for Cinder / NovaIn few cases (i.e. cinder-volume crash), some cinder volumes cannot be accessed by a VM (I/O errors), but are still displayed as associated when usin.........
+            Kubernetes 在定义Service的时候有几个Port需要澄清一下，例如下面的Service定义  
+123456789101112131415apiVersion: v1  kind: Service  metadata:    labels:      name: app1    name: app1    namespace: default  spec:    type.........
         </div>
     </a>
     
         <p class="post-meta">
             Posted by 站着工程师 on
-            2020-09-15
+            2020-09-21
         </p>
              <p class="post-meta" id="busuanzi_container_page_pv">
                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -407,9 +409,9 @@ Maste节点执行
 
 
 <div class="w3-row-padding">
-	<a href="/2020/09/15/Spring的IOC与AOP（转载）/">
+	<a href="/2020/09/21/Kubernetes中的Source-Ip机制/">
         <h2 class="post-title">
-            Spring的IOC与AOP（转载）
+            Kubernetes中的Source Ip机制
         </h2>
         <h3 class="post-subtitle">
             
@@ -418,17 +420,17 @@ Maste节点执行
 
 <div>
 
-    <a href="/2020/09/15/Spring的IOC与AOP（转载）/">
+    <a href="/2020/09/21/Kubernetes中的Source-Ip机制/">
 
         <div class="post-content-preview">
-            众所周知，Spring的核心特性就是IOC和AOP，IOC（Inversion of Control），即“控制反转”；AOP（Aspect-OrientedProgramming），即“面向切面编程”。参考书《Spring In Action》，下面分享一下我对这两大特性的个人理解。
-IOC：IOC，另外一种说法叫DI（Dependency Injection），即依赖注入。它并不是.........
+            准备工作你必须拥有一个正常工作的 Kubernetes 1.5 集群，用来运行本文中的示例。该示例使用一个简单的 nginx webserver 回送它接收到的请求的 HTTP 头中的源 IP 地址。你可以像下面这样创建它：
+12$ kubectl run source-ip-app --image&#x3D;k8s.gcr.io&#x2F;echoserver:1.4deployme.........
         </div>
     </a>
     
         <p class="post-meta">
             Posted by 站着工程师 on
-            2020-09-15
+            2020-09-21
         </p>
              <p class="post-meta" id="busuanzi_container_page_pv">
                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -441,9 +443,9 @@ IOC：IOC，另外一种说法叫DI（Dependency Injection），即依赖注入�
 
 
 <div class="w3-row-padding">
-	<a href="/2020/09/15/Tensorflow中的placeholder和feed-dict/">
+	<a href="/2020/09/21/Kubernetes-详解-简介/">
         <h2 class="post-title">
-            Tensorflow中的placeholder和feed_dict
+            Kubernetes 详解--简介
         </h2>
         <h3 class="post-subtitle">
             
@@ -452,16 +454,23 @@ IOC：IOC，另外一种说法叫DI（Dependency Injection），即依赖注入�
 
 <div>
 
-    <a href="/2020/09/15/Tensorflow中的placeholder和feed-dict/">
+    <a href="/2020/09/21/Kubernetes-详解-简介/">
 
         <div class="post-content-preview">
-            TensorFlow 支持占位符placeholder。占位符并没有初始值，它只会分配必要的内存。在会话中，占位符可以使用 feed_dict 馈送数据。 feed_dict是一个字典，在字典中需要给出每一个用到的占位符的取值。 在训练神经网络时需要每次提供一个批量的训练样本，如果每次迭代选取的数据要通过常量表示，那么TensorFlow 的计算图会非常大。因为每增加一个常量，Tens.........
+            K8s 开源平台：跨集群主机的自动化部署、伸缩、应用管理，提供以容器为中心的基础设施。
+1、迅速部署应用或者定时部署
+2、伸缩应用
+3、无缝升级回滚应用
+4、最大化利用硬件资源（每个应用只分配它所需要的资源）
+容器相对于虚拟机的优势：
+1、应用的敏捷创建和部署：得益于容器镜像的轻量级
+2、持续的部署、集成、部署：提供可靠搞笑的容器镜像制作和部署，易于回滚(基于镜像部署时，镜像并不会改变.........
         </div>
     </a>
     
         <p class="post-meta">
             Posted by 站着工程师 on
-            2020-09-15
+            2020-09-21
         </p>
              <p class="post-meta" id="busuanzi_container_page_pv">
                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -474,9 +483,9 @@ IOC：IOC，另外一种说法叫DI（Dependency Injection），即依赖注入�
 
 
 <div class="w3-row-padding">
-	<a href="/2020/09/15/WiWarden启动源码分析/">
+	<a href="/2020/09/21/Kubernetes详解-Pod/">
         <h2 class="post-title">
-            WiWarden启动源码分析
+            Kubernetes详解--Pod
         </h2>
         <h3 class="post-subtitle">
             
@@ -485,19 +494,16 @@ IOC：IOC，另外一种说法叫DI（Dependency Injection），即依赖注入�
 
 <div>
 
-    <a href="/2020/09/15/WiWarden启动源码分析/">
+    <a href="/2020/09/21/Kubernetes详解-Pod/">
 
         <div class="post-content-preview">
-            今天研究warden的源码，分析了启动流程，整理了一下。
-Warden 启动入口:src\warden\warden\lib\warden\server.rb  def self.run!
-  （1）Process.setrlimit(Process::RLIMIT_NOFILE, 32768):linux 内核资源限制，一个进程能够打开的最大文件数
-  （2）container_kl.........
+            （题外话：之前研究了好多开源软件，但是每当研究开源软件的时候，感觉了解的都不是很透彻，这次尝试研究官方文档，看看效果如何，下面的资料，是按照官方文档翻译的，比较笨，但是了解更深入了，希望能坚持下来**）**1.1.1 POD一组容器（一个或者多个Container），共享存储，以相同的方式运行、Pods的容器位于同一节点，被一起调度，同时部署，启动、重启、删除，伸缩，运行在相同的Con.........
         </div>
     </a>
     
         <p class="post-meta">
             Posted by 站着工程师 on
-            2020-09-15
+            2020-09-21
         </p>
              <p class="post-meta" id="busuanzi_container_page_pv">
                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -510,9 +516,9 @@ Warden 启动入口:src\warden\warden\lib\warden\server.rb  def self.run!
 
 
 <div class="w3-row-padding">
-	<a href="/2020/09/15/Win-208-R2——由于管理员设置的策略，该磁盘处于脱机状态/">
+	<a href="/2020/09/21/Kubernetes-详解-Replica-Sets-和Service/">
         <h2 class="post-title">
-            Win 208 R2——由于管理员设置的策略，该磁盘处于脱机状态
+            Kubernetes 详解-Replica Sets 和Service
         </h2>
         <h3 class="post-subtitle">
             
@@ -521,21 +527,16 @@ Warden 启动入口:src\warden\warden\lib\warden\server.rb  def self.run!
 
 <div>
 
-    <a href="/2020/09/15/Win-208-R2——由于管理员设置的策略，该磁盘处于脱机状态/">
+    <a href="/2020/09/21/Kubernetes-详解-Replica-Sets-和Service/">
 
         <div class="post-content-preview">
-            1.原系统为Windows 2012挂载了2T的存储，因业务要求重新安装为Windows 2008R2，并没有在磁盘存储空间上重新做映射。  
-2.系统安装完成，安装完多路径软件后，无法对挂载的分区进行操作。如下图除了删除卷和帮助其他的都是灰的。点击删除卷提示介质写入保护
-3.鼠标指向小叹号提示由于管理员设置的策略，该磁盘处于脱机状态。
-
-解决方案步骤如下：  
-使用DISKPART..........
+            1.1 Replica Sets下一代的Replication Controller，两者的区别主要在选择器selector,Replica 支持集合级别的选择器，而前期的Replication Controller，支持在等号描述的选择器，kubectl命令支持使用replica sets （目前kubectl命令中的rolling-update 还不支持），目前replica se.........
         </div>
     </a>
     
         <p class="post-meta">
             Posted by 站着工程师 on
-            2020-09-15
+            2020-09-21
         </p>
              <p class="post-meta" id="busuanzi_container_page_pv">
                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -548,9 +549,9 @@ Warden 启动入口:src\warden\warden\lib\warden\server.rb  def self.run!
 
 
 <div class="w3-row-padding">
-	<a href="/2020/09/15/Window导入postgres的sql文件的encoding-错误/">
+	<a href="/2020/09/21/Kubernetes-Dashboard开发说明/">
         <h2 class="post-title">
-            Window导入postgres的sql文件的encoding 错误
+            Kubernetes Dashboard开发说明
         </h2>
         <h3 class="post-subtitle">
             
@@ -559,18 +560,18 @@ Warden 启动入口:src\warden\warden\lib\warden\server.rb  def self.run!
 
 <div>
 
-    <a href="/2020/09/15/Window导入postgres的sql文件的encoding-错误/">
+    <a href="/2020/09/21/Kubernetes-Dashboard开发说明/">
 
         <div class="post-content-preview">
-            postgres的windows客户端使用pgadmin，pgadmin没有直接导入sql的操作，需要命令行导入，在windows的命令行执行导入命令，会报以下错误：
-12character with byte sequence 0xc2 0x90 in encoding GBK has no equivalent in encodeing utf8 
-出现这种错误的原因，通常是psq.........
+              部门准备做一个Kuberentes的发行版，研究了一下Dashboard这个项目，以及这个项目应该如何开发，把一些总结写下。
+Dashboard 源码说明    dashboard 项目分为backend和frontend两部分，可以通过执行gulp serve进行调试运行，执行gulp build 进行编译 
+       dashboard的backend项目封装了k8s AP.........
         </div>
     </a>
     
         <p class="post-meta">
             Posted by 站着工程师 on
-            2020-09-15
+            2020-09-21
         </p>
              <p class="post-meta" id="busuanzi_container_page_pv">
                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -583,9 +584,9 @@ Warden 启动入口:src\warden\warden\lib\warden\server.rb  def self.run!
 
 
 <div class="w3-row-padding">
-	<a href="/2020/09/14/test/">
+	<a href="/2020/09/21/Kubernets-详解-Volume/">
         <h2 class="post-title">
-            test
+            Kubernets 详解--Volume
         </h2>
         <h3 class="post-subtitle">
             
@@ -594,16 +595,19 @@ Warden 启动入口:src\warden\warden\lib\warden\server.rb  def self.run!
 
 <div>
 
-    <a href="/2020/09/14/test/">
+    <a href="/2020/09/21/Kubernets-详解-Volume/">
 
         <div class="post-content-preview">
-            ...
+            1.1 Volume容器内的磁盘都是临时的，Volume引入的原因:
+1、当一个容器宕机后，kubelet会重启改容器，但是容器内的文件就会丢失
+2、一个Pod内的多个容器需要共享数据
+1.1.1 背景Docker中也有Volume的概念Docker中的Volume只是简单的一个磁盘目录或者其他Container中的目录，管理比较简单，虽然目前支持了volume driver，但是单个.........
         </div>
     </a>
     
         <p class="post-meta">
             Posted by 站着工程师 on
-            2020-09-14
+            2020-09-21
         </p>
              <p class="post-meta" id="busuanzi_container_page_pv">
                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -653,15 +657,31 @@ Warden 启动入口:src\warden\warden\lib\warden\server.rb  def self.run!
 
 <section>
     <!-- no hr -->
-    <h5><a href="/tags/">Tags</a></h5>
+    <h5><a href="/tags/">标签云</a></h5>
     <div class="tags">
         
             
-            <a href="/tags/#Kubernetes" title="Kubernetes" rel="5">Kubernetes</a>
+            <a href="/tags/#Docker" title="Docker" rel="6">Docker</a>
             
         
             
-            <a href="/tags/#云计算" title="云计算" rel="3">云计算</a>
+            <a href="/tags/#golang" title="golang" rel="1">golang</a>
+            
+        
+            
+            <a href="/tags/#云计算" title="云计算" rel="5">云计算</a>
+            
+        
+            
+            <a href="/tags/#Container" title="Container" rel="2">Container</a>
+            
+        
+            
+            <a href="/tags/#Linux" title="Linux" rel="2">Linux</a>
+            
+        
+            
+            <a href="/tags/#Kubernetes" title="Kubernetes" rel="5">Kubernetes</a>
             
         
             
@@ -669,23 +689,11 @@ Warden 启动入口:src\warden\warden\lib\warden\server.rb  def self.run!
             
         
             
-            <a href="/tags/#Docker" title="Docker" rel="1">Docker</a>
-            
-        
-            
             <a href="/tags/#Pod" title="Pod" rel="1">Pod</a>
             
         
             
-            <a href="/tags/#Linux" title="Linux" rel="1">Linux</a>
-            
-        
-            
             <a href="/tags/#OpenStack" title="OpenStack" rel="2">OpenStack</a>
-            
-        
-            
-            <a href="/tags/#Spring" title="Spring" rel="1">Spring</a>
             
         
             
@@ -696,6 +704,10 @@ Warden 启动入口:src\warden\warden\lib\warden\server.rb  def self.run!
             <a href="/tags/#数据库" title="数据库" rel="1">数据库</a>
             
         
+            
+            <a href="/tags/#Spring" title="Spring" rel="1">Spring</a>
+            
+        
     </div>
 </section>
 
@@ -703,7 +715,7 @@ Warden 启动入口:src\warden\warden\lib\warden\server.rb  def self.run!
     
         <!-- Short About -->
 <section class="visible-md visible-lg">
-    <h5><a href="/about/">About me</a></h5>
+    <h5><a href="/about/">关于</a></h5>
     <div class="short-about">
 
         
@@ -744,28 +756,28 @@ Warden 启动入口:src\warden\warden\lib\warden\server.rb  def self.run!
         <hr>
     
         
-  <h5>Recent posts</h3>
+  <h5>最近发表</h3>
   <div class="widget">
     <ul>
       
         <li>
-          <a href="/2020/09/21/Golang-%E8%AF%BB%E5%8F%96%E5%86%99%E5%85%A5Etcd%E6%95%B0%E6%8D%AE%E5%BA%93/">Golang 读取写入Etcd数据库</a>
+          <a href="/2020/09/21/com-sun-image-codec-jpeg-does-not-exist/">com.sun.image.codec.jpeg does not exist</a>
         </li>
       
         <li>
-          <a href="/2020/09/21/Kubernetes-%E4%B8%AD%E7%9A%84port%E3%80%81nodePort%E3%80%81targetPort/">Kubernetes 中的port、nodePort、targetPort</a>
+          <a href="/2020/09/21/DevOps-%E7%90%86%E8%A7%A3%E6%95%B4%E7%90%86/">DevOps 理解整理</a>
         </li>
       
         <li>
-          <a href="/2020/09/21/Kubernetes%E4%B8%AD%E7%9A%84Source-Ip%E6%9C%BA%E5%88%B6/">Kubernetes中的Source Ip机制</a>
+          <a href="/2020/09/21/Discuz-%E8%AE%BA%E5%9D%9B%E8%AF%84%E8%AE%BA%E5%9B%9E%E5%A4%8D%E4%BB%A3%E7%A0%81/">Discuz 论坛评论回复代码</a>
         </li>
       
         <li>
-          <a href="/2020/09/21/Kubernetes-%E8%AF%A6%E8%A7%A3-%E7%AE%80%E4%BB%8B/">Kubernetes 详解--简介</a>
+          <a href="/2020/09/21/Docker%E4%BB%A5%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0Pipework/">Docker以网络插件方式实现Pipework</a>
         </li>
       
         <li>
-          <a href="/2020/09/21/Kubernetes%E8%AF%A6%E8%A7%A3-Pod/">Kubernetes详解--Pod</a>
+          <a href="/2020/09/21/Docker%E5%87%A0%E4%B8%AA%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4/">Docker几个不常用的命令</a>
         </li>
       
     </ul>
@@ -774,16 +786,16 @@ Warden 启动入口:src\warden\warden\lib\warden\server.rb  def self.run!
         <hr>
     
         
-    <h5>Achives</h5>
+    <h5>归档</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">32</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">44</span></li></ul>
     </div>
 
         <hr>
     
         <!-- Friends Blog -->
 
-<h5>Friends</h5>
+<h5>友链</h5>
 <ul class="list-inline">
 
     

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+    <title>
+        
+          Docker容器内的信号处理 - null
+        
+    </title>
+
+    <link rel="canonical" href="http://damonyi.cc/2020/09/21/Docker容器内的信号处理/">
+
+    <!-- Bootstrap Core CSS -->
+
+   
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
+
+
+    
+
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
+
+
+    
+<link rel="stylesheet" href="/css/donate.css">
+
+	
+<link rel="stylesheet" href="/css/w3.css">
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+    }
+   .post-heading{
+    padding:20px;
+    }
+  .person {
+    border: 10px solid transparent;
+    margin-bottom: 25px;
+    width: 80%;
+    height: 80%;
+    opacity: 0.7;
+  }
+  .person:hover {
+    border-color: #f1f1f1;
+  }
+
+</style>
+
+<header id="headerid" class="w3-indigo intro-header" style="position:relative;">
+    <!-- Signature -->
+	
+        <div class="container">
+            <div class=" row" >
+			
+			<canvas id="particles-js-canvas" style="position:absolute;z-index:1;top:0px;left:0px;" width="100%" height="50%"></canvas>
+			
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="z-index:2;">
+                
+                    <div class="post-heading" style="padding:40px">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                            
+                              <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                            
+                        </div>
+                        <h1>Docker容器内的信号处理</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 站着工程师 on
+                            2020-09-21
+                        </span>
+                        <span  class="meta" id="busuanzi_container_page_pv">
+                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                         </span>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+  
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">云里雾里</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a  href="/">主页</a>
+                    </li>
+		    
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#技术">技术</a>
+                           
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#教育">教育</a>
+                           
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>Docker 关闭Container的思路：当我们使用docker stop 命令去关闭Container时，该命令会发送SIGTERM 命令到Container主进程，让主进程处理该信号，关闭Container，如果在10s内，未关闭容器，Docker Damon会发送SIGKILL 信号将Container关闭。</p>
+<h2 id="Signal"><a href="#Signal" class="headerlink" title="       Signal"></a>       Signal</h2><p>Signal 表示内部进程的一种通信机制，一个信号表示一个从内核发送到进程的消息，该消息表示某个事件已经发生，当进程收到该信号，进程会被打断，一个信号处理句柄会处理该信号，如果没有针对该信号的句柄，会使用默认句柄处理该信号。</p>
+<p>进程会将自己可以处理的信号以回调函数的方式注册到系统内核，当你在终端执行一个Kill命令时，实际上你是在通知内核向其他进程发送信号。一个常见的信号时 SIGTERM，该信号时通知进程关闭并终止，当进程收到该信号时，可以执行关闭Socket、数据库连接、删除临时文件等。许多守护进程会处理SIGHUP信号，从而能够重新加载配置文件，SIGUSR1和SIGUSR2是用户自定义的信号，可以在应用中处理该信号。</p>
+<p> 举例,在Node.js中处理SIGTERM信号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">process.on(&#39;SIGTERM&#39;, function() &#123;</span><br><span class="line">  console.log(&#39;shutting down...&#39;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>当进程处理SIGTERM信号时，处理该信号的句柄会将程序的执行打断，当该句柄执行完成后，程序才会继续运行，常见的信号如下表所示， 除了SIGKILL 和SIGSTOP信号外，其他信号都可以被进程终止</p>
+<p> <img src="/2020/09/21/Docker%E5%AE%B9%E5%99%A8%E5%86%85%E7%9A%84%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/uploads/2016/06/20160630141912_66480.png"></p>
+<h2 id="Docker中的信号"><a href="#Docker中的信号" class="headerlink" title="Docker中的信号"></a>Docker中的信号</h2><p>Docker命令“docker kill”向容器内的主进程发送信号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Usage: docker kill \[OPTIONS\] CONTAINER \[CONTAINER...\]</span><br><span class="line">Kill a running container using SIGKILL or a specified signal</span><br><span class="line">    -s, --signal&#x3D;&quot;KILL&quot;    Signal to send to the container</span><br></pre></td></tr></table></figure>
+
+
+
+<p>发送到容器的信号被容器的主进程（PID为1）处理，主进程可以忽略该信号，让默认的操作执行，或者为该信号提供一个回调函数。</p>
+<p>举例，在容器内运行一个应用，检查信号处理句柄。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">var http &#x3D; require(&#39;http&#39;);</span><br><span class="line">var server &#x3D; http.createServer(function (req, res) &#123;</span><br><span class="line">  res.writeHead(200, &#123;&#39;Content-Type&#39;: &#39;text&#x2F;plain&#39;&#125;);</span><br><span class="line">  res.end(&#39;Hello World\\n&#39;);</span><br><span class="line">&#125;).listen(3000, &#39;0.0.0.0&#39;);</span><br><span class="line">console.log(&#39;server started&#39;);</span><br><span class="line">var signals &#x3D; &#123; &#39;SIGINT&#39;: 2, &#39;SIGTERM&#39;: 15</span><br><span class="line">&#125;;</span><br><span class="line">function shutdown(signal, value) &#123; server.close(function () &#123; console.log(&#39;server stopped by &#39; + signal);</span><br><span class="line">    process.exit(128 + value);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line">Object.keys(signals).forEach(function (signal) &#123;</span><br><span class="line">  process.on(signal, function () &#123; shutdown(signal, signals\[signal\]);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<p> 我们创建了一个监听3000端口的http server，创建了两个信号处理句柄，分别处理SIGINT和SIGTERM信号，当信号句柄执行时，将会在标准输出打印：</p>
+<p>   `server stopped by [SIGNAL]`.</p>
+<p>分两种场景描述</p>
+<h3 id="该应用是前端应用"><a href="#该应用是前端应用" class="headerlink" title="该应用是前端应用"></a>该应用是前端应用</h3><p>当应用是该容器的主进程时，他能够直接处理信号，以下该应用的Dockerfile文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">FROM iojs:onbuild</span><br><span class="line">COPY .&#x2F;program.js .&#x2F;program.js</span><br><span class="line">COPY .&#x2F;package.json .&#x2F;package.json</span><br><span class="line">EXPOSE 3000</span><br><span class="line">ENTRYPOINT \[&quot;node&quot;, &quot;program&quot;\]</span><br></pre></td></tr></table></figure>
+
+
+
+<p>当在编写Dockerfile文件的时候，启动应用一定要使用ENTRYPOINT或者RUN 命令，否则容器内的主进程将会是/bin/sh –c ，应用只能是主进程的子进程，如果是这样的话，应用是无法收到信号的。</p>
+<p>构建镜像:</p>
+<p>$ docker build -t signal-fg-app .</p>
+<p>运行容器</p>
+<p>$ docker run -it –rm -p 3000:3000 –name=”signal-fg-app” signal-fg-app</p>
+<p>访问 <a target="_blank" rel="noopener" href="http://localhost:3000/">http://localhost:3000</a> 验证应用正常运行</p>
+<p>打开另一个终端执行docker kill 命令</p>
+<p>$ docker kill –signal=”SIGTERM” signal-fg-app</p>
+<p>或者</p>
+<p>$ docker stop signal-fg-app</p>
+<p>这两个命令都可以发送SIGTERM信号来停止应用</p>
+<p>Both commands can be used to issue SIGTERM signal and stop the application.</p>
+<p>在运行应用的终端，可以看到下面的输出日志</p>
+<p>server stopped by SIGTERM</p>
+<h3 id="当应用是后台应用时"><a href="#当应用是后台应用时" class="headerlink" title="当应用是后台应用时"></a>当应用是后台应用时</h3><p>无法直接将信号发送到该应用，这种场景下的一种解决方法是：以shell脚本的方式启动应用，在这个启动脚本里处理全部的信号，制作该应用的Dokcerfile文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Dockerfile:</span><br><span class="line">FROM iojs:onbuild</span><br><span class="line">COPY .&#x2F;program.js .&#x2F;program.js</span><br><span class="line">COPY .&#x2F;program.sh .&#x2F;program.sh</span><br><span class="line">COPY .&#x2F;package.json .&#x2F;package.json</span><br><span class="line">RUN  chmod +x .&#x2F;program.sh</span><br><span class="line">EXPOSE 3000</span><br><span class="line">ENTRYPOINT \[&quot;.&#x2F;program.sh&quot;\]</span><br></pre></td></tr></table></figure>
+
+<p>查看启动脚本program.sh</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;env bash</span><br><span class="line">set -x</span><br><span class="line"></span><br><span class="line">pid&#x3D;0</span><br><span class="line"></span><br><span class="line"># SIGUSR1-handler</span><br><span class="line">my\_handler() &#123;</span><br><span class="line">  echo &quot;my\_handler&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># SIGTERM-handler</span><br><span class="line">term\_handler() &#123;</span><br><span class="line">  if \[ $pid -ne 0 \]; then</span><br><span class="line">    kill -SIGTERM &quot;$pid&quot;</span><br><span class="line">    wait &quot;$pid&quot;</span><br><span class="line">  fi</span><br><span class="line">  exit 143; # 128 + 15 -- SIGTERM</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># setup handlers</span><br><span class="line"># on callback, kill the last background process, which is \&#96;tail -f &#x2F;dev&#x2F;null\&#96; and execute the specified handler</span><br><span class="line">trap &#39;kill $&#123;!&#125;; my\_handler&#39; SIGUSR1</span><br><span class="line">trap &#39;kill $&#123;!&#125;; term\_handler&#39; SIGTERM</span><br><span class="line"></span><br><span class="line"># run application</span><br><span class="line">node program &amp;</span><br><span class="line">pid&#x3D;&quot;$!&quot;</span><br><span class="line"></span><br><span class="line"># wait indefinetely</span><br><span class="line">while true</span><br><span class="line">do</span><br><span class="line">  tail -f &#x2F;dev&#x2F;null &amp; wait $&#123;!&#125;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>这里我们创建了两个信号处理函数，一个是处理用户定义的信号，一个是处理SIGTEM信号，能够优雅的关闭应用。</p>
+<p>在这个应用中，我们的应用是后台运行的（&amp;），最后，我们使用“wait”来暂停运行，直到一个子进程退出，“wait”和“waitpid”这两个函数在收到信号时，会终止执行，当收到信号后，我们使用特定的句柄处理信号。</p>
+<p>  Docker的文档中说明，SIGCHLD, SIGKILL, and SIGSTOP 是无法代管的。</p>
+<p>构建镜像：</p>
+<p>docker build -t signal-bg-app .</p>
+<p>运行容器:</p>
+<p>docker run -it –rm -p 3000:3000 –name=”signal-bg-app” signal-bg-app</p>
+<p>打开一个新的终端，发送 SIGUSR1 信号 :</p>
+<p>docker kill –signal=”SIGUSR1” signal-bg-app</p>
+<p>最后停止应用</p>
+<p>docker kill –signal=”SIGTERM” signal-bg-app</p>
+<p>应用能够打印相应的日志，并能够优雅的关闭</p>
+<p>结论</p>
+<p>信号提供了一中处理异步事件的方法，容器能运行的应用可以使用信号进行消息交互。使用信号与主机内的应用进行交互、重新加载配置文件、做一些清楚工作或者多进程协作。</p>
+<p>英文地址：</p>
+<p><a target="_blank" rel="noopener" href="https://medium.com/@gchudnov/trapping-signals-in-docker-containers-7a57fdda7d86#.ukb9dqt9k">https://medium.com/@gchudnov/trapping-signals-in-docker-containers-7a57fdda7d86#.ukb9dqt9k</a></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/09/21/Docker几个不常用的命令/" data-toggle="tooltip" data-placement="top" title="Docker几个不常用的命令">&larr; 上一篇</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/09/21/Docker插件机制/" data-toggle="tooltip" data-placement="top" title="Docker插件机制">下一篇 &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+				
+            </div>
+
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">标签云</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                        
+                          <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/davidstack">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 站着工程师 2020 
+                    <br>
+                    鲁ICP备16023683号-1
+                    <br>
+                    Powered by <a target="_blank" rel="noopener" href="http://www.hexo.io">Hexo</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Theme by <a target="_blank" rel="noopener" href="https://github.com/kinggozhang/hexo-theme-ace">ACE</a> 
+					
+					
+					<i class="fa fa-eye" id="leancounter"></i>
+					
+					  <div class="copyright text-muted">
+                        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                        本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+                        本站访客数<span id="busuanzi_value_site_uv"></span>人
+                      </div>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+   
+<script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+
+
+
+
+<!-- Bootstrap Core JavaScript -->
+
+   
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+	
+<script src="/js/particles.js"></script>
+
+	
+<script src="/js/particles_config.js"></script>
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://damonyi.cc/2020/09/21/Docker%E5%AE%B9%E5%99%A8%E5%86%85%E7%9A%84%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/index.html/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://damonyi.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+    <title>
+        
+          DevOps 理解整理 - null
+        
+    </title>
+
+    <link rel="canonical" href="http://damonyi.cc/2020/09/21/DevOps-理解整理/">
+
+    <!-- Bootstrap Core CSS -->
+
+   
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
+
+
+    
+
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
+
+
+    
+<link rel="stylesheet" href="/css/donate.css">
+
+	
+<link rel="stylesheet" href="/css/w3.css">
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+    }
+   .post-heading{
+    padding:20px;
+    }
+  .person {
+    border: 10px solid transparent;
+    margin-bottom: 25px;
+    width: 80%;
+    height: 80%;
+    opacity: 0.7;
+  }
+  .person:hover {
+    border-color: #f1f1f1;
+  }
+
+</style>
+
+<header id="headerid" class="w3-indigo intro-header" style="position:relative;">
+    <!-- Signature -->
+	
+        <div class="container">
+            <div class=" row" >
+			
+			<canvas id="particles-js-canvas" style="position:absolute;z-index:1;top:0px;left:0px;" width="100%" height="50%"></canvas>
+			
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="z-index:2;">
+                
+                    <div class="post-heading" style="padding:40px">
+                        <div class="tags">
+                            
+                        </div>
+                        <h1>DevOps 理解整理</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 站着工程师 on
+                            2020-09-21
+                        </span>
+                        <span  class="meta" id="busuanzi_container_page_pv">
+                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                         </span>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+  
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">云里雾里</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a  href="/">主页</a>
+                    </li>
+		    
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#技术">技术</a>
+                           
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#教育">教育</a>
+                           
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="传统的软件开发流程"><a href="#传统的软件开发流程" class="headerlink" title="传统的软件开发流程"></a>传统的软件开发流程</h1><p><img src="/2020/09/21/DevOps-%E7%90%86%E8%A7%A3%E6%95%B4%E7%90%86/uploads/image/20170922/1506070794227148.png" alt="image.png" title="1506070794227148.png"></p>
+<p>  存在的问题：</p>
+<p>1、 资源获取和环境准备效率低，缺少标准化化、自主的化的服务能力</p>
+<p>2、 从代码开发到环境运行的流程不顺畅，开发人员不清楚最终的软件会如何部署和运行，测试人员不了解软件测试的重点和风险点在什么地方，运维人员不清楚软件架构的高可用设计是如何实现的，部门之间基本靠非常零碎、极易过时的文档或者口头沟通来交换信息</p>
+<p>在产品研发的起始阶段，忙于需求分析、架构设计、代码实现，以上两个问题被大多数人认为比较容易处理。等到快上线的时候，出现上线失败或者临时方案上线</p>
+<h1 id="DevOps"><a href="#DevOps" class="headerlink" title="DevOps"></a>DevOps</h1><p>DevOps理念： 提倡开发、测试、IT运维之间的高度协同，从而完成高频率部署的同时，提高生产环境的可靠性、稳定性、弹性、安全性</p>
+<p>开发与IT运维：产品的价值在于业务（定义需求）和客户（交付价值）之间</p>
+<p>DevOPs本身不能完全被工具和软件来简单的定义和量化，但工具和软件是实现DevOps的一个重要组成部分 </p>
+<p>解决的问题：</p>
+<p>1、 一些关于产品改善和创新的想法很难落地，设计到一些遗留系统的配合：调整、部署、扩展。新的服务或者应用构建、很难快速上线，被卡在了生产环境部署阶段</p>
+<p>2、 不同种类的应用、服务的部署方式和流程不一致，运维团队很难为大量不同技术栈的团队提供快速响应。</p>
+<p>3、 微服务的兴起，交付团队难以做到快速集成和部署。运维团队对微服务的部署方式不理解，不能适配新架构下的交付模式，开发团队大多关注代码和架构，对于产品如何在能在生产环境稳定运行、需要考虑哪些安全性和可持续性的因素并不是很了解。开发阶段，系统的架构和依赖环境都是开发者决定，对生产环境的关注度不高。部署、发布阶段，运维人员会考虑如何构建一套稳定的基础设施，又如何去部署和运维开发的产品。</p>
+<h2 id="持续集成"><a href="#持续集成" class="headerlink" title="持续集成"></a>持续集成</h2><p>持续集成是一种软件项目管理方法，依据资产库（源码、类库）等的变更自动完成编译、测试、部署和反馈。持续集成已经广泛用于现代软件开发流程中，能够带来的好处：快速发现错误和促进代码分支的集成。</p>
+<p>带来的价值：</p>
+<p>   1、提高软件质量：每天或者每周进行多次集成，并进行测试，有利于发现软件缺陷，最终提高软件质量</p>
+<p>   2、减少重复劳动：自动化工具编译代码、打包、上传、部署、测试，无需太多人工干预，让开发者更多精力专注于软件逻辑实现</p>
+<p>   3、增强项目的预见性：每次操作会记录详细的输入输出结果，为后续产品缺陷是否收敛提供数据支撑。通过这些数据分析增加项目的预见性。</p>
+<p>  4、增强团队对产品的信息</p>
+<p>如何做到产品的持续集成</p>
+<p>1、 统一代码库</p>
+<p>2、 自动构建工具</p>
+<p>3、 自动测试脚本</p>
+<p>4、 开发向代码库主干提交代码</p>
+<p>5、 自动触发构建工具</p>
+<p>6、 高速构建服务器、快速完成构建作业</p>
+<p>7、 上传软件到测试环境触发自动测试脚本</p>
+<p>8、 执行结果分析与展示</p>
+<p>9、 自动部署到演练环境</p>
+<p><img src="/2020/09/21/DevOps-%E7%90%86%E8%A7%A3%E6%95%B4%E7%90%86/uploads/image/20170922/1506070830595640.png" alt="image.png" title="1506070830595640.png"></p>
+<p>                                                                                                  持续集成流程</p>
+<h2 id="持续交付"><a href="#持续交付" class="headerlink" title="持续交付"></a>持续交付</h2><p>持续交付是指周期性地将新版本软件交给质量运营团队或者用户，测试与评审。如果代码通过评审，代码进入生产阶段，持续交付的核心是不管有多少更新，软件始终可以交付价值</p>
+<p>1、 快速发布产品特性：缩短编码、测试、上线、交付的迭代周期，使每个步骤出现的问题得到快速响应，在产品上的体现就是缩短软件功能发布周期，从而可以更好的应对业务需求的变化</p>
+<p>2、 高质量的软件发布标准：软件交付过程实现标准化，整个交付过程可重复，过程进度可视化</p>
+<p>3、 提供团队协作效率</p>
+<p><img src="/2020/09/21/DevOps-%E7%90%86%E8%A7%A3%E6%95%B4%E7%90%86/uploads/image/20170922/1506070853309847.png" alt="image.png" title="1506070853309847.png"></p>
+<p>                                                                                               持续交付流程</p>
+<h2 id="灰度发布"><a href="#灰度发布" class="headerlink" title="灰度发布"></a>灰度发布</h2><p>1、负载均衡</p>
+<p>2、升级回滚</p>
+<p>灰度发布本质是选取部分用户或者区域发布产品新特性。A/B测试安一定的策略选定一部分用户继续用A，而另一部分用户开始用B，产品可以通过使用B的用户反馈决策是否扩大发布范围，最终达到产品新特性向所有用户全量发布</p>
+<h2 id="应用编排"><a href="#应用编排" class="headerlink" title="应用编排"></a>应用编排</h2><p>应用通常有多个组件或者模块，基于Kubernetes 部署应用</p>
+<h2 id="DevOps流水线"><a href="#DevOps流水线" class="headerlink" title="DevOps流水线"></a>DevOps流水线</h2><p> <img src="/2020/09/21/DevOps-%E7%90%86%E8%A7%A3%E6%95%B4%E7%90%86/1506070880431917.png" alt="avatar"><br>  <img src="/2020/09/21/DevOps-%E7%90%86%E8%A7%A3%E6%95%B4%E7%90%86/1506070894349245.png" alt="avatar"></p>
+<h2 id="DevOps与Kubernetes"><a href="#DevOps与Kubernetes" class="headerlink" title="DevOps与Kubernetes"></a>DevOps与Kubernetes</h2><h3 id="Kubernetes对DevOps的影响"><a href="#Kubernetes对DevOps的影响" class="headerlink" title="Kubernetes对DevOps的影响"></a>Kubernetes对DevOps的影响</h3><p>DevOps并不是一个新概念，前期是没有好的工具来辅助DevOps的发展，虚拟机、IAAS管理不能解决应用管理的多样化需求。</p>
+<p>应用管理的需求：</p>
+<p>1、 应用运行环境、应用版本功能的不确定性，导致运维需要适配不同的运行环境，定制多种应用编译部署脚本，容器的出现解决了这个问题</p>
+<p>2、 基于容器的应用不断增多，产生了对容器集群管理的需求—Kubernetes</p>
+<p>3、应用升级回滚对容器集群管理的需求—Kubernetes</p>
+<p>  4、应用的生命周期管理可以完全由Kubernetes管理，用户将更多精力放到代码开发</p>
+<h3 id="持续集成工具Jenkis与Kubernetes"><a href="#持续集成工具Jenkis与Kubernetes" class="headerlink" title="持续集成工具Jenkis与Kubernetes"></a>持续集成工具Jenkis与Kubernetes</h3><p> Jenkins与Kubernetes结合：基于Kubernetes部署Jenkins Master。在Jenkins Master 安装Kubernetes Plugin，并下载Jenkins Slave 镜像。Jenkins的任务通过Jenkins Plugin 转化为Kubernetes Pod 模板，Kubernetes 根据Pod 模板自动拉起Slave容器，Slave容器会自动加入Jenkins 集群。Jenkins 执行任务时，自动调度Job到某个Slave容器，任务结束后，Jenkins自动删除相关街道，并销毁对应容器，实现资源释放。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/09/21/com-sun-image-codec-jpeg-does-not-exist/" data-toggle="tooltip" data-placement="top" title="com.sun.image.codec.jpeg does not exist">&larr; 上一篇</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/09/21/Discuz-论坛评论回复代码/" data-toggle="tooltip" data-placement="top" title="Discuz 论坛评论回复代码">下一篇 &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+				
+            </div>
+
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">标签云</a></h5>
+                    <div class="tags">
+                       
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/davidstack">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 站着工程师 2020 
+                    <br>
+                    鲁ICP备16023683号-1
+                    <br>
+                    Powered by <a target="_blank" rel="noopener" href="http://www.hexo.io">Hexo</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Theme by <a target="_blank" rel="noopener" href="https://github.com/kinggozhang/hexo-theme-ace">ACE</a> 
+					
+					
+					<i class="fa fa-eye" id="leancounter"></i>
+					
+					  <div class="copyright text-muted">
+                        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                        本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+                        本站访客数<span id="busuanzi_value_site_uv"></span>人
+                      </div>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+   
+<script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+
+
+
+
+<!-- Bootstrap Core JavaScript -->
+
+   
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+	
+<script src="/js/particles.js"></script>
+
+	
+<script src="/js/particles_config.js"></script>
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://damonyi.cc/2020/09/21/DevOps-%E7%90%86%E8%A7%A3%E6%95%B4%E7%90%86/index.html/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://damonyi.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+    <title>
+        
+          com.sun.image.codec.jpeg does not exist - null
+        
+    </title>
+
+    <link rel="canonical" href="http://damonyi.cc/2020/09/21/com-sun-image-codec-jpeg-does-not-exist/">
+
+    <!-- Bootstrap Core CSS -->
+
+   
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
+
+
+    
+
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
+
+
+    
+<link rel="stylesheet" href="/css/donate.css">
+
+	
+<link rel="stylesheet" href="/css/w3.css">
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+    }
+   .post-heading{
+    padding:20px;
+    }
+  .person {
+    border: 10px solid transparent;
+    margin-bottom: 25px;
+    width: 80%;
+    height: 80%;
+    opacity: 0.7;
+  }
+  .person:hover {
+    border-color: #f1f1f1;
+  }
+
+</style>
+
+<header id="headerid" class="w3-indigo intro-header" style="position:relative;">
+    <!-- Signature -->
+	
+        <div class="container">
+            <div class=" row" >
+			
+			<canvas id="particles-js-canvas" style="position:absolute;z-index:1;top:0px;left:0px;" width="100%" height="50%"></canvas>
+			
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="z-index:2;">
+                
+                    <div class="post-heading" style="padding:40px">
+                        <div class="tags">
+                            
+                        </div>
+                        <h1>com.sun.image.codec.jpeg does not exist</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 站着工程师 on
+                            2020-09-21
+                        </span>
+                        <span  class="meta" id="busuanzi_container_page_pv">
+                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                         </span>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+  
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">云里雾里</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a  href="/">主页</a>
+                    </li>
+		    
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#技术">技术</a>
+                           
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#教育">教育</a>
+                           
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="��������"><a href="#��������" class="headerlink" title="��������"></a>��������</h3><p>һ����Ŀ��windows��ִ��mvn package���������Ƿ���Linux�����£�������Ҳ���com.sun.image.codec�����⣬������ʾ</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">[ERROR] COMPILATION ERROR : </span><br><span class="line">[INFO] -------------------------------------------------------------</span><br><span class="line">[ERROR] &#x2F;home&#x2F;ztzx&#x2F;ztzx.service&#x2F;src&#x2F;main&#x2F;java&#x2F;com&#x2F;telchina&#x2F;ztzx&#x2F;common&#x2F;controller&#x2F;UploadController2.java:[24,40] package com.sun.image.codec.jpeg does not exist</span><br><span class="line">[ERROR] &#x2F;home&#x2F;ztzx&#x2F;ztzx.service&#x2F;src&#x2F;main&#x2F;java&#x2F;com&#x2F;telchina&#x2F;ztzx&#x2F;common&#x2F;controller&#x2F;UploadController2.java:[25,40] package com.sun.image.codec.jpeg does not exist</span><br><span class="line">[ERROR] &#x2F;home&#x2F;ztzx&#x2F;ztzx.service&#x2F;src&#x2F;main&#x2F;java&#x2F;com&#x2F;telchina&#x2F;ztzx&#x2F;common&#x2F;controller&#x2F;UploadController.java:[25,32] package com.sun.image.codec.jpeg does not exist</span><br><span class="line">[ERROR] &#x2F;home&#x2F;ztzx&#x2F;ztzx.service&#x2F;src&#x2F;main&#x2F;java&#x2F;com&#x2F;telchina&#x2F;ztzx&#x2F;common&#x2F;controller&#x2F;UploadController.java:[26,32] package com.sun.image.codec.jpeg does not exist</span><br><span class="line">[INFO] 4 errors </span><br><span class="line">[INFO] -------------------------------------------------------------</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] Reactor Summary:</span><br><span class="line">[INFO] </span><br><span class="line">[INFO] ztzx 1.0.0 ......................................... SUCCESS [  0.007 s]</span><br><span class="line">[INFO] ztzx.service ....................................... FAILURE [02:11 min]</span><br><span class="line">[INFO] ztzx.web 1.0.0 ..................................... SKIPPED</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] BUILD FAILURE</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] Total time: 02:11 min</span><br><span class="line">[INFO] Finished at: 2018-08-06T01:51:45Z</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.1:compile (default-compile) on project ztzx.service: Compilation failure: Compilation failure: </span><br><span class="line">[ERROR] &#x2F;home&#x2F;ztzx&#x2F;ztzx.service&#x2F;src&#x2F;main&#x2F;java&#x2F;com&#x2F;telchina&#x2F;ztzx&#x2F;common&#x2F;controller&#x2F;UploadController2.java:[24,40] package com.sun.image.codec.jpeg does not exist</span><br><span class="line">[ERROR] &#x2F;home&#x2F;ztzx&#x2F;ztzx.service&#x2F;src&#x2F;main&#x2F;java&#x2F;com&#x2F;telchina&#x2F;ztzx&#x2F;common&#x2F;controller&#x2F;UploadController2.java:[25,40] package com.sun.image.codec.jpeg does not exist</span><br><span class="line">[ERROR] &#x2F;home&#x2F;ztzx&#x2F;ztzx.service&#x2F;src&#x2F;main&#x2F;java&#x2F;com&#x2F;telchina&#x2F;ztzx&#x2F;common&#x2F;controller&#x2F;UploadController.java:[25,32] package com.sun.image.codec.jpeg does not exist</span><br><span class="line">[ERROR] &#x2F;home&#x2F;ztzx&#x2F;ztzx.service&#x2F;src&#x2F;main&#x2F;java&#x2F;com&#x2F;telchina&#x2F;ztzx&#x2F;common&#x2F;controller&#x2F;UploadController.java:[26,32] package com.sun.image.codec.jpeg does not exist</span><br><span class="line">[ERROR] -&gt; [Help 1]</span><br><span class="line">[ERROR] </span><br><span class="line">[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.</span><br><span class="line">[ERROR] Re-run Maven using the -X switch to enable full debug logging.</span><br><span class="line">[ERROR] </span><br><span class="line">[ERROR] For more information about the errors and possible solutions, please read the following articles:</span><br><span class="line">[ERROR] [Help 1] http:&#x2F;&#x2F;cwiki.apache.org&#x2F;confluence&#x2F;display&#x2F;MAVEN&#x2F;MojoFailureException</span><br><span class="line">[ERROR] </span><br><span class="line">[ERROR] After correcting the problems, you can resume the build with the command</span><br><span class="line">[ERROR]   mvn &lt;goals&gt; -rf :ztzx.service </span><br></pre></td></tr></table></figure>
+
+<h3 id="����һ"><a href="#����һ" class="headerlink" title="����һ"></a>����һ</h3><p>����Java�ٷ��Ľ���,sun.image.codec���package�Ѿ���deprecated�����鲻Ҫʹ�ã����ٷ��Ľ��ͣ�</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Why Developers Should Not Write Programs That Call &#39;sun&#39; Packages The java.\*, javax.\* and org.\* packages documented in </span><br><span class="line">the Java Platform Standard Edition API Specification make up the official, supported, public interface. If a </span><br><span class="line">Java program directly calls only API in these packages, it will operate on all Java-compatible platforms, regardless </span><br><span class="line">of the underlying OS platform. The sun.\* packages are not part of the supported, public interface. A Java program that </span><br><span class="line">directly calls into sun.\* packages is not guaranteed to work on all Java-compatible platforms. In fact, such a program </span><br><span class="line">is not guaranteed to work even in future versions on the same platform. Each company that implements the Java platform will</span><br><span class="line"> do so in their own private way. The classes in sun.\* are present in the JDK to support Oracle&#39;s implementation of the</span><br><span class="line"> Java platform: the sun.\* classes are what make the Java platform classes work &quot;under the covers&quot; for Oracle&#39;s JDK. These </span><br><span class="line"> classes will not in general be present on another vendor&#39;s Java platform. If your Java program asks for a class </span><br><span class="line"> &quot;sun.package.Foo&quot; by name, it may fail with ClassNotFoundError, and you will have lost a major advantage of developing in Java. </span><br><span class="line"> Technically, nothing prevents your program from calling into sun.\* by name. From one release to another, </span><br><span class="line"> these classes may be removed, or they may be moved from one package to another, and it&#39;s fairly likely that their interface (</span><br><span class="line"> method names and signatures) will change. (From Oracle&#39;s point of view, since we are committed to maintaining the Java platform, </span><br><span class="line"> we need to be able to change sun.\* to refine and enhance the platform.) </span><br><span class="line"> In this case, even if you are willing to run only on Oracle&#39;s implementation, you run the risk of a new version of the </span><br><span class="line"> implementation breaking your program. In general, writing java programs that rely on sun.\* is risky: those classes are </span><br><span class="line"> not portable, and are not supported </span><br></pre></td></tr></table></figure>
+<p>�����������⣬Java�Ѿ���Oracle�չ����꣬������ȥ����sun��package����ô���¡���O(��_��)O����~����Ȼ�㻹�ǿ���ȥʹ�õģ�������pom.xml ������������Ĳ������ų��޷�����jar�������⣬������������ܽ������Linux�޷����й����ĵ����⡣</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;plugin&gt;</span><br><span class="line">                   &lt;groupId&gt;org.apache.maven.plugins&lt;&#x2F;groupId&gt;</span><br><span class="line">                   &lt;artifactId&gt;maven-compiler-plugin&lt;&#x2F;artifactId&gt;</span><br><span class="line">                   &lt;version&gt;3.1&lt;&#x2F;version&gt;</span><br><span class="line">                   &lt;configuration&gt;</span><br><span class="line">                       &lt;source&gt;$&#123;jdkVersion&#125;&lt;&#x2F;source&gt;</span><br><span class="line">                       &lt;target&gt;$&#123;jdkVersion&#125;&lt;&#x2F;target&gt;</span><br><span class="line">                       &lt;compilerArguments&gt;</span><br><span class="line">                           &lt;verbose &#x2F;&gt;</span><br><span class="line">                           &lt;bootclasspath&gt;$&#123;JAVA_HOME&#125;&#x2F;jre&#x2F;lib&#x2F;rt.jar$&#123;path.separator&#125;$&#123;JAVA_HOME&#125;&#x2F;jre&#x2F;lib&#x2F;jce.jar&lt;&#x2F;bootclasspath&gt;</span><br><span class="line">                       &lt;&#x2F;compilerArguments&gt;</span><br><span class="line">                   &lt;&#x2F;configuration&gt;</span><br><span class="line">               &lt;&#x2F;plugin&gt; </span><br></pre></td></tr></table></figure>
+
+<h3 id="������"><a href="#������" class="headerlink" title="������"></a>������</h3><p>�鿴mvn�ֿ���Ϣ</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@30e8e1cd5962:&#x2F;home&#x2F;ztzx# mvn -version</span><br><span class="line">Apache Maven 3.5.3 (3383c37e1f9e9b3bc3df5050c29c8aff9f295297; 2018-02-24T19:49:05Z)</span><br><span class="line">Maven home: &#x2F;usr&#x2F;share&#x2F;maven</span><br><span class="line">Java version: 1.8.0_91, vendor: Oracle Corporation</span><br><span class="line">Java home: &#x2F;usr&#x2F;lib&#x2F;jvm&#x2F;java-8-openjdk-amd64&#x2F;jre</span><br><span class="line">Default locale: en, platform encoding: UTF-8</span><br><span class="line">OS name: &quot;linux&quot;, version: &quot;3.10.0-693.el7.x86_64&quot;, arch: &quot;amd64&quot;, family: &quot;unix&quot; </span><br></pre></td></tr></table></figure>
+<p>�鿴Java ��Ϣ</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@30e8e1cd5962:&#x2F;home&#x2F;ztzx# java -version</span><br><span class="line">openjdk version &quot;1.8.0_91&quot;</span><br><span class="line">OpenJDK Runtime Environment (build 1.8.0_91-8u91-b14-1~bpo8+1-b14)</span><br><span class="line">OpenJDK 64-Bit Server VM (build 25.91-b14, mixed mode) </span><br></pre></td></tr></table></figure>
+<p>��windows�����л�����ȣ���Java��С�汾��ͬ�⣬����һ�����𣬾���Oracle Java��OpenJdk������google���ϣ�����OpenJdk�Ѿ���1.7�汾�Ƴ��˸�package��<a target="_blank" rel="noopener" href="http://jira.icesoft.org/browse/PDF-332?jql=project%20=%20PDF%20AND%20fixVersion%20=%205.1%20ORDER%20BY%20updated%20DESC,%20priority%20DESC,%20created%20ASC">OpenJdk�Ƴ�jepg��package</a>����Linux Ĭ�ϵ�OpenJdk�滻ΪOracle��Jdk�������Խ������</p>
+<h3 id="�����������"><a href="#�����������" class="headerlink" title="�����������"></a>�����������</h3><p>JPEGImageEncoder����SUN��˾˽����</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">һ������������Ĵ�����У�</span><br><span class="line">    FileOutputStream out &#x3D; new FileOutputStream(dstName);</span><br><span class="line">     JPEGImageEncoder encoder &#x3D; JPEGCodec.createJPEGEncoder(out);</span><br><span class="line">     encoder.encode(dstImage);</span><br><span class="line"></span><br><span class="line">��д�ɣ�</span><br><span class="line"></span><br><span class="line">    String formatName &#x3D; dstName.substring(dstName.lastIndexOf(&quot;.&quot;) + 1);</span><br><span class="line">     &#x2F;&#x2F;FileOutputStream out &#x3D; new FileOutputStream(dstName);</span><br><span class="line">     &#x2F;&#x2F;JPEGImageEncoder encoder &#x3D; JPEGCodec.createJPEGEncoder(out);</span><br><span class="line">     &#x2F;&#x2F;encoder.encode(dstImage);</span><br><span class="line">     ImageIO.write(dstImage, &#x2F;*&quot;GIF&quot;*&#x2F; formatName &#x2F;* format desired *&#x2F; , new File(dstName) &#x2F;* target *&#x2F; ); </span><br></pre></td></tr></table></figure>
+<p>��ʹ��ͳһ��ImageIO����ͼ���ʽ�ļ��Ķ�д��û�б�Ҫʹ�ù�ʱ��ʵ����JPEGImageEncoder�ࡣ</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/09/21/DevOps-理解整理/" data-toggle="tooltip" data-placement="top" title="DevOps 理解整理">下一篇 &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+				
+            </div>
+
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">标签云</a></h5>
+                    <div class="tags">
+                       
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/davidstack">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 站着工程师 2020 
+                    <br>
+                    鲁ICP备16023683号-1
+                    <br>
+                    Powered by <a target="_blank" rel="noopener" href="http://www.hexo.io">Hexo</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Theme by <a target="_blank" rel="noopener" href="https://github.com/kinggozhang/hexo-theme-ace">ACE</a> 
+					
+					
+					<i class="fa fa-eye" id="leancounter"></i>
+					
+					  <div class="copyright text-muted">
+                        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                        本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+                        本站访客数<span id="busuanzi_value_site_uv"></span>人
+                      </div>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+   
+<script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+
+
+
+
+<!-- Bootstrap Core JavaScript -->
+
+   
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+	
+<script src="/js/particles.js"></script>
+
+	
+<script src="/js/particles_config.js"></script>
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://damonyi.cc/2020/09/21/com-sun-image-codec-jpeg-does-not-exist/index.html/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://damonyi.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
