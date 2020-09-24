@@ -1,37 +1,560 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+    <title>
+        
+          Docker精简镜像 - null
+        
+    </title>
+
+    <link rel="canonical" href="http://damonyi.cc/2020/09/21/Docker精简镜像/">
+
+    <!-- Bootstrap Core CSS -->
+
+   
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
 
 
-{% block title %}{{ page.title }} | {{ config.title }}{% endblock %}
+    
 
-{% block page_class %}page-post-detail{% endblock %}
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
 
 
-{% block content %}
+    
+<link rel="stylesheet" href="/css/donate.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+	
+<link rel="stylesheet" href="/css/w3.css">
 
-    <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+    }
+   .post-heading{
+    padding:20px;
+    }
+  .person {
+    border: 10px solid transparent;
+    margin-bottom: 25px;
+    width: 80%;
+    height: 80%;
+    opacity: 0.7;
+  }
+  .person:hover {
+    border-color: #f1f1f1;
+  }
+
+</style>
+
+<header id="headerid" class="w3-indigo intro-header" style="position:relative;">
+    <!-- Signature -->
+	
+        <div class="container">
+            <div class=" row" >
+			
+			<canvas id="particles-js-canvas" style="position:absolute;z-index:1;top:0px;left:0px;" width="100%" height="50%"></canvas>
+			
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="z-index:2;">
+                
+                    <div class="post-heading" style="padding:40px">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                            
+                        </div>
+                        <h1>Docker精简镜像</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 站着工程师 on
+                            2020-09-21
+                        </span>
+                        <span  class="meta" id="busuanzi_container_page_pv">
+                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                         </span>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+  
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">云里雾里</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a  href="/">Homepage</a>
+                    </li>
+		    
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#技术">技术</a>
+                           
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#教育">教育</a>
+                           
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
-  </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
 
-{% endblock %}
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="精简Docker镜像大小的必要性"><a href="#精简Docker镜像大小的必要性" class="headerlink" title="精简Docker镜像大小的必要性"></a>精简Docker镜像大小的必要性</h3><p>Docker镜像由很多镜像层（Layers）组成（最多127层），镜像层依赖于一系列的底层技术，比如文件系统(filesystems)、写时复制(copy-on-write)、联合挂载(union mounts)等技术，你可以查看Docker社区文档以了解更多有关Docker存储驱动的内容，这里就不再赘述技术细节。总的来说，Dockerfile中的每条指令都会创建一个镜像层，继而会增加整体镜像的尺寸。 下面是精简Docker镜像尺寸的好处： 1. 减少构建时间 2. 减少磁盘使用量 3. 减少下载时间 4. 因为包含文件少，攻击面减小，提高了安全性 5. 提高部署速度</p>
+<h3 id="五点建议减小Docker镜像尺寸"><a href="#五点建议减小Docker镜像尺寸" class="headerlink" title="五点建议减小Docker镜像尺寸"></a>五点建议减小Docker镜像尺寸</h3><h3 id="优化基础镜像"><a href="#优化基础镜像" class="headerlink" title="优化基础镜像"></a>优化基础镜像</h3><p>优化基础镜像的方法就是选用合适的更小的基础镜像，常用的 Linux 系统镜像一般有 Ubuntu、CentOs、Alpine，其中Alpine更推荐使用。大小对比如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">lynzabo@ubuntu ~&#x2F;s&gt; docker images</span><br><span class="line">REPOSITORY         TAG             IMAGE ID            CREATED             SIZE</span><br><span class="line">ubuntu             latest        74f8760a2a8b        8 days ago          82.4MB</span><br><span class="line">alpine             latest        11cd0b38bc3c        2 weeks ago         4.41MB</span><br><span class="line">centos               7           49f7960eb7e4        7 weeks ago         200MB</span><br><span class="line">debian             latest        3bbb526d2608        8 days ago          101MB</span><br><span class="line">lynzabo@ubuntu ~&#x2F;s&gt; </span><br></pre></td></tr></table></figure>
+<p>Alpine是一个高度精简又包含了基本工具的轻量级Linux发行版，基础镜像只有4.41M，各开发语言和框架都有基于Alpine制作的基础镜像，强烈推荐使用它。Alpine镜像各个语言和框架支持情况，可以参考《优化Docker镜像、加速应用部署，教你6个小窍门》。 查看上面的镜像尺寸对比结果，你会发现最小的镜像也有4.41M，那么有办法构建更小的镜像吗？答案是肯定的，例如 gcr.io/google_containers/pause-amd64:3.1 镜像仅有742KB。为什么这个镜像能这么小？在为大家解密之前，再推荐两个基础镜像： 1、scratch镜像 scratch是一个空镜像，只能用于构建其他镜像，比如你要运行一个包含所有依赖的二进制文件，如Golang程序，可以直接使用scratch作为基础镜像。现在给大家展示一下上文提到的Google pause镜像Dockerfile：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">FROM scratch</span><br><span class="line">ARG ARCH</span><br><span class="line">ADD bin&#x2F;pause-$&#123;ARCH&#125; &#x2F;pause</span><br><span class="line">ENTRYPOINT [&quot;&#x2F;pause&quot;] </span><br></pre></td></tr></table></figure>
+<p>Google pause镜像使用了scratch作为基础镜像，这个镜像本身是不占空间的，使用它构建的镜像大小几乎和二进制文件本身一样大，所以镜像非常小。当然在我们的Golang程序中也会使用。对于一些Golang/C程序，可能会依赖一些动态库，你可以使用自动提取动态库工具，比如ldd、linuxdeployqt等提取所有动态库，然后将二进制文件和依赖动态库一起打包到镜像中。 2、busybox镜像 scratch是个空镜像，如果希望镜像里可以包含一些常用的Linux工具，busybox镜像是个不错选择，镜像本身只有1.16M，非常便于构建小镜像。</p>
+<h4 id="串联-Dockerfile-指令"><a href="#串联-Dockerfile-指令" class="headerlink" title="串联 Dockerfile 指令"></a>串联 Dockerfile 指令</h4><p>大家在定义Dockerfile时，如果太多的使用RUN指令，经常会导致镜像有特别多的层，镜像很臃肿，而且甚至会碰到超出最大层数（127层）限制的问题，遵循 Dockerfile 最佳实践，我们应该把多个命令串联合并为一个 RUN（通过运算符&amp;&amp;和/ 来实现），每一个 RUN 要精心设计，确保安装构建最后进行清理，这样才可以降低镜像体积，以及最大化的利用构建缓存。 下面是一个优化前Dockerfile：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">FROM ubuntu</span><br><span class="line"></span><br><span class="line">ENV VER     3.0.0  </span><br><span class="line">ENV TARBALL http:&#x2F;&#x2F;download.redis.io&#x2F;releases&#x2F;redis-$VER.tar.gz  </span><br><span class="line"># &#x3D;&#x3D;&gt; Install curl and helper tools...</span><br><span class="line">RUN apt-get update  </span><br><span class="line">RUN apt-get install -y  curl make gcc  </span><br><span class="line"># &#x3D;&#x3D;&gt; Download, compile, and install...</span><br><span class="line">RUN curl -L $TARBALL | tar zxv  </span><br><span class="line">WORKDIR  redis-$VER  </span><br><span class="line">RUN make  </span><br><span class="line">RUN make install  </span><br><span class="line">#...</span><br><span class="line"># &#x3D;&#x3D;&gt; Clean up...</span><br><span class="line">WORKDIR &#x2F;  </span><br><span class="line">RUN apt-get remove -y --auto-remove curl make gcc  </span><br><span class="line">RUN apt-get clean  </span><br><span class="line">RUN rm -rf &#x2F;var&#x2F;lib&#x2F;apt&#x2F;lists&#x2F;*  &#x2F;redis-$VER  </span><br><span class="line">#...</span><br><span class="line">CMD [&quot;redis-server&quot;] </span><br></pre></td></tr></table></figure>
+<p>构建镜像，名称叫 test/test:0.1。 我们对Dockerfile做优化，优化后Dockerfile：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">FROM ubuntu</span><br><span class="line"></span><br><span class="line">ENV VER     3.0.0  </span><br><span class="line">ENV TARBALL http:&#x2F;&#x2F;download.redis.io&#x2F;releases&#x2F;redis-$VER.tar.gz</span><br><span class="line"></span><br><span class="line">RUN echo &quot;&#x3D;&#x3D;&gt; Install curl and helper tools...&quot;  &amp;&amp; \  </span><br><span class="line">    apt-get update                      &amp;&amp; \</span><br><span class="line">    apt-get install -y  curl make gcc   &amp;&amp; \</span><br><span class="line">    echo &quot;&#x3D;&#x3D;&gt; Download, compile, and install...&quot;  &amp;&amp; \</span><br><span class="line">    curl -L $TARBALL | tar zxv  &amp;&amp; \</span><br><span class="line">    cd redis-$VER               &amp;&amp; \</span><br><span class="line">    make                        &amp;&amp; \</span><br><span class="line">    make install                &amp;&amp; \</span><br><span class="line">    echo &quot;&#x3D;&#x3D;&gt; Clean up...&quot;  &amp;&amp; \</span><br><span class="line">    apt-get remove -y --auto-remove curl make gcc  &amp;&amp; \</span><br><span class="line">    apt-get clean                                  &amp;&amp; \</span><br><span class="line">    rm -rf &#x2F;var&#x2F;lib&#x2F;apt&#x2F;lists&#x2F;*  &#x2F;redis-$VER</span><br><span class="line">#...</span><br><span class="line">CMD [&quot;redis-server&quot;] </span><br></pre></td></tr></table></figure>
+<p>构建镜像，名称叫 test/test:0.2。 对比两个镜像大小：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-master:&#x2F;tmp&#x2F;iops# docker images</span><br><span class="line">REPOSITORY       TAG           IMAGE ID            CREATED             SIZE</span><br><span class="line">test&#x2F;test        0.2         58468c0222ed        2 minutes ago       98.1MB</span><br><span class="line">test&#x2F;test        0.1         e496cf7243f2        6 minutes ago       307MB</span><br><span class="line">root@k8s-master:&#x2F;tmp&#x2F;iops# </span><br></pre></td></tr></table></figure>
+<p>可以看到，将多条RUN命令串联起来构建的镜像大小是每条命令分别RUN的三分之一。 提示：为了应对镜像中存在太多镜像层，Docker 1.13版本以后，提供了一个压扁镜像功能，即将 Dockerfile 中所有的操作压缩为一层。这个特性还处于实验阶段，Docker默认没有开启，如果要开启，需要在启动Docker时添加-experimental 选项，并在Docker build 构建镜像时候添加 –squash 。我们不推荐使用这个办法，请在撰写 Dockerfile 时遵循最佳实践编写，不要试图用这种办法去压缩镜像。</p>
+<h4 id="使用多阶段构建"><a href="#使用多阶段构建" class="headerlink" title="使用多阶段构建"></a>使用多阶段构建</h4><p>Dockerfile中每条指令都会为镜像增加一个镜像层，并且你需要在移动到下一个镜像层之前清理不需要的组件。实际上，有一个Dockerfile用于开发（其中包含构建应用程序所需的所有内容）以及一个用于生产的瘦客户端，它只包含你的应用程序以及运行它所需的内容。这被称为“建造者模式”。Docker 17.05.0-ce版本以后支持多阶段构建。使用多阶段构建，你可以在Dockerfile中使用多个FROM语句，每条FROM指令可以使用不同的基础镜像，这样您可以选择性地将服务组件从一个阶段COPY到另一个阶段，在最终镜像中只保留需要的内容。 下面是一个使用COPY –from 和 FROM … AS … 的Dockerfile：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># Compile</span><br><span class="line">FROM golang:1.9.0 AS builder</span><br><span class="line">WORKDIR &#x2F;go&#x2F;src&#x2F;v9.git...com&#x2F;...&#x2F;k8s-monitor</span><br><span class="line">COPY . .</span><br><span class="line">WORKDIR &#x2F;go&#x2F;src&#x2F;v9.git...com&#x2F;...&#x2F;k8s-monitor</span><br><span class="line">RUN make build</span><br><span class="line">RUN mv k8s-monitor &#x2F;root</span><br><span class="line"></span><br><span class="line"># Package</span><br><span class="line"># Use scratch image</span><br><span class="line">FROM scratch</span><br><span class="line">WORKDIR &#x2F;root&#x2F;</span><br><span class="line">COPY --from&#x3D;builder &#x2F;root .</span><br><span class="line">EXPOSE 8080</span><br><span class="line">CMD [&quot;&#x2F;root&#x2F;k8s-monitor&quot;] </span><br></pre></td></tr></table></figure>
+<p>构建镜像，你会发现生成的镜像只有上面COPY 指令指定的内容，镜像大小只有2M。这样在以前使用两个Dockerfile（一个Dockerfile用于开发和一个用于生产的瘦客户端），现在使用多阶段构建就可以搞定。</p>
+<h4 id="业务服务镜像技巧"><a href="#业务服务镜像技巧" class="headerlink" title="业务服务镜像技巧"></a>业务服务镜像技巧</h4><p>Docker在build镜像的时候，如果某个命令相关的内容没有变化，会使用上一次缓存（cache）的文件层，在构建业务镜像的时候可以注意下面两点： 不变或者变化很少的体积较大的依赖库和经常修改的自有代码分开； 因为cache缓存在运行Docker build命令的本地机器上，建议固定使用某台机器来进行Docker build，以便利用cache。 下面是构建Spring Boot应用镜像的例子，用来说明如何分层。其他类型的应用，比如Java WAR包，Nodejs的npm 模块等，可以采取类似的方式。 1、在Dockerfile所在目录，解压缩maven生成的jar包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ unzip &lt;path-to-app-jar&gt;.jar -d app </span><br></pre></td></tr></table></figure>
+<p>2、Dockerfile 我们把应用的内容分成4个部分COPY到镜像里面：其中前面3个基本不变，第4个是经常变化的自有代码。最后一行是解压缩后，启动spring boot应用的方式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">FROM openjdk:8-jre-alpine</span><br><span class="line"></span><br><span class="line">LABEL maintainer &quot;opl-xws@xiaomi.com&quot;</span><br><span class="line">COPY app&#x2F;BOOT-INF&#x2F;lib&#x2F; &#x2F;app&#x2F;BOOT-INF&#x2F;lib&#x2F;</span><br><span class="line">COPY app&#x2F;org &#x2F;app&#x2F;org</span><br><span class="line">COPY app&#x2F;META-INF &#x2F;app&#x2F;META-INF</span><br><span class="line">COPY app&#x2F;BOOT-INF&#x2F;classes &#x2F;app&#x2F;BOOT-INF&#x2F;classes</span><br><span class="line">EXPOSE 8080</span><br><span class="line">CMD [&quot;&#x2F;usr&#x2F;bin&#x2F;java&quot;, &quot;-cp&quot;, &quot;&#x2F;app&quot;, &quot;org.springframework.boot.loader.JarLauncher&quot;] </span><br></pre></td></tr></table></figure>
+<p>这样在构建镜像时候可大大提高构建速度。 ###其他优化方法 1. RUN命令中执行apt、apk或者yum类工具技巧 如果在RUN命令中执行apt、apk或者yum类工具，可以借助这些工具提供的一些小技巧来减少镜像层数量及镜像大小。举几个例子： （1）在执行apt-get install -y 时增加选项— no-install-recommends ，可以不用安装建议性（非必须）的依赖，也可以在执行apk add 时添加选项–no-cache 达到同样效果； （2）执行yum install -y 时候， 可以同时安装多个工具，比如yum install -y gcc gcc-c++ make …。将所有yum install 任务放在一条RUN命令上执行，从而减少镜像层的数量； （3）组件的安装和清理要串联在一条指令里面，如 apk –update add php7 &amp;&amp; rm -rf /var/cache/apk/* ，因为Dockerfile的每条指令都会产生一个文件层，如果将apk add … 和 rm -rf … 命令分开，清理无法减小apk命令产生的文件层的大小。 Ubuntu或Debian可以使用 rm -rf /<strong>var</strong>/lib/apt/lists/* 清理镜像中缓存文件；CentOS等系统使用yum clean all 命令清理。 2. 压缩镜像 Docker 自带的一些命令还能协助压缩镜像，比如 export 和 import</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d test&#x2F;test:0.2</span><br><span class="line">$ docker export 747dc0e72d13 | docker import - test&#x2F;test:0.3 </span><br></pre></td></tr></table></figure>
+<p>使用这种方式需要先将容器运行起来，而且这个过程中会丢失镜像原有的一些信息，比如：导出端口，环境变量，默认指令。 查看这两个镜像history信息，如下，可以看到test/test:0.3 丢失了所有的镜像层信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-master:&#x2F;tmp&#x2F;iops# docker history test&#x2F;test:0.3</span><br><span class="line">IMAGE               CREATED             CREATED BY          SIZE                COMMENT</span><br><span class="line">6fb3f00b7a72        15 seconds ago                          84.7MB              Imported from -</span><br><span class="line">root@k8s-master:&#x2F;tmp&#x2F;iops# docker history test&#x2F;test:0.2</span><br><span class="line">IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT</span><br><span class="line">58468c0222ed        2 hours ago         &#x2F;bin&#x2F;sh -c #(nop)  CMD [&quot;redis-server&quot;]         0B       </span><br><span class="line">1af7ffe3d163        2 hours ago         &#x2F;bin&#x2F;sh -c echo &quot;&#x3D;&#x3D;&gt; Install curl and helper…   15.7MB   </span><br><span class="line">8bac6e733d54        2 hours ago         &#x2F;bin&#x2F;sh -c #(nop)  ENV TARBALL&#x3D;http:&#x2F;&#x2F;downlo…   0B       </span><br><span class="line">793282f3ef7a        2 hours ago         &#x2F;bin&#x2F;sh -c #(nop)  ENV VER&#x3D;3.0.0                0B       </span><br><span class="line">74f8760a2a8b        8 days ago          &#x2F;bin&#x2F;sh -c #(nop)  CMD [&quot;&#x2F;bin&#x2F;bash&quot;]            0B       </span><br><span class="line">&lt;missing&gt;           8 days ago          &#x2F;bin&#x2F;sh -c mkdir -p &#x2F;run&#x2F;systemd &amp;&amp; echo &#39;do…   7B</span><br><span class="line">&lt;missing&gt;           8 days ago          &#x2F;bin&#x2F;sh -c sed -i &#39;s&#x2F;^#\s*\(deb.*universe\)$…   2.76kB</span><br><span class="line">&lt;missing&gt;           8 days ago          &#x2F;bin&#x2F;sh -c rm -rf &#x2F;var&#x2F;lib&#x2F;apt&#x2F;lists&#x2F;*          0B</span><br><span class="line">&lt;missing&gt;           8 days ago          &#x2F;bin&#x2F;sh -c set -xe   &amp;&amp; echo &#39;#!&#x2F;bin&#x2F;sh&#39; &gt; &#x2F;…   745B    </span><br><span class="line">&lt;missing&gt;           8 days ago          &#x2F;bin&#x2F;sh -c #(nop) ADD file:5fabb77ea8d61e02d…   82.4MB   </span><br><span class="line">root@k8s-master:&#x2F;tmp&#x2F;iops# </span><br></pre></td></tr></table></figure>
+<p>社区里还有很多压缩工具，比如Docker-squash ，用起来更简单方便，并且不会丢失原有镜像的自带信息，大家有兴趣可以试试。 转自<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/blZt_jmHBprX9tzbyQRWIg">米生态云</a></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/09/21/Docker插件机制/" data-toggle="tooltip" data-placement="top" title="Docker插件机制">&larr; Previous post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/09/21/Docker镜像仓库删除历史版本/" data-toggle="tooltip" data-placement="top" title="Docker镜像仓库删除历史版本">Next post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+				
+            </div>
+
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">Tags</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/davidstack">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 站着工程师 2020 
+                    <br>
+                    鲁ICP备16023683号-1
+                    <br>
+                    Powered by <a target="_blank" rel="noopener" href="http://www.hexo.io">Hexo</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Theme by <a target="_blank" rel="noopener" href="https://github.com/kinggozhang/hexo-theme-ace">ACE</a> 
+					
+					
+					<i class="fa fa-eye" id="leancounter"></i>
+					
+					  <div class="copyright text-muted">
+                        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                        本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+                        本站访客数<span id="busuanzi_value_site_uv"></span>人
+                      </div>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+   
+<script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+
+
+
+
+<!-- Bootstrap Core JavaScript -->
+
+   
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+	
+<script src="/js/particles.js"></script>
+
+	
+<script src="/js/particles_config.js"></script>
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://damonyi.cc/2020/09/21/Docker%E7%B2%BE%E7%AE%80%E9%95%9C%E5%83%8F/index.html/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://damonyi.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

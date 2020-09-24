@@ -1,37 +1,532 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+    <title>
+        
+          Docker 默认的Container名称生成 - null
+        
+    </title>
+
+    <link rel="canonical" href="http://damonyi.cc/2020/09/21/Docker-默认的Container名称生成/">
+
+    <!-- Bootstrap Core CSS -->
+
+   
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
 
 
-{% block title %}{{ page.title }} | {{ config.title }}{% endblock %}
+    
 
-{% block page_class %}page-post-detail{% endblock %}
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
 
 
-{% block content %}
+    
+<link rel="stylesheet" href="/css/donate.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+	
+<link rel="stylesheet" href="/css/w3.css">
 
-    <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+    }
+   .post-heading{
+    padding:20px;
+    }
+  .person {
+    border: 10px solid transparent;
+    margin-bottom: 25px;
+    width: 80%;
+    height: 80%;
+    opacity: 0.7;
+  }
+  .person:hover {
+    border-color: #f1f1f1;
+  }
+
+</style>
+
+<header id="headerid" class="w3-indigo intro-header" style="position:relative;">
+    <!-- Signature -->
+	
+        <div class="container">
+            <div class=" row" >
+			
+			<canvas id="particles-js-canvas" style="position:absolute;z-index:1;top:0px;left:0px;" width="100%" height="50%"></canvas>
+			
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="z-index:2;">
+                
+                    <div class="post-heading" style="padding:40px">
+                        <div class="tags">
+                            
+                        </div>
+                        <h1>Docker 默认的Container名称生成</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 站着工程师 on
+                            2020-09-21
+                        </span>
+                        <span  class="meta" id="busuanzi_container_page_pv">
+                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                         </span>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+  
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">云里雾里</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a  href="/">Homepage</a>
+                    </li>
+		    
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#技术">技术</a>
+                           
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#教育">教育</a>
+                           
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
-  </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
 
-{% endblock %}
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>        当基于Docker创建Container时，如果不指定容器名称，Docker Damon会默认生成容器名称，这个名称看着是个真实的名称，找了一下docker的代码，发现了生成名称的机制，代码文件：<a target="_blank" rel="noopener" href="https://github.com/docker/docker">docker</a>/<a target="_blank" rel="noopener" href="https://github.com/docker/docker/tree/master/pkg">pkg</a>/<a target="_blank" rel="noopener" href="https://github.com/docker/docker/tree/master/pkg/namesgenerator">namesgenerator</a>/names-generator.go。查看代码，发现这些名称都是一些名人的名称，我只想说一句，docker 好任性。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br><span class="line">468</span><br><span class="line">469</span><br><span class="line">470</span><br><span class="line">471</span><br><span class="line">472</span><br><span class="line">473</span><br><span class="line">474</span><br><span class="line">475</span><br><span class="line">476</span><br><span class="line">477</span><br><span class="line">478</span><br><span class="line">479</span><br><span class="line">480</span><br><span class="line">481</span><br><span class="line">482</span><br><span class="line">483</span><br><span class="line">484</span><br><span class="line">485</span><br><span class="line">486</span><br><span class="line">487</span><br><span class="line">488</span><br><span class="line">489</span><br><span class="line">490</span><br><span class="line">491</span><br><span class="line">492</span><br><span class="line">493</span><br><span class="line">494</span><br><span class="line">495</span><br><span class="line">496</span><br><span class="line">497</span><br><span class="line">498</span><br><span class="line">499</span><br><span class="line">500</span><br><span class="line">501</span><br><span class="line">502</span><br><span class="line">503</span><br><span class="line">504</span><br><span class="line">505</span><br><span class="line">506</span><br><span class="line">507</span><br><span class="line">508</span><br><span class="line">509</span><br><span class="line">510</span><br><span class="line">511</span><br><span class="line">512</span><br><span class="line">513</span><br><span class="line">514</span><br><span class="line">515</span><br><span class="line">516</span><br><span class="line">517</span><br><span class="line">518</span><br><span class="line">519</span><br><span class="line">520</span><br><span class="line">521</span><br><span class="line">522</span><br><span class="line">523</span><br><span class="line">524</span><br><span class="line">525</span><br><span class="line">526</span><br><span class="line">527</span><br><span class="line">528</span><br><span class="line">529</span><br><span class="line">530</span><br><span class="line">531</span><br><span class="line">532</span><br><span class="line">533</span><br><span class="line">534</span><br><span class="line">535</span><br><span class="line">536</span><br><span class="line">537</span><br><span class="line">538</span><br><span class="line">539</span><br><span class="line">540</span><br><span class="line">541</span><br><span class="line">542</span><br><span class="line">543</span><br><span class="line">544</span><br><span class="line">545</span><br><span class="line">546</span><br><span class="line">547</span><br><span class="line">548</span><br><span class="line">549</span><br><span class="line">550</span><br><span class="line">551</span><br><span class="line">552</span><br></pre></td><td class="code"><pre><span class="line">package namesgenerator</span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line"></span><br><span class="line">	&quot;github.com&#x2F;docker&#x2F;docker&#x2F;pkg&#x2F;random&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">var (</span><br><span class="line">	left &#x3D; \[...\]string&#123;</span><br><span class="line">		&quot;admiring&quot;,</span><br><span class="line">		&quot;adoring&quot;,</span><br><span class="line">		&quot;agitated&quot;,</span><br><span class="line">		&quot;amazing&quot;,</span><br><span class="line">		&quot;angry&quot;,</span><br><span class="line">		&quot;awesome&quot;,</span><br><span class="line">		&quot;backstabbing&quot;,</span><br><span class="line">		&quot;berserk&quot;,</span><br><span class="line">		&quot;big&quot;,</span><br><span class="line">		&quot;boring&quot;,</span><br><span class="line">		&quot;clever&quot;,</span><br><span class="line">		&quot;cocky&quot;,</span><br><span class="line">		&quot;compassionate&quot;,</span><br><span class="line">		&quot;condescending&quot;,</span><br><span class="line">		&quot;cranky&quot;,</span><br><span class="line">		&quot;desperate&quot;,</span><br><span class="line">		&quot;determined&quot;,</span><br><span class="line">		&quot;distracted&quot;,</span><br><span class="line">		&quot;dreamy&quot;,</span><br><span class="line">		&quot;drunk&quot;,</span><br><span class="line">		&quot;ecstatic&quot;,</span><br><span class="line">		&quot;elated&quot;,</span><br><span class="line">		&quot;elegant&quot;,</span><br><span class="line">		&quot;evil&quot;,</span><br><span class="line">		&quot;fervent&quot;,</span><br><span class="line">		&quot;focused&quot;,</span><br><span class="line">		&quot;furious&quot;,</span><br><span class="line">		&quot;gigantic&quot;,</span><br><span class="line">		&quot;gloomy&quot;,</span><br><span class="line">		&quot;goofy&quot;,</span><br><span class="line">		&quot;grave&quot;,</span><br><span class="line">		&quot;happy&quot;,</span><br><span class="line">		&quot;high&quot;,</span><br><span class="line">		&quot;hopeful&quot;,</span><br><span class="line">		&quot;hungry&quot;,</span><br><span class="line">		&quot;infallible&quot;,</span><br><span class="line">		&quot;jolly&quot;,</span><br><span class="line">		&quot;jovial&quot;,</span><br><span class="line">		&quot;kickass&quot;,</span><br><span class="line">		&quot;lonely&quot;,</span><br><span class="line">		&quot;loving&quot;,</span><br><span class="line">		&quot;mad&quot;,</span><br><span class="line">		&quot;modest&quot;,</span><br><span class="line">		&quot;naughty&quot;,</span><br><span class="line">		&quot;nauseous&quot;,</span><br><span class="line">		&quot;nostalgic&quot;,</span><br><span class="line">		&quot;peaceful&quot;,</span><br><span class="line">		&quot;pedantic&quot;,</span><br><span class="line">		&quot;pensive&quot;,</span><br><span class="line">		&quot;prickly&quot;,</span><br><span class="line">		&quot;reverent&quot;,</span><br><span class="line">		&quot;romantic&quot;,</span><br><span class="line">		&quot;sad&quot;,</span><br><span class="line">		&quot;serene&quot;,</span><br><span class="line">		&quot;sharp&quot;,</span><br><span class="line">		&quot;sick&quot;,</span><br><span class="line">		&quot;silly&quot;,</span><br><span class="line">		&quot;sleepy&quot;,</span><br><span class="line">		&quot;small&quot;,</span><br><span class="line">		&quot;stoic&quot;,</span><br><span class="line">		&quot;stupefied&quot;,</span><br><span class="line">		&quot;suspicious&quot;,</span><br><span class="line">		&quot;tender&quot;,</span><br><span class="line">		&quot;thirsty&quot;,</span><br><span class="line">		&quot;tiny&quot;,</span><br><span class="line">		&quot;trusting&quot;,</span><br><span class="line">		&quot;zen&quot;,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F; Docker, starting from 0.7.x, generates names from notable scientists and hackers.</span><br><span class="line">	&#x2F;&#x2F; Please, for any amazing man that you add to the list, consider adding an equally amazing woman to it, and vice versa.</span><br><span class="line">	right &#x3D; \[...\]string&#123;</span><br><span class="line">		&#x2F;&#x2F; Muhammad ibn Jābir al-Ḥarrānī al-Battānī was a founding father of astronomy. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Mu%E1%B8%A5ammad\_ibn\_J%C4%81bir\_al-%E1%B8%A4arr%C4%81n%C4%AB\_al-Batt%C4%81n%C4%AB</span><br><span class="line">		&quot;albattani&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Frances E. Allen, became the first female IBM Fellow in 1989. In 2006, she became the first female recipient of the ACM&#39;s Turing Award. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Frances\_E.\_Allen</span><br><span class="line">		&quot;allen&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; June Almeida - Scottish virologist who took the first pictures of the rubella virus - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;June\_Almeida</span><br><span class="line">		&quot;almeida&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Maria Gaetana Agnesi - Italian mathematician, philosopher, theologian and humanitarian. She was the first woman to write a mathematics handbook and the first woman appointed as a Mathematics Professor at a University. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Maria\_Gaetana\_Agnesi</span><br><span class="line">		&quot;agnesi&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Archimedes was a physicist, engineer and mathematician who invented too many things to list them here. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Archimedes</span><br><span class="line">		&quot;archimedes&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Maria Ardinghelli - Italian translator, mathematician and physicist - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Maria\_Ardinghelli</span><br><span class="line">		&quot;ardinghelli&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Aryabhata - Ancient Indian mathematician-astronomer during 476-550 CE https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Aryabhata</span><br><span class="line">		&quot;aryabhata&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Wanda Austin - Wanda Austin is the President and CEO of The Aerospace Corporation, a leading architect for the US security space programs. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Wanda\_Austin</span><br><span class="line">		&quot;austin&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Charles Babbage invented the concept of a programmable computer. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Charles\_Babbage.</span><br><span class="line">		&quot;babbage&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Stefan Banach - Polish mathematician, was one of the founders of modern functional analysis. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Stefan\_Banach</span><br><span class="line">		&quot;banach&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; John Bardeen co-invented the transistor - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;John\_Bardeen</span><br><span class="line">		&quot;bardeen&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Jean Bartik, born Betty Jean Jennings, was one of the original programmers for the ENIAC computer. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Jean\_Bartik</span><br><span class="line">		&quot;bartik&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Laura Bassi, the world&#39;s first female professor https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Laura\_Bassi</span><br><span class="line">		&quot;bassi&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Alexander Graham Bell - an eminent Scottish-born scientist, inventor, engineer and innovator who is credited with inventing the first practical telephone - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Alexander\_Graham\_Bell</span><br><span class="line">		&quot;bell&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Homi J Bhabha - was an Indian nuclear physicist, founding director, and professor of physics at the Tata Institute of Fundamental Research. Colloquially known as &quot;father of Indian nuclear programme&quot;- https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Homi\_J.\_Bhabha</span><br><span class="line">		&quot;bhabha&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Bhaskara II - Ancient Indian mathematician-astronomer whose work on calculus predates Newton and Leibniz by over half a millennium - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Bh%C4%81skara\_II#Calculus</span><br><span class="line">		&quot;bhaskara&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Elizabeth Blackwell - American doctor and first American woman to receive a medical degree - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Elizabeth\_Blackwell</span><br><span class="line">		&quot;blackwell&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Niels Bohr is the father of quantum theory. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Niels\_Bohr.</span><br><span class="line">		&quot;bohr&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Kathleen Booth, she&#39;s credited with writing the first assembly language. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Kathleen\_Booth</span><br><span class="line">		&quot;booth&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Anita Borg - Anita Borg was the founding director of the Institute for Women and Technology (IWT). https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Anita\_Borg</span><br><span class="line">		&quot;borg&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Satyendra Nath Bose - He provided the foundation for Bose–Einstein statistics and the theory of the Bose–Einstein condensate. - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Satyendra\_Nath\_Bose</span><br><span class="line">		&quot;bose&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Evelyn Boyd Granville - She was one of the first African-American woman to receive a Ph.D. in mathematics; she earned it in 1949 from Yale University. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Evelyn\_Boyd\_Granville</span><br><span class="line">		&quot;boyd&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Brahmagupta - Ancient Indian mathematician during 598-670 CE who gave rules to compute with zero - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Brahmagupta#Zero</span><br><span class="line">		&quot;brahmagupta&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Walter Houser Brattain co-invented the transistor - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Walter\_Houser\_Brattain</span><br><span class="line">		&quot;brattain&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Emmett Brown invented time travel. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Emmett\_Brown (thanks Brian Goff)</span><br><span class="line">		&quot;brown&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Rachel Carson - American marine biologist and conservationist, her book Silent Spring and other writings are credited with advancing the global environmental movement. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Rachel\_Carson</span><br><span class="line">		&quot;carson&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Subrahmanyan Chandrasekhar - Astrophysicist known for his mathematical theory on different stages and evolution in structures of the stars. He has won nobel prize for physics - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Subrahmanyan\_Chandrasekhar</span><br><span class="line">		&quot;chandrasekhar&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F;Claude Shannon - The father of information theory and founder of digital circuit design theory. (https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Claude\_Shannon)</span><br><span class="line">		&quot;shannon&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Jane Colden - American botanist widely considered the first female American botanist - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Jane\_Colden</span><br><span class="line">		&quot;colden&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Gerty Theresa Cori - American biochemist who became the third woman—and first American woman—to win a Nobel Prize in science, and the first woman to be awarded the Nobel Prize in Physiology or Medicine. Cori was born in Prague. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Gerty\_Cori</span><br><span class="line">		&quot;cori&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Seymour Roger Cray was an American electrical engineer and supercomputer architect who designed a series of computers that were the fastest in the world for decades. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Seymour\_Cray</span><br><span class="line">		&quot;cray&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; This entry reflects a husband and wife team who worked together:</span><br><span class="line">		&#x2F;&#x2F; Joan Curran was a Welsh scientist who developed radar and invented chaff, a radar countermeasure. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Joan\_Curran</span><br><span class="line">		&#x2F;&#x2F; Samuel Curran was an Irish physicist who worked alongside his wife during WWII and invented the proximity fuse. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Samuel\_Curran</span><br><span class="line">		&quot;curran&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Marie Curie discovered radioactivity. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Marie\_Curie.</span><br><span class="line">		&quot;curie&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Charles Darwin established the principles of natural evolution. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Charles\_Darwin.</span><br><span class="line">		&quot;darwin&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Leonardo Da Vinci invented too many things to list here. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Leonardo\_da\_Vinci.</span><br><span class="line">		&quot;davinci&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Edsger Wybe Dijkstra was a Dutch computer scientist and mathematical scientist. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Edsger\_W.\_Dijkstra.</span><br><span class="line">		&quot;dijkstra&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Donna Dubinsky - played an integral role in the development of personal digital assistants (PDAs) serving as CEO of Palm, Inc. and co-founding Handspring. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Donna\_Dubinsky</span><br><span class="line">		&quot;dubinsky&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Annie Easley - She was a leading member of the team which developed software for the Centaur rocket stage and one of the first African-Americans in her field. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Annie\_Easley</span><br><span class="line">		&quot;easley&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Thomas Alva Edison, prolific inventor https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Thomas\_Edison</span><br><span class="line">		&quot;edison&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Albert Einstein invented the general theory of relativity. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Albert\_Einstein</span><br><span class="line">		&quot;einstein&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Gertrude Elion - American biochemist, pharmacologist and the 1988 recipient of the Nobel Prize in Medicine - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Gertrude\_Elion</span><br><span class="line">		&quot;elion&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Douglas Engelbart gave the mother of all demos: https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Douglas\_Engelbart</span><br><span class="line">		&quot;engelbart&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Euclid invented geometry. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Euclid</span><br><span class="line">		&quot;euclid&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Leonhard Euler invented large parts of modern mathematics. https:&#x2F;&#x2F;de.wikipedia.org&#x2F;wiki&#x2F;Leonhard\_Euler</span><br><span class="line">		&quot;euler&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Pierre de Fermat pioneered several aspects of modern mathematics. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Pierre\_de\_Fermat</span><br><span class="line">		&quot;fermat&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Enrico Fermi invented the first nuclear reactor. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Enrico\_Fermi.</span><br><span class="line">		&quot;fermi&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Richard Feynman was a key contributor to quantum mechanics and particle physics. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Richard\_Feynman</span><br><span class="line">		&quot;feynman&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Benjamin Franklin is famous for his experiments in electricity and the invention of the lightning rod.</span><br><span class="line">		&quot;franklin&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Galileo was a founding father of modern astronomy, and faced politics and obscurantism to establish scientific truth.  https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Galileo\_Galilei</span><br><span class="line">		&quot;galileo&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; William Henry &quot;Bill&quot; Gates III is an American business magnate, philanthropist, investor, computer programmer, and inventor. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Bill\_Gates</span><br><span class="line">		&quot;gates&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Adele Goldberg, was one of the designers and developers of the Smalltalk language. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Adele\_Goldberg\_(computer\_scientist)</span><br><span class="line">		&quot;goldberg&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Adele Goldstine, born Adele Katz, wrote the complete technical description for the first electronic digital computer, ENIAC. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Adele\_Goldstine</span><br><span class="line">		&quot;goldstine&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Shafi Goldwasser is a computer scientist known for creating theoretical foundations of modern cryptography. Winner of 2012 ACM Turing Award. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Shafi\_Goldwasser</span><br><span class="line">		&quot;goldwasser&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; James Golick, all around gangster.</span><br><span class="line">		&quot;golick&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Jane Goodall - British primatologist, ethologist, and anthropologist who is considered to be the world&#39;s foremost expert on chimpanzees - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Jane\_Goodall</span><br><span class="line">		&quot;goodall&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Margaret Hamilton - Director of the Software Engineering Division of the MIT Instrumentation Laboratory, which developed on-board flight software for the Apollo space program. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Margaret\_Hamilton\_(scientist)</span><br><span class="line">		&quot;hamilton&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Stephen Hawking pioneered the field of cosmology by combining general relativity and quantum mechanics. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Stephen\_Hawking</span><br><span class="line">		&quot;hawking&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Werner Heisenberg was a founding father of quantum mechanics. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Werner\_Heisenberg</span><br><span class="line">		&quot;heisenberg&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Jaroslav Heyrovský was the inventor of the polarographic method, father of the electroanalytical method, and recipient of the Nobel Prize in 1959. His main field of work was polarography. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Jaroslav\_Heyrovsk%C3%BD</span><br><span class="line">		&quot;heyrovsky&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Dorothy Hodgkin was a British biochemist, credited with the development of protein crystallography. She was awarded the Nobel Prize in Chemistry in 1964. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Dorothy\_Hodgkin</span><br><span class="line">		&quot;hodgkin&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Erna Schneider Hoover revolutionized modern communication by inventing a computerized telephone switching method. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Erna\_Schneider\_Hoover</span><br><span class="line">		&quot;hoover&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Grace Hopper developed the first compiler for a computer programming language and  is credited with popularizing the term &quot;debugging&quot; for fixing computer glitches. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Grace\_Hopper</span><br><span class="line">		&quot;hopper&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Frances Hugle, she was an American scientist, engineer, and inventor who contributed to the understanding of semiconductors, integrated circuitry, and the unique electrical principles of microscopic materials. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Frances\_Hugle</span><br><span class="line">		&quot;hugle&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Hypatia - Greek Alexandrine Neoplatonist philosopher in Egypt who was one of the earliest mothers of mathematics - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Hypatia</span><br><span class="line">		&quot;hypatia&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Yeong-Sil Jang was a Korean scientist and astronomer during the Joseon Dynasty; he invented the first metal printing press and water gauge. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Jang\_Yeong-sil</span><br><span class="line">		&quot;jang&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Betty Jennings - one of the original programmers of the ENIAC. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;ENIAC - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Jean\_Bartik</span><br><span class="line">		&quot;jennings&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Mary Lou Jepsen, was the founder and chief technology officer of One Laptop Per Child (OLPC), and the founder of Pixel Qi. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Mary\_Lou\_Jepsen</span><br><span class="line">		&quot;jepsen&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Irène Joliot-Curie - French scientist who was awarded the Nobel Prize for Chemistry in 1935. Daughter of Marie and Pierre Curie. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Ir%C3%A8ne\_Joliot-Curie</span><br><span class="line">		&quot;joliot&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Karen Spärck Jones came up with the concept of inverse document frequency, which is used in most search engines today. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Karen\_Sp%C3%A4rck\_Jones</span><br><span class="line">		&quot;jones&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; A. P. J. Abdul Kalam - is an Indian scientist aka Missile Man of India for his work on the development of ballistic missile and launch vehicle technology - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;A.\_P.\_J.\_Abdul\_Kalam</span><br><span class="line">		&quot;kalam&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Susan Kare, created the icons and many of the interface elements for the original Apple Macintosh in the 1980s, and was an original employee of NeXT, working as the Creative Director. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Susan\_Kare</span><br><span class="line">		&quot;kare&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Mary Kenneth Keller, Sister Mary Kenneth Keller became the first American woman to earn a PhD in Computer Science in 1965. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Mary\_Kenneth\_Keller</span><br><span class="line">		&quot;keller&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Har Gobind Khorana - Indian-American biochemist who shared the 1968 Nobel Prize for Physiology - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Har\_Gobind\_Khorana</span><br><span class="line">		&quot;khorana&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Jack Kilby invented silicone integrated circuits and gave Silicon Valley its name. - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Jack\_Kilby</span><br><span class="line">		&quot;kilby&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Maria Kirch - German astronomer and first woman to discover a comet - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Maria\_Margarethe\_Kirch</span><br><span class="line">		&quot;kirch&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Donald Knuth - American computer scientist, author of &quot;The Art of Computer Programming&quot; and creator of the TeX typesetting system. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Donald\_Knuth</span><br><span class="line">		&quot;knuth&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Sophie Kowalevski - Russian mathematician responsible for important original contributions to analysis, differential equations and mechanics - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Sofia\_Kovalevskaya</span><br><span class="line">		&quot;kowalevski&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Marie-Jeanne de Lalande - French astronomer, mathematician and cataloguer of stars - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Marie-Jeanne\_de\_Lalande</span><br><span class="line">		&quot;lalande&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Hedy Lamarr - Actress and inventor. The principles of her work are now incorporated into modern Wi-Fi, CDMA and Bluetooth technology. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Hedy\_Lamarr</span><br><span class="line">		&quot;lamarr&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Leslie B. Lamport - American computer scientist. Lamport is best known for his seminal work in distributed systems and was the winner of the 2013 Turing Award. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Leslie\_Lamport</span><br><span class="line">		&quot;lamport&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Mary Leakey - British paleoanthropologist who discovered the first fossilized Proconsul skull - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Mary\_Leakey</span><br><span class="line">		&quot;leakey&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Henrietta Swan Leavitt - she was an American astronomer who discovered the relation between the luminosity and the period of Cepheid variable stars. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Henrietta\_Swan\_Leavitt</span><br><span class="line">		&quot;leavitt&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Ruth Lichterman - one of the original programmers of the ENIAC. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;ENIAC - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Ruth\_Teitelbaum</span><br><span class="line">		&quot;lichterman&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Barbara Liskov - co-developed the Liskov substitution principle. Liskov was also the winner of the Turing Prize in 2008. - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Barbara\_Liskov</span><br><span class="line">		&quot;liskov&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Ada Lovelace invented the first algorithm. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Ada\_Lovelace (thanks James Turnbull)</span><br><span class="line">		&quot;lovelace&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Auguste and Louis Lumière - the first filmmakers in history - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Auguste\_and\_Louis\_Lumi%C3%A8re</span><br><span class="line">		&quot;lumiere&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Mahavira - Ancient Indian mathematician during 9th century AD who discovered basic algebraic identities - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Mah%C4%81v%C4%ABra\_(mathematician)</span><br><span class="line">		&quot;mahavira&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Maria Mayer - American theoretical physicist and Nobel laureate in Physics for proposing the nuclear shell model of the atomic nucleus - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Maria\_Mayer</span><br><span class="line">		&quot;mayer&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; John McCarthy invented LISP: https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;John\_McCarthy\_(computer\_scientist)</span><br><span class="line">		&quot;mccarthy&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Barbara McClintock - a distinguished American cytogeneticist, 1983 Nobel Laureate in Physiology or Medicine for discovering transposons. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Barbara\_McClintock</span><br><span class="line">		&quot;mcclintock&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Malcolm McLean invented the modern shipping container: https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Malcom\_McLean</span><br><span class="line">		&quot;mclean&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Kay McNulty - one of the original programmers of the ENIAC. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;ENIAC - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Kathleen\_Antonelli</span><br><span class="line">		&quot;mcnulty&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Lise Meitner - Austrian&#x2F;Swedish physicist who was involved in the discovery of nuclear fission. The element meitnerium is named after her - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Lise\_Meitner</span><br><span class="line">		&quot;meitner&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Carla Meninsky, was the game designer and programmer for Atari 2600 games Dodge &#39;Em and Warlords. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Carla\_Meninsky</span><br><span class="line">		&quot;meninsky&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Johanna Mestorf - German prehistoric archaeologist and first female museum director in Germany - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Johanna\_Mestorf</span><br><span class="line">		&quot;mestorf&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Marvin Minsky - Pioneer in Artificial Intelligence, co-founder of the MIT&#39;s AI Lab, won the Turing Award in 1969. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Marvin\_Minsky</span><br><span class="line">		&quot;minsky&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Maryam Mirzakhani - an Iranian mathematician and the first woman to win the Fields Medal. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Maryam\_Mirzakhani</span><br><span class="line">		&quot;mirzakhani&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Samuel Morse - contributed to the invention of a single-wire telegraph system based on European telegraphs and was a co-developer of the Morse code - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Samuel\_Morse</span><br><span class="line">		&quot;morse&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Ian Murdock - founder of the Debian project - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Ian\_Murdock</span><br><span class="line">		&quot;murdock&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Isaac Newton invented classic mechanics and modern optics. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Isaac\_Newton</span><br><span class="line">		&quot;newton&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Florence Nightingale, more prominently known as a nurse, was also the first female member of the Royal Statistical Society and a pioneer in statistical graphics https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Florence\_Nightingale#Statistics\_and\_sanitary\_reform</span><br><span class="line">		&quot;nightingale&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Alfred Nobel - a Swedish chemist, engineer, innovator, and armaments manufacturer (inventor of dynamite) - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Alfred\_Nobel</span><br><span class="line">		&quot;nobel&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Emmy Noether, German mathematician. Noether&#39;s Theorem is named after her. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Emmy\_Noether</span><br><span class="line">		&quot;noether&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Poppy Northcutt. Poppy Northcutt was the first woman to work as part of NASA’s Mission Control. http:&#x2F;&#x2F;www.businessinsider.com&#x2F;poppy-northcutt-helped-apollo-astronauts-2014-12?op&#x3D;1</span><br><span class="line">		&quot;northcutt&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Robert Noyce invented silicone integrated circuits and gave Silicon Valley its name. - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Robert\_Noyce</span><br><span class="line">		&quot;noyce&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Panini - Ancient Indian linguist and grammarian from 4th century CE who worked on the world&#39;s first formal system - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;P%C4%81%E1%B9%87ini#Comparison\_with\_modern\_formal\_systems</span><br><span class="line">		&quot;panini&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Ambroise Pare invented modern surgery. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Ambroise\_Par%C3%A9</span><br><span class="line">		&quot;pare&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Louis Pasteur discovered vaccination, fermentation and pasteurization. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Louis\_Pasteur.</span><br><span class="line">		&quot;pasteur&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Cecilia Payne-Gaposchkin was an astronomer and astrophysicist who, in 1925, proposed in her Ph.D. thesis an explanation for the composition of stars in terms of the relative abundances of hydrogen and helium. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Cecilia\_Payne-Gaposchkin</span><br><span class="line">		&quot;payne&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Radia Perlman is a software designer and network engineer and most famous for her invention of the spanning-tree protocol (STP). https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Radia\_Perlman</span><br><span class="line">		&quot;perlman&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Rob Pike was a key contributor to Unix, Plan 9, the X graphic system, utf-8, and the Go programming language. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Rob\_Pike</span><br><span class="line">		&quot;pike&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Henri Poincaré made fundamental contributions in several fields of mathematics. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Henri\_Poincar%C3%A9</span><br><span class="line">		&quot;poincare&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Laura Poitras is a director and producer whose work, made possible by open source crypto tools, advances the causes of truth and freedom of information by reporting disclosures by whistleblowers such as Edward Snowden. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Laura\_Poitras</span><br><span class="line">		&quot;poitras&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Claudius Ptolemy - a Greco-Egyptian writer of Alexandria, known as a mathematician, astronomer, geographer, astrologer, and poet of a single epigram in the Greek Anthology - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Ptolemy</span><br><span class="line">		&quot;ptolemy&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; C. V. Raman - Indian physicist who won the Nobel Prize in 1930 for proposing the Raman effect. - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;C.\_V.\_Raman</span><br><span class="line">		&quot;raman&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Srinivasa Ramanujan - Indian mathematician and autodidact who made extraordinary contributions to mathematical analysis, number theory, infinite series, and continued fractions. - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Srinivasa\_Ramanujan</span><br><span class="line">		&quot;ramanujan&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Sally Kristen Ride was an American physicist and astronaut. She was the first American woman in space, and the youngest American astronaut. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Sally\_Ride</span><br><span class="line">		&quot;ride&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Rita Levi-Montalcini - Won Nobel Prize in Physiology or Medicine jointly with colleague Stanley Cohen for the discovery of nerve growth factor (https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Rita\_Levi-Montalcini)</span><br><span class="line">		&quot;montalcini&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Dennis Ritchie - co-creator of UNIX and the C programming language. - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Dennis\_Ritchie</span><br><span class="line">		&quot;ritchie&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Wilhelm Conrad Röntgen - German physicist who was awarded the first Nobel Prize in Physics in 1901 for the discovery of X-rays (Röntgen rays). https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Wilhelm\_R%C3%B6ntgen</span><br><span class="line">		&quot;roentgen&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Rosalind Franklin - British biophysicist and X-ray crystallographer whose research was critical to the understanding of DNA - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Rosalind\_Franklin</span><br><span class="line">		&quot;rosalind&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Meghnad Saha - Indian astrophysicist best known for his development of the Saha equation, used to describe chemical and physical conditions in stars - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Meghnad\_Saha</span><br><span class="line">		&quot;saha&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Jean E. Sammet developed FORMAC, the first widely used computer language for symbolic manipulation of mathematical formulas. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Jean\_E.\_Sammet</span><br><span class="line">		&quot;sammet&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Carol Shaw - Originally an Atari employee, Carol Shaw is said to be the first female video game designer. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Carol\_Shaw\_(video\_game\_designer)</span><br><span class="line">		&quot;shaw&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Dame Stephanie &quot;Steve&quot; Shirley - Founded a software company in 1962 employing women working from home. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Steve\_Shirley</span><br><span class="line">		&quot;shirley&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; William Shockley co-invented the transistor - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;William\_Shockley</span><br><span class="line">		&quot;shockley&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Françoise Barré-Sinoussi - French virologist and Nobel Prize Laureate in Physiology or Medicine; her work was fundamental in identifying HIV as the cause of AIDS. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Fran%C3%A7oise\_Barr%C3%A9-Sinoussi</span><br><span class="line">		&quot;sinoussi&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Betty Snyder - one of the original programmers of the ENIAC. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;ENIAC - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Betty\_Holberton</span><br><span class="line">		&quot;snyder&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Frances Spence - one of the original programmers of the ENIAC. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;ENIAC - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Frances\_Spence</span><br><span class="line">		&quot;spence&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Richard Matthew Stallman - the founder of the Free Software movement, the GNU project, the Free Software Foundation, and the League for Programming Freedom. He also invented the concept of copyleft to protect the ideals of this movement, and enshrined this concept in the widely-used GPL (General Public License) for software. https:&#x2F;&#x2F;en.wikiquote.org&#x2F;wiki&#x2F;Richard\_Stallman</span><br><span class="line">		&quot;stallman&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Michael Stonebraker is a database research pioneer and architect of Ingres, Postgres, VoltDB and SciDB. Winner of 2014 ACM Turing Award. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Michael\_Stonebraker</span><br><span class="line">		&quot;stonebraker&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Janese Swanson (with others) developed the first of the Carmen Sandiego games. She went on to found Girl Tech. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Janese\_Swanson</span><br><span class="line">		&quot;swanson&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Aaron Swartz was influential in creating RSS, Markdown, Creative Commons, Reddit, and much of the internet as we know it today. He was devoted to freedom of information on the web. https:&#x2F;&#x2F;en.wikiquote.org&#x2F;wiki&#x2F;Aaron\_Swartz</span><br><span class="line">		&quot;swartz&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Bertha Swirles was a theoretical physicist who made a number of contributions to early quantum theory. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Bertha\_Swirles</span><br><span class="line">		&quot;swirles&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Nikola Tesla invented the AC electric system and every gadget ever used by a James Bond villain. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Nikola\_Tesla</span><br><span class="line">		&quot;tesla&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Ken Thompson - co-creator of UNIX and the C programming language - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Ken\_Thompson</span><br><span class="line">		&quot;thompson&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Linus Torvalds invented Linux and Git. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Linus\_Torvalds</span><br><span class="line">		&quot;torvalds&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Alan Turing was a founding father of computer science. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Alan\_Turing.</span><br><span class="line">		&quot;turing&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Varahamihira - Ancient Indian mathematician who discovered trigonometric formulae during 505-587 CE - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Var%C4%81hamihira#Contributions</span><br><span class="line">		&quot;varahamihira&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Sir Mokshagundam Visvesvaraya - is a notable Indian engineer.  He is a recipient of the Indian Republic&#39;s highest honour, the Bharat Ratna, in 1955. On his birthday, 15 September is celebrated as Engineer&#39;s Day in India in his memory - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Visvesvaraya</span><br><span class="line">		&quot;visvesvaraya&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Christiane Nüsslein-Volhard - German biologist, won Nobel Prize in Physiology or Medicine in 1995 for research on the genetic control of embryonic development. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Christiane\_N%C3%BCsslein-Volhard</span><br><span class="line">		&quot;volhard&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Marlyn Wescoff - one of the original programmers of the ENIAC. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;ENIAC - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Marlyn\_Meltzer</span><br><span class="line">		&quot;wescoff&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Andrew Wiles - Notable British mathematician who proved the enigmatic Fermat&#39;s Last Theorem - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Andrew\_Wiles</span><br><span class="line">		&quot;wiles&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Roberta Williams, did pioneering work in graphical adventure games for personal computers, particularly the King&#39;s Quest series. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Roberta\_Williams</span><br><span class="line">		&quot;williams&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Sophie Wilson designed the first Acorn Micro-Computer and the instruction set for ARM processors. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Sophie\_Wilson</span><br><span class="line">		&quot;wilson&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Jeannette Wing - co-developed the Liskov substitution principle. - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Jeannette\_Wing</span><br><span class="line">		&quot;wing&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Steve Wozniak invented the Apple I and Apple II. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Steve\_Wozniak</span><br><span class="line">		&quot;wozniak&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; The Wright brothers, Orville and Wilbur - credited with inventing and building the world&#39;s first successful airplane and making the first controlled, powered and sustained heavier-than-air human flight - https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Wright\_brothers</span><br><span class="line">		&quot;wright&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Rosalyn Sussman Yalow - Rosalyn Sussman Yalow was an American medical physicist, and a co-winner of the 1977 Nobel Prize in Physiology or Medicine for development of the radioimmunoassay technique. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Rosalyn\_Sussman\_Yalow</span><br><span class="line">		&quot;yalow&quot;,</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; Ada Yonath - an Israeli crystallographer, the first woman from the Middle East to win a Nobel prize in the sciences. https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Ada\_Yonath</span><br><span class="line">		&quot;yonath&quot;,</span><br><span class="line">	&#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; GetRandomName generates a random name from the list of adjectives and surnames in this package</span><br><span class="line">&#x2F;&#x2F; formatted as &quot;adjective\_surname&quot;. For example &#39;focused\_turing&#39;. If retry is non-zero, a random</span><br><span class="line">&#x2F;&#x2F; integer between 0 and 10 will be added to the end of the name, e.g \&#96;focused\_turing3\&#96;</span><br><span class="line">func GetRandomName(retry int) string &#123;</span><br><span class="line">	rnd :&#x3D; random.Rand</span><br><span class="line">begin:</span><br><span class="line">	name :&#x3D; fmt.Sprintf(&quot;%s\_%s&quot;, left\[rnd.Intn(len(left))\], right\[rnd.Intn(len(right))\])</span><br><span class="line">	if name &#x3D;&#x3D; &quot;boring\_wozniak&quot; &#x2F;\* Steve Wozniak is not boring \*&#x2F; &#123;</span><br><span class="line">		goto begin</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	if retry &gt; 0 &#123;</span><br><span class="line">		name &#x3D; fmt.Sprintf(&quot;%s%d&quot;, name, rnd.Intn(10))</span><br><span class="line">	&#125;</span><br><span class="line">	return name</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/09/21/Docker镜像仓库删除历史版本/" data-toggle="tooltip" data-placement="top" title="Docker镜像仓库删除历史版本">&larr; Previous post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/09/21/Docker-Volume-Plugin-开发及Golang实现/" data-toggle="tooltip" data-placement="top" title="Docker Volume Plugin 开发及Golang实现">Next post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+				
+            </div>
+
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">Tags</a></h5>
+                    <div class="tags">
+                       
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/davidstack">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 站着工程师 2020 
+                    <br>
+                    鲁ICP备16023683号-1
+                    <br>
+                    Powered by <a target="_blank" rel="noopener" href="http://www.hexo.io">Hexo</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Theme by <a target="_blank" rel="noopener" href="https://github.com/kinggozhang/hexo-theme-ace">ACE</a> 
+					
+					
+					<i class="fa fa-eye" id="leancounter"></i>
+					
+					  <div class="copyright text-muted">
+                        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                        本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+                        本站访客数<span id="busuanzi_value_site_uv"></span>人
+                      </div>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+   
+<script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+
+
+
+
+<!-- Bootstrap Core JavaScript -->
+
+   
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+	
+<script src="/js/particles.js"></script>
+
+	
+<script src="/js/particles_config.js"></script>
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://damonyi.cc/2020/09/21/Docker-%E9%BB%98%E8%AE%A4%E7%9A%84Container%E5%90%8D%E7%A7%B0%E7%94%9F%E6%88%90/index.html/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://damonyi.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

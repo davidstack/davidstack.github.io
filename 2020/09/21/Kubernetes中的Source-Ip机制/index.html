@@ -1,37 +1,598 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+    <title>
+        
+          Kubernetes中的Source Ip机制 - null
+        
+    </title>
+
+    <link rel="canonical" href="http://damonyi.cc/2020/09/21/Kubernetes中的Source-Ip机制/">
+
+    <!-- Bootstrap Core CSS -->
+
+   
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
 
 
-{% block title %}{{ page.title }} | {{ config.title }}{% endblock %}
+    
 
-{% block page_class %}page-post-detail{% endblock %}
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
 
 
-{% block content %}
+    
+<link rel="stylesheet" href="/css/donate.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+	
+<link rel="stylesheet" href="/css/w3.css">
 
-    <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+    }
+   .post-heading{
+    padding:20px;
+    }
+  .person {
+    border: 10px solid transparent;
+    margin-bottom: 25px;
+    width: 80%;
+    height: 80%;
+    opacity: 0.7;
+  }
+  .person:hover {
+    border-color: #f1f1f1;
+  }
+
+</style>
+
+<header id="headerid" class="w3-indigo intro-header" style="position:relative;">
+    <!-- Signature -->
+	
+        <div class="container">
+            <div class=" row" >
+			
+			<canvas id="particles-js-canvas" style="position:absolute;z-index:1;top:0px;left:0px;" width="100%" height="50%"></canvas>
+			
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="z-index:2;">
+                
+                    <div class="post-heading" style="padding:40px">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#kubernetes 网络" title="kubernetes 网络">kubernetes 网络</a>
+                            
+                        </div>
+                        <h1>Kubernetes中的Source Ip机制</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 站着工程师 on
+                            2020-09-21
+                        </span>
+                        <span  class="meta" id="busuanzi_container_page_pv">
+                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                         </span>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+  
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">云里雾里</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a  href="/">Homepage</a>
+                    </li>
+		    
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#技术">技术</a>
+                           
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#教育">教育</a>
+                           
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
-  </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
 
-{% endblock %}
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>你必须拥有一个正常工作的 Kubernetes 1.5 集群，用来运行本文中的示例。该示例使用一个简单的 nginx webserver 回送它接收到的请求的 HTTP 头中的源 IP 地址。你可以像下面这样创建它：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl run source-ip-app --image&#x3D;k8s.gcr.io&#x2F;echoserver:1.4</span><br><span class="line">deployment &quot;source-ip-app&quot; created</span><br></pre></td></tr></table></figure>
+
+<h2 id="Type-ClusterIP-类型-Services-的-Source-IP"><a href="#Type-ClusterIP-类型-Services-的-Source-IP" class="headerlink" title="Type=ClusterIP 类型 Services 的 Source IP"></a>Type=ClusterIP 类型 Services 的 Source IP</h2><p>如果你的 kube-proxy 运行在 iptables 模式下，从集群内部发送到 ClusterIP 的包永远不会进行源地址 NAT，这从 Kubernetes 1.2 开始是默认选项。Kube-proxy 通过一个 proxyMode endpoint 暴露它的模式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get nodes</span><br><span class="line">NAME                           STATUS     AGE     VERSION</span><br><span class="line">kubernetes-minion-group-6jst   Ready      2h      v1.6.0+fff5156</span><br><span class="line">kubernetes-minion-group-cx31   Ready      2h      v1.6.0+fff5156</span><br><span class="line">kubernetes-minion-group-jj1t   Ready      2h      v1.6.0+fff5156</span><br><span class="line">kubernetes-minion-group-6jst $ curl localhost:10249&#x2F;proxyMode</span><br><span class="line">iptables</span><br></pre></td></tr></table></figure>
+
+<p>你可以通过在 source IP 应用上创建一个服务来测试源 IP 保留。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl expose deployment source-ip-app --name&#x3D;clusterip --port&#x3D;80 --target-port&#x3D;8080</span><br><span class="line">service &quot;clusterip&quot; exposed</span><br><span class="line"></span><br><span class="line">$ kubectl get svc clusterip</span><br><span class="line">NAME         CLUSTER-IP    EXTERNAL-IP   PORT(S)   AGE</span><br><span class="line">clusterip    10.0.170.92   &lt;none&gt;        80&#x2F;TCP    51s</span><br><span class="line">&#96;&#96;&#96;&#96;&#96;&#96;</span><br><span class="line"></span><br><span class="line">从相同集群中的一个 pod 访问这个 ClusterIP：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>$ kubectl run busybox -it –image=busybox –restart=Never –rm<br>Waiting for pod default/busybox to be running, status is Pending, pod ready: false<br>If you don’t see a command prompt, try pressing enter.<br># ip addr<br>1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue<br>    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00<br>    inet 127.0.0.1/8 scope host lo<br>       valid_lft forever preferred_lft forever<br>    inet6 ::1/128 scope host<br>       valid_lft forever preferred_lft forever<br>3: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1460 qdisc noqueue<br>    link/ether 0a:58:0a:f4:03:08 brd ff:ff:ff:ff:ff:ff<br>    inet 10.244.3.8/24 scope global eth0<br>       valid_lft forever preferred_lft forever<br>    inet6 fe80::188a:84ff:feb0:26a5/64 scope link<br>       valid_lft forever preferred_lft forever</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p># wget -qO - 10.0.170.92<br>CLIENT VALUES:<br>client_address=10.244.3.8<br>command=GET<br>…</p>
+<p>````</p>
+<p>如果客户端 pod 和 服务端 pod 在相同的节点上，client_address 就是客户端 pod 的 IP 地址。但是，如果它们在不同的节点上， client_address 将会是客户端 pod 所在节点的 flannel IP 地址。</p>
+<h2 id="Type-NodePort-类型-Services-的-Source-IP"><a href="#Type-NodePort-类型-Services-的-Source-IP" class="headerlink" title="Type=NodePort 类型 Services 的 Source IP"></a>Type=NodePort 类型 Services 的 Source IP</h2><p>      对于 Kubernetes 1.5，发送给类型为 Type=NodePort Services 的数据包默认进行源地址 NAT。你可以创建一个 NodePort Service 来进行测试：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl expose deployment source-ip-app --name&#x3D;nodeport --port&#x3D;80 --target-port&#x3D;8080 --type&#x3D;NodePort</span><br><span class="line">service &quot;nodeport&quot; exposed</span><br><span class="line">$ NODEPORT&#x3D;$(kubectl get -o jsonpath&#x3D;&quot;&#123;.spec.ports\[0\].nodePort&#125;&quot; services nodeport)</span><br><span class="line">$ NODES&#x3D;$(kubectl get nodes -o jsonpath&#x3D;&#39;&#123; $.items\[\*\].status.addresses\[?(@.type&#x3D;&#x3D;&quot;ExternalIP&quot;)\].address &#125;&#39;)</span><br></pre></td></tr></table></figure>
+
+<p>如果你的集群运行在一个云服务上，你可能需要为上面报告的 nodes:nodeport 开启一条防火墙规则。 现在，你可以通过上面分配的节点端口从外部访问这个 Service。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ for node in $NODES; do curl -s $node:$NODEPORT | grep -i client\_address; done</span><br><span class="line">client\_address&#x3D;10.180.1.1</span><br><span class="line">client\_address&#x3D;10.240.0.5</span><br><span class="line">client\_address&#x3D;10.240.0.3</span><br></pre></td></tr></table></figure>
+
+<p>请注意，这些并不是正确的客户端 IP，它们是集群的内部 IP。这是所发生的事情：</p>
+<p>1、客户端发送数据包到 node2:nodePort</p>
+<p>2、node2 使用它自己的 IP 地址替换数据包的源 IP 地址（SNAT）</p>
+<p>3、node2 使用 pod IP 地址替换数据包的目的 IP 地址</p>
+<p>4、数据包被路由到 node 1，然后交给 endpoint</p>
+<p>5、Pod 的回复被路由回 node2</p>
+<p>6、Pod 的回复被发送回给客户端</p>
+<p>形象的：<br> <img src="/2020/09/21/Kubernetes%E4%B8%AD%E7%9A%84Source-Ip%E6%9C%BA%E5%88%B6/1526621848885868.png" alt="avatar"></p>
+<p>      为了防止这种情况发生，Kubernetes 提供了一个特性来保留客户端的源 IP 地址(点击此处查看可用特性)。设置 service.spec.externalTrafficPolicy 的值为 Local，请求就只会被代理到本地 endpoints 而不会被转发到其它节点。这样就保留了最初的源 IP 地址。如果没有本地 endpoints，发送到这个节点的数据包将会被丢弃。这样在应用到数据包的任何包处理规则下，你都能依赖这个正确的 source-ip 使数据包通过并到达 endpoint。</p>
+<p>   设置 service.spec.externalTrafficPolicy 字段如下：  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl patch svc nodeport -p &#39;&#123;&quot;spec&quot;:&#123;&quot;externalTrafficPolicy&quot;:&quot;Local&quot;&#125;&#125;&#39;</span><br><span class="line">service &quot;nodeport&quot; patched</span><br></pre></td></tr></table></figure>
+
+<p>现在，重新运行测试：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ for node in $NODES; do curl --connect-timeout 1 -s $node:$NODEPORT | grep -i client\_address; done</span><br><span class="line">client\_address&#x3D;104.132.1.79</span><br></pre></td></tr></table></figure>
+
+<p>   请注意，你只从 endpoint pod 运行的那个节点得到了一个回复，这个回复有*正确的*客户端 IP。</p>
+<p>这是发生的事情：</p>
+<p>1、客户端发送数据包到 node2:nodePort，它没有任何 endpoints</p>
+<p>2、数据包被丢弃</p>
+<p>3、客户端发送数据包到 node1:nodePort，它*有*endpoints</p>
+<p>4、node1 使用正确的源 IP 地址将数据包路由到 endpoint</p>
+<p>形象的：<br> <img src="/2020/09/21/Kubernetes%E4%B8%AD%E7%9A%84Source-Ip%E6%9C%BA%E5%88%B6/1526622213101501.png" alt="avatar"></p>
+<h2 id="Type-LoadBalancer-类型-Services-的-Source-IP"><a href="#Type-LoadBalancer-类型-Services-的-Source-IP" class="headerlink" title="Type=LoadBalancer 类型 Services 的 Source IP"></a>Type=LoadBalancer 类型 Services 的 Source IP</h2><p>      对于 Kubernetes 1.5，发送给类型为 Type=LoadBalancer Services 的数据包默认进行源地址 NAT，这是由于所有处于 Ready 状态的 Kubernetes 节点对于负载均衡的流量都是符合条件的。所以如果数据包到达一个没有 endpoint 的节点，系统将把这个包代理到有 endpoint 的节点，并替换数据包的源 IP 为节点的 IP（如前面章节所述）。</p>
+<p>    你可以通过在一个 loadbalancer 上暴露这个 source-ip-app 来进行测试。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl expose deployment source-ip-app --name&#x3D;loadbalancer --port&#x3D;80 --target-port&#x3D;8080 --type&#x3D;LoadBalancer</span><br><span class="line">service &quot;loadbalancer&quot; exposed</span><br><span class="line">$ kubectl get svc loadbalancer</span><br><span class="line">NAME           CLUSTER-IP    EXTERNAL-IP       PORT(S)   AGE</span><br><span class="line">loadbalancer   10.0.65.118   104.198.149.140   80&#x2F;TCP    5m</span><br><span class="line">$ curl 104.198.149.140</span><br><span class="line">CLIENT VALUES:</span><br><span class="line">client\_address&#x3D;10.240.0.5</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>      然而，如果你的集群运行在 Google Kubernetes Engine/GCE 上，设置 service.spec.externalTrafficPolicy 字段值为 Local 可以强制使没有 endpoints 的节点把他们自己从负载均衡流量的可选节点名单中删除。这是通过故意使它们健康检查失败达到的。</p>
+<p>形象的：<br> <img src="/2020/09/21/Kubernetes%E4%B8%AD%E7%9A%84Source-Ip%E6%9C%BA%E5%88%B6/1526622380157076.png" alt="avatar"></p>
+<p>你可以设置 annotation 来进行测试：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl patch svc loadbalancer -p &#39;&#123;&quot;spec&quot;:&#123;&quot;externalTrafficPolicy&quot;:&quot;Local&quot;&#125;&#125;&#39;</span><br></pre></td></tr></table></figure>
+
+<p>你应该能够立即看到 Kubernetes 分配的 service.spec.healthCheckNodePort 字段：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get svc loadbalancer -o yaml | grep -i healthCheckNodePort</span><br><span class="line">  healthCheckNodePort: 32122</span><br></pre></td></tr></table></figure>
+
+<p>service.spec.healthCheckNodePort 字段指向每个节点在 /healthz 路径上提供的用于健康检查的端口。你可以这样测试：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get pod -o wide -l run&#x3D;source-ip-app</span><br><span class="line">NAME                            READY     STATUS    RESTARTS   AGE       IP             NODE</span><br><span class="line">source-ip-app-826191075-qehz4   1&#x2F;1       Running   0          20h       10.180.1.136   kubernetes-minion-group-6jst</span><br><span class="line">kubernetes-minion-group-6jst $ curl localhost:32122&#x2F;healthz</span><br><span class="line">1 Service Endpoints found</span><br><span class="line">kubernetes-minion-group-jj1t $ curl localhost:32122&#x2F;healthz</span><br><span class="line">No Service Endpoints Found</span><br></pre></td></tr></table></figure>
+
+<p>    主节点运行的 service 控制器负责分配 cloud loadbalancer。在这样做的同时，它也会分配指向每个节点的 HTTP 健康检查的 port/path。等待大约 10 秒钟之后，没有 endpoints 的两个节点的健康检查会失败，然后 curl 负载均衡器的 ip：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ curl 104.198.149.140</span><br><span class="line">CLIENT VALUES:</span><br><span class="line">client\_address&#x3D;104.132.1.79</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h2 id="跨平台支持"><a href="#跨平台支持" class="headerlink" title="跨平台支持"></a>跨平台支持</h2><p>     由于 Kubernetes 1.5 在类型为 Type=LoadBalancer 的 Services 中支持源 IP 保存的特性仅在 cloudproviders 的子集中实现（GCP and Azure）。你的集群运行的 cloudprovider 可能以某些不同的方式满足 loadbalancer 的要求：</p>
+<p>1、使用一个代理终止客户端连接并打开一个到你的 nodes/endpoints 的新连接。在这种情况下，源 IP 地址将永远是云负载均衡器的地址而不是客户端的。</p>
+<p>2、使用一个包转发器，因此从客户端发送到负载均衡器 VIP 的请求在拥有客户端源 IP 地址的节点终止，而不被中间代理。</p>
+<p>      第一类负载均衡器必须使用一种它和后端之间约定的协议来和真实的客户端 IP 通信，例如 HTTP X-FORWARDED-FOR 头，或者 proxy 协议。 第二类负载均衡器可以通过简单的在保存于 Service 的 service.spec.healthCheckNodePort 字段上创建一个 HTTP 健康检查点来使用上面描述的特性。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/09/21/Kubernetes-中的port、nodePort、targetPort/" data-toggle="tooltip" data-placement="top" title="Kubernetes 中的port、nodePort、targetPort">&larr; Previous post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/09/21/Kubernetes-详解-简介/" data-toggle="tooltip" data-placement="top" title="Kubernetes 详解--简介">Next post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+				
+            </div>
+
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">Tags</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kubernetes 网络" title="kubernetes 网络">kubernetes 网络</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/davidstack">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 站着工程师 2020 
+                    <br>
+                    鲁ICP备16023683号-1
+                    <br>
+                    Powered by <a target="_blank" rel="noopener" href="http://www.hexo.io">Hexo</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Theme by <a target="_blank" rel="noopener" href="https://github.com/kinggozhang/hexo-theme-ace">ACE</a> 
+					
+					
+					<i class="fa fa-eye" id="leancounter"></i>
+					
+					  <div class="copyright text-muted">
+                        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                        本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+                        本站访客数<span id="busuanzi_value_site_uv"></span>人
+                      </div>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+   
+<script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+
+
+
+
+<!-- Bootstrap Core JavaScript -->
+
+   
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+	
+<script src="/js/particles.js"></script>
+
+	
+<script src="/js/particles_config.js"></script>
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://damonyi.cc/2020/09/21/Kubernetes%E4%B8%AD%E7%9A%84Source-Ip%E6%9C%BA%E5%88%B6/index.html/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://damonyi.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

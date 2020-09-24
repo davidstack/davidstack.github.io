@@ -1,37 +1,633 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+    <title>
+        
+          Kubernetes 详解-Replica Sets 和Service - null
+        
+    </title>
+
+    <link rel="canonical" href="http://damonyi.cc/2020/09/21/Kubernetes-详解-Replica-Sets-和Service/">
+
+    <!-- Bootstrap Core CSS -->
+
+   
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
 
 
-{% block title %}{{ page.title }} | {{ config.title }}{% endblock %}
+    
 
-{% block page_class %}page-post-detail{% endblock %}
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
 
 
-{% block content %}
+    
+<link rel="stylesheet" href="/css/donate.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+	
+<link rel="stylesheet" href="/css/w3.css">
 
-    <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+    }
+   .post-heading{
+    padding:20px;
+    }
+  .person {
+    border: 10px solid transparent;
+    margin-bottom: 25px;
+    width: 80%;
+    height: 80%;
+    opacity: 0.7;
+  }
+  .person:hover {
+    border-color: #f1f1f1;
+  }
+
+</style>
+
+<header id="headerid" class="w3-indigo intro-header" style="position:relative;">
+    <!-- Signature -->
+	
+        <div class="container">
+            <div class=" row" >
+			
+			<canvas id="particles-js-canvas" style="position:absolute;z-index:1;top:0px;left:0px;" width="100%" height="50%"></canvas>
+			
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="z-index:2;">
+                
+                    <div class="post-heading" style="padding:40px">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#云计算" title="云计算">云计算</a>
+                            
+                              <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                            
+                        </div>
+                        <h1>Kubernetes 详解-Replica Sets 和Service</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 站着工程师 on
+                            2020-09-21
+                        </span>
+                        <span  class="meta" id="busuanzi_container_page_pv">
+                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                         </span>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+  
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">云里雾里</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a  href="/">Homepage</a>
+                    </li>
+		    
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#技术">技术</a>
+                           
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#教育">教育</a>
+                           
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
-  </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
 
-{% endblock %}
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="1-1-Replica-Sets"><a href="#1-1-Replica-Sets" class="headerlink" title="1.1 Replica Sets"></a>1.1 Replica Sets</h2><p>下一代的Replication Controller，两者的区别主要在选择器selector,Replica 支持集合级别的选择器，而前期的Replication Controller，支持在等号描述的选择器，kubectl命令支持使用replica sets （目前kubectl命令中的rolling-update 还不支持），目前replica sets主要用于deployment中</p>
+<p>Replica Sets 能够确保在某个时间点上，一定数量的Pod在运行。然而Deployment 是Replica Sets更高一层的抽象，用于更新Pods 以及其他一些特性。推荐使用Deployment而不是直接使用Replica Set进行编排Pods。</p>
+<h2 id="1-2-Service"><a href="#1-2-Service" class="headerlink" title="1.2 Service"></a>1.2 Service</h2><p>由于Pod的IP会变化，提供某些功能的POD如果IP发生变化，会导致其他Pod无法发现这些功能，因此 引入了Service的功能。</p>
+<p>Service是一组逻辑Pod的抽象，定义了一个访问这些Pod的策略（或者叫做微服务），这些Service 通常通过Label Selector指向这些Pod。</p>
+<p>举个例子：一个提供镜像处理的后端有三个运行的副本，这些副本是可以取代的，但是前端并不需要感知，这时就需要Service作为抽象</p>
+<p>对于可以部署在K8s内部应用，K8s通过Endpoints Api更新Service对应的Pod集合，对于那些没K8s外部的应用，K8s提供了虚拟IP桥接到Service，然后Service重定向到Pod集合。</p>
+<h3 id="1-2-1-Service-定义"><a href="#1-2-1-Service-定义" class="headerlink" title="1.2.1 Service 定义"></a>1.2.1 Service 定义</h3><p><strong>{</strong></p>
+<p> <strong>“kind”**</strong>:**  <strong>“Service”**</strong>,**</p>
+<p> <strong>“apiVersion”**</strong>:**  <strong>“v1”**</strong>,**</p>
+<p> <strong>“metadata”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“name”**</strong>:**  <strong>“my-service”</strong></p>
+<p> <strong>},</strong></p>
+<p> <strong>“spec”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“selector”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“app”**</strong>:**  <strong>“MyApp”</strong></p>
+<p> <strong>},</strong></p>
+<p> <strong>“ports”**</strong>:**  <strong>[</strong></p>
+<p> <strong>{</strong></p>
+<p> <strong>“protocol”**</strong>:**  <strong>“TCP”**</strong>,**</p>
+<p> <strong>“port”**</strong>:**  <strong>80**</strong>,**</p>
+<p> <strong>“targetPort”**</strong>:**  <strong>9376</strong></p>
+<p> <strong>}</strong></p>
+<p> <strong>]</strong></p>
+<p> <strong>}</strong></p>
+<p><strong>}</strong></p>
+<p>该Service 对应的Pod集合：带有label app=Myapp，对外暴露端口9376</p>
+<p>Service 能将任意的流入Port 重定向到targetPort,默认情况下，targetPort和Port为相同值，不同的Pod 可以对应不同的端口号（例如，在你应用的下一个版本中会使用不同的端口号，但是并不应用之前版本的使用）</p>
+<p>Service 支持UDP和TCP，默认是TCP</p>
+<h3 id="1-2-2-Service-without-selector"><a href="#1-2-2-Service-without-selector" class="headerlink" title="1.2.2 Service without selector"></a>1.2.2 Service without selector</h3><p>Service可以抽象访问Pod集群，同时 Service也可以抽象其他后端</p>
+<p>1、 在生产环境中使用外部数据库，在测试环境中使用自己的数据库</p>
+<p>2、 将自己的Service指向其他集群或者其他命名空间的Service</p>
+<p>3、 迁移应用到k8s，但是还是有些应用运行在k8s之外</p>
+<p>通过定义不包含selector的Service实现</p>
+<p><strong>{</strong></p>
+<p> <strong>“kind”**</strong>:**  <strong>“Service”**</strong>,**</p>
+<p> <strong>“apiVersion”**</strong>:**  <strong>“v1”**</strong>,**</p>
+<p> <strong>“metadata”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“name”**</strong>:**  <strong>“my-service”</strong></p>
+<p> <strong>},</strong></p>
+<p> <strong>“spec”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“ports”**</strong>:**  <strong>[</strong></p>
+<p> <strong>{</strong></p>
+<p> <strong>“protocol”**</strong>:**  <strong>“TCP”**</strong>,**</p>
+<p> <strong>“port”**</strong>:**  <strong>80**</strong>,**</p>
+<p> <strong>“targetPort”**</strong>:**  <strong>9376</strong></p>
+<p> <strong>}</strong></p>
+<p><strong>]</strong></p>
+<p> <strong>}</strong></p>
+<p><strong>}</strong></p>
+<p>Service 没有Selector，K8s不会创建Endpoints，你可以通过手动创建Endpoint指向自己的endpoint</p>
+<p><strong>{</strong></p>
+<p> <strong>“kind”**</strong>:**  <strong>“Endpoints”**</strong>,**</p>
+<p> <strong>“apiVersion”**</strong>:**  <strong>“v1”**</strong>,**</p>
+<p> <strong>“metadata”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“name”**</strong>:**  <strong>“my-service”</strong></p>
+<p> <strong>},</strong></p>
+<p> <strong>“subsets”**</strong>:**  <strong>[</strong></p>
+<p> <strong>{</strong></p>
+<p> <strong>“addresses”**</strong>:**  <strong>[</strong></p>
+<p> <strong>{</strong>  <strong>“ip”**</strong>:**  <strong>“1.2.3.4”</strong>  <strong>}</strong></p>
+<p> <strong>],</strong></p>
+<p> <strong>“ports”**</strong>:**  <strong>[</strong></p>
+<p> <strong>{</strong>  <strong>“port”**</strong>:**  <strong>9376</strong>  <strong>}</strong></p>
+<p> <strong>]</strong></p>
+<p> <strong>}</strong></p>
+<p> <strong>]</strong></p>
+<p><strong>}</strong></p>
+<p>Endpoint的IP不能是loopback（127.0.0.1/8），link-local（169.254.0.0/16）, link-local multicast (224.0.0.0/24).</p>
+<p>访问不含有selector的Service和访问含有Selector的Service 方式一样，都会讲流向重定向的endpoint</p>
+<p> 其他命名空间的服务是一个特例，他不会定义ports和endpoint，他只是返回一个访问外部服务的别名</p>
+<p><strong>{</strong></p>
+<p> <strong>“kind”**</strong>:**  <strong>“Service”**</strong>,**</p>
+<p> <strong>“apiVersion”**</strong>:**  <strong>“v1”**</strong>,**</p>
+<p> <strong>“metadata”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“name”**</strong>:**  <strong>“my-service”**</strong>,**</p>
+<p> <strong>“namespace”**</strong>:**  <strong>“prod”</strong></p>
+<p> <strong>},</strong></p>
+<p> <strong>“spec”**</strong>:**  <strong>{</strong></p>
+<p> <strong>“type”**</strong>:**  <strong>“ExternalName”**</strong>,**</p>
+<p> <strong>“externalName”**</strong>:**  <strong>“my.database.example.com”</strong></p>
+<p> <strong>}</strong></p>
+<p><strong>}</strong></p>
+<p>当你访问服务<strong>my-service.prod.svc.CLUSTER**</strong>时，**<strong>cluster**</strong>的**<strong>dns**</strong>服务会返回记录**<strong>my.database.example.com</strong> <strong>的**</strong>CNAME**<strong>，这个重定向是发生在**</strong>dns**<strong>解析阶段。</strong></p>
+<h3 id="1-2-3-虚拟IP-和服务代理"><a href="#1-2-3-虚拟IP-和服务代理" class="headerlink" title="1.2.3 虚拟IP 和服务代理"></a>1.2.3 虚拟IP 和服务代理</h3><h4 id="1-2-3-1-代理"><a href="#1-2-3-1-代理" class="headerlink" title="1.2.3.1 代理"></a>1.2.3.1 代理</h4><p>K8s集群内每个节点都会运行kube-proxy，负责实现服务的虚拟机IP（不是externalName）。1.0版本的代理模式在是userspace，1.1增加了iptables proxy，从1.2开始 iptables 代理是默认的模式</p>
+<p>K8s 1.0的service是四层（TCP/UDP），从k8s1.1开始，增加了Ingress，实现七层（HTTP）服务</p>
+<p><strong>用户空间的代理模式</strong></p>
+<p>Kube-proxy监控k8s master节点来发现Service、Endpointd的增加和删除，对于Service，在本地打开一个随机端口作为代理端口，任何访问改代理端口的连接都会被指向Service对象的Pod集合，最终指向哪个Pod取决于Service的SessionAffinity，最后，他会配置iptables，捕获流向Service 的Cluster IP 和Port的连接，并重定向到这个代理端口。</p>
+<p>最终结果，任何到Service Cluster Ip 和port的流量都会指向合适的Pod</p>
+<p>默认情况下，都是轮训算法选择后端，也可以通过设置service.spec.sessionAffinity 为ClientIP，将选择算法改为Client-IP based session affinity</p>
+<p><strong>Iptables**</strong>的代理模式**</p>
+<p>该模式与userspace模式类似，只是没有这个代理端口</p>
+<p>比userspace方式更快更可靠，然后与userspace方式不同，当选择的pod异常时，该方式无法自动尝试选择其他Pod。</p>
+<p>1、userspace模式只不适合大规模集群使用（数千个服务）</p>
+<p>2、userspace模式隐藏了访问服务的源IP，iptables模式虽然没有隐藏源IP，但是也是通过负载均衡或者nodeport 影响了客户端输入</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/09/21/Kubernetes详解-Pod/" data-toggle="tooltip" data-placement="top" title="Kubernetes详解--Pod">&larr; Previous post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/09/21/Kubernetes-Dashboard开发说明/" data-toggle="tooltip" data-placement="top" title="Kubernetes Dashboard开发说明">Next post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+				
+            </div>
+
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">Tags</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#云计算" title="云计算">云计算</a>
+                        
+                          <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/davidstack">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 站着工程师 2020 
+                    <br>
+                    鲁ICP备16023683号-1
+                    <br>
+                    Powered by <a target="_blank" rel="noopener" href="http://www.hexo.io">Hexo</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Theme by <a target="_blank" rel="noopener" href="https://github.com/kinggozhang/hexo-theme-ace">ACE</a> 
+					
+					
+					<i class="fa fa-eye" id="leancounter"></i>
+					
+					  <div class="copyright text-muted">
+                        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                        本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+                        本站访客数<span id="busuanzi_value_site_uv"></span>人
+                      </div>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+   
+<script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+
+
+
+
+<!-- Bootstrap Core JavaScript -->
+
+   
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+	
+<script src="/js/particles.js"></script>
+
+	
+<script src="/js/particles_config.js"></script>
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://damonyi.cc/2020/09/21/Kubernetes-%E8%AF%A6%E8%A7%A3-Replica-Sets-%E5%92%8CService/index.html/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://damonyi.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
