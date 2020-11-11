@@ -271,6 +271,146 @@
 
 
 <div class="w3-row-padding">
+	<a href="/2020/09/04/OpenJdk移除sun-image-codec-package/">
+        <h2 class="post-title">
+            OpenJdk移除sun.image.codec package
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+	</a>
+
+<div>
+
+    <a href="/2020/09/04/OpenJdk移除sun-image-codec-package/">
+
+        <div class="post-content-preview">
+            问题描述
+一个项目在windows下执行mvn package正常，但是放在Linux环境下，会出现找不到com.sun.image.codec的问题，如下所示
+1234567891011121314151617181920212223242526272829303132333435[ERROR] COMPILATION ERROR : [INFO] -----------------.........
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by 站着工程师 on
+            2020-09-04
+        </p>
+             <p class="post-meta" id="busuanzi_container_page_pv">
+                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+            </p>
+    
+
+</div>
+</div>
+<hr>
+
+
+<div class="w3-row-padding">
+	<a href="/2020/09/04/Alpine镜像内的Java时区问题/">
+        <h2 class="post-title">
+            Alpine镜像内的Java时区问题
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+	</a>
+
+<div>
+
+    <a href="/2020/09/04/Alpine镜像内的Java时区问题/">
+
+        <div class="post-content-preview">
+            docker的精简镜像alpine内没有时区信息，在基于该镜像制作应用镜像时，需要配置时区信息，之前的做法是在其他容器时将宿主机的时区配置挂载到容器，如下所示：
+docker run -itd -v /etc/localtime:/etc/localtime alpine bash进入到容器内，时间确实已经是东八区时间:
+bash-4.3# dateTue Aug  7 09:32:2.........
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by 站着工程师 on
+            2020-09-04
+        </p>
+             <p class="post-meta" id="busuanzi_container_page_pv">
+                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+            </p>
+    
+
+</div>
+</div>
+<hr>
+
+
+<div class="w3-row-padding">
+	<a href="/2020/09/04/nginx出现403-is-forbidden的4个原因/">
+        <h2 class="post-title">
+            nginx出现403 is forbidden的4个原因
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+	</a>
+
+<div>
+
+    <a href="/2020/09/04/nginx出现403-is-forbidden的4个原因/">
+
+        <div class="post-content-preview">
+            nginx缺少配置
+缺少index.html或者index.php文件，就是配置文件中index index.html index.htm这行中的指定的文件。
+server {listen 80;server_name localhost;index index.php index.html;root /var/www; } 如果在/ var/www下面没有index.php,inde.........
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by 站着工程师 on
+            2020-09-04
+        </p>
+             <p class="post-meta" id="busuanzi_container_page_pv">
+                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+            </p>
+    
+
+</div>
+</div>
+<hr>
+
+
+<div class="w3-row-padding">
+	<a href="/2020/09/04/Docker基础镜像debain的乱码问题/">
+        <h2 class="post-title">
+            Docker基础镜像debain的乱码问题
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+	</a>
+
+<div>
+
+    <a href="/2020/09/04/Docker基础镜像debain的乱码问题/">
+
+        <div class="post-content-preview">
+            问题
+公司内的项目在进行容器化并实现DevOps的时候，由于代码文件编码的问题，出现了乱码问题，在windows环境下，正常没有问题，首先看一下前期基于debain+nodejs+ionic构建的用于项目打包的基础镜像，镜像文件如下所示：
+FROM 10.10.70.65/base/andreptb/maven:3.3.9-jdk8COPY settings.xml /usr/shar.........
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by 站着工程师 on
+            2020-09-04
+        </p>
+             <p class="post-meta" id="busuanzi_container_page_pv">
+                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+            </p>
+    
+
+</div>
+</div>
+<hr>
+
+
+<div class="w3-row-padding">
 	<a href="/2020/09/03/Docker使用进阶/">
         <h2 class="post-title">
             Docker使用进阶
@@ -374,39 +514,6 @@ docker rmi $(docker images | awk ‘/^/ { .........
 <hr>
 
 
-<div class="w3-row-padding">
-	<a href="/2020/09/03/hello-world/">
-        <h2 class="post-title">
-            Hello World
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-	</a>
-
-<div>
-
-    <a href="/2020/09/03/hello-world/">
-
-        <div class="post-content-preview">
-            Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub..........
-        </div>
-    </a>
-    
-        <p class="post-meta">
-            Posted by 站着工程师 on
-            2020-09-03
-        </p>
-             <p class="post-meta" id="busuanzi_container_page_pv">
-                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
-            </p>
-    
-
-</div>
-</div>
-<hr>
-
-
 
 <!-- Pager -->
 
@@ -469,15 +576,15 @@ docker rmi $(docker images | awk ‘/^/ { .........
             
         
             
-            <a href="/tags/#Pod" title="Pod" rel="1">Pod</a>
-            
-        
-            
             <a href="/tags/#kubernetes 网络" title="kubernetes 网络" rel="1">kubernetes 网络</a>
             
         
             
-            <a href="/tags/#OpenStack" title="OpenStack" rel="2">OpenStack</a>
+            <a href="/tags/#Pod" title="Pod" rel="1">Pod</a>
+            
+        
+            
+            <a href="/tags/#OpenStack" title="OpenStack" rel="3">OpenStack</a>
             
         
             
@@ -545,23 +652,23 @@ docker rmi $(docker images | awk ‘/^/ { .........
     <ul>
       
         <li>
+          <a href="/2020/11/11/ngc-cuda11%E9%95%9C%E5%83%8F%E8%BF%90%E8%A1%8Cmpi%E4%BB%BB%E5%8A%A1/">ngc cuda11镜像运行mpi任务</a>
+        </li>
+      
+        <li>
+          <a href="/2020/10/10/GPU-%E7%9B%B8%E5%85%B3%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">GPU 相关的基础知识</a>
+        </li>
+      
+        <li>
+          <a href="/2020/10/06/hello-world/">Hello World</a>
+        </li>
+      
+        <li>
           <a href="/2020/09/21/com-sun-image-codec-jpeg-does-not-exist/">com.sun.image.codec.jpeg does not exist</a>
         </li>
       
         <li>
           <a href="/2020/09/21/DevOps-%E7%90%86%E8%A7%A3%E6%95%B4%E7%90%86/">DevOps 理解整理</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Discuz-%E8%AE%BA%E5%9D%9B%E8%AF%84%E8%AE%BA%E5%9B%9E%E5%A4%8D%E4%BB%A3%E7%A0%81/">Discuz 论坛评论回复代码</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Docker%E4%BB%A5%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0Pipework/">Docker以网络插件方式实现Pipework</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Docker%E5%87%A0%E4%B8%AA%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4/">Docker几个不常用的命令</a>
         </li>
       
     </ul>
@@ -572,7 +679,7 @@ docker rmi $(docker images | awk ‘/^/ { .........
         
     <h5>Achives</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">44</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">44</span></li></ul>
     </div>
 
         <hr>

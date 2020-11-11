@@ -271,6 +271,107 @@
 
 
 <div class="w3-row-padding">
+	<a href="/2020/11/11/ngc-cuda11镜像运行mpi任务/">
+        <h2 class="post-title">
+            ngc cuda11镜像运行mpi任务
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+	</a>
+
+<div>
+
+    <a href="/2020/11/11/ngc-cuda11镜像运行mpi任务/">
+
+        <div class="post-content-preview">
+            ngc官网的cuda 11镜像如果运行MPI任务，以太网使用以下命令提交训练任务，否则会出现以下错误
+ 这是由于镜像内置了ucx 组件，需要IB的支持，如果没有IB的话，会报错，建议使用一下命令运行mpi任务
+1mpirun --oversubscribe --allow-run-as-root -np 2 -mca pml ob1  python &#x2F;inspur&#x2F;.........
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by 站着工程师 on
+            2020-11-11
+        </p>
+             <p class="post-meta" id="busuanzi_container_page_pv">
+                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+            </p>
+    
+
+</div>
+</div>
+<hr>
+
+
+<div class="w3-row-padding">
+	<a href="/2020/10/10/GPU-相关的基础知识/">
+        <h2 class="post-title">
+            GPU 相关的基础知识
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+	</a>
+
+<div>
+
+    <a href="/2020/10/10/GPU-相关的基础知识/">
+
+        <div class="post-content-preview">
+            整理了认为了解GPU，比较重要的几个概念###CPU与GPU的区别CPU需要很强的通用性来处理各种不同的数据类型，还需要进行多种逻辑判断，引入大量的分支跳转和中断处理。GPU面对的则是类型高度统一的、相互无依赖的大规模数据和不需要被打断的纯净的计算环境，如下图所示（绿色的是计算单元，橙红色的是存储单元，橙黄色的是控制单元），与CPU擅长逻辑控制、串行的运算、通用类型数据运算不同，GPU.........
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by 站着工程师 on
+            2020-10-10
+        </p>
+             <p class="post-meta" id="busuanzi_container_page_pv">
+                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+            </p>
+    
+
+</div>
+</div>
+<hr>
+
+
+<div class="w3-row-padding">
+	<a href="/2020/10/06/hello-world/">
+        <h2 class="post-title">
+            Hello World
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+	</a>
+
+<div>
+
+    <a href="/2020/10/06/hello-world/">
+
+        <div class="post-content-preview">
+            Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub..........
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by 站着工程师 on
+            2020-10-06
+        </p>
+             <p class="post-meta" id="busuanzi_container_page_pv">
+                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+            </p>
+    
+
+</div>
+</div>
+<hr>
+
+
+<div class="w3-row-padding">
 	<a href="/2020/09/21/com-sun-image-codec-jpeg-does-not-exist/">
         <h2 class="post-title">
             com.sun.image.codec.jpeg does not exist
@@ -517,107 +618,6 @@ docker rmi $(docker images | awk ‘/^/ { pr.........
 <hr>
 
 
-<div class="w3-row-padding">
-	<a href="/2020/09/21/Docker精简镜像/">
-        <h2 class="post-title">
-            Docker精简镜像
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-	</a>
-
-<div>
-
-    <a href="/2020/09/21/Docker精简镜像/">
-
-        <div class="post-content-preview">
-            精简Docker镜像大小的必要性Docker镜像由很多镜像层（Layers）组成（最多127层），镜像层依赖于一系列的底层技术，比如文件系统(filesystems)、写时复制(copy-on-write)、联合挂载(union mounts)等技术，你可以查看Docker社区文档以了解更多有关Docker存储驱动的内容，这里就不再赘述技术细节。总的来说，Dockerfile中的每条指.........
-        </div>
-    </a>
-    
-        <p class="post-meta">
-            Posted by 站着工程师 on
-            2020-09-21
-        </p>
-             <p class="post-meta" id="busuanzi_container_page_pv">
-                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
-            </p>
-    
-
-</div>
-</div>
-<hr>
-
-
-<div class="w3-row-padding">
-	<a href="/2020/09/21/Docker镜像仓库删除历史版本/">
-        <h2 class="post-title">
-            Docker镜像仓库删除历史版本
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-	</a>
-
-<div>
-
-    <a href="/2020/09/21/Docker镜像仓库删除历史版本/">
-
-        <div class="post-content-preview">
-            DevOps环境使用的镜像仓库，一个产品的版本越来越多，需要能够定时将不再使用的历史版本进行删除，编写乐意一段代码，用于删除历史版本的镜像，如下所示```
-12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626.........
-        </div>
-    </a>
-    
-        <p class="post-meta">
-            Posted by 站着工程师 on
-            2020-09-21
-        </p>
-             <p class="post-meta" id="busuanzi_container_page_pv">
-                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
-            </p>
-    
-
-</div>
-</div>
-<hr>
-
-
-<div class="w3-row-padding">
-	<a href="/2020/09/21/Docker-默认的Container名称生成/">
-        <h2 class="post-title">
-            Docker 默认的Container名称生成
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-	</a>
-
-<div>
-
-    <a href="/2020/09/21/Docker-默认的Container名称生成/">
-
-        <div class="post-content-preview">
-                    当基于Docker创建Container时，如果不指定容器名称，Docker Damon会默认生成容器名称，这个名称看着是个真实的名称，找了一下docker的代码，发现了生成名称的机制，代码文件：docker/pkg/namesgenerator/names-generator.go。查看代码，发现这些名称都是一些名人的名称，我只想说一句，docker 好任性。
-123.........
-        </div>
-    </a>
-    
-        <p class="post-meta">
-            Posted by 站着工程师 on
-            2020-09-21
-        </p>
-             <p class="post-meta" id="busuanzi_container_page_pv">
-                               本文总阅读量<span id="busuanzi_value_page_pv"></span>次
-            </p>
-    
-
-</div>
-</div>
-<hr>
-
-
 
 <!-- Pager -->
 
@@ -680,15 +680,15 @@ docker rmi $(docker images | awk ‘/^/ { pr.........
             
         
             
-            <a href="/tags/#Pod" title="Pod" rel="1">Pod</a>
-            
-        
-            
             <a href="/tags/#kubernetes 网络" title="kubernetes 网络" rel="1">kubernetes 网络</a>
             
         
             
-            <a href="/tags/#OpenStack" title="OpenStack" rel="2">OpenStack</a>
+            <a href="/tags/#Pod" title="Pod" rel="1">Pod</a>
+            
+        
+            
+            <a href="/tags/#OpenStack" title="OpenStack" rel="3">OpenStack</a>
             
         
             
@@ -756,23 +756,23 @@ docker rmi $(docker images | awk ‘/^/ { pr.........
     <ul>
       
         <li>
+          <a href="/2020/11/11/ngc-cuda11%E9%95%9C%E5%83%8F%E8%BF%90%E8%A1%8Cmpi%E4%BB%BB%E5%8A%A1/">ngc cuda11镜像运行mpi任务</a>
+        </li>
+      
+        <li>
+          <a href="/2020/10/10/GPU-%E7%9B%B8%E5%85%B3%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">GPU 相关的基础知识</a>
+        </li>
+      
+        <li>
+          <a href="/2020/10/06/hello-world/">Hello World</a>
+        </li>
+      
+        <li>
           <a href="/2020/09/21/com-sun-image-codec-jpeg-does-not-exist/">com.sun.image.codec.jpeg does not exist</a>
         </li>
       
         <li>
           <a href="/2020/09/21/DevOps-%E7%90%86%E8%A7%A3%E6%95%B4%E7%90%86/">DevOps 理解整理</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Discuz-%E8%AE%BA%E5%9D%9B%E8%AF%84%E8%AE%BA%E5%9B%9E%E5%A4%8D%E4%BB%A3%E7%A0%81/">Discuz 论坛评论回复代码</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Docker%E4%BB%A5%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0Pipework/">Docker以网络插件方式实现Pipework</a>
-        </li>
-      
-        <li>
-          <a href="/2020/09/21/Docker%E5%87%A0%E4%B8%AA%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4/">Docker几个不常用的命令</a>
         </li>
       
     </ul>
@@ -783,7 +783,7 @@ docker rmi $(docker images | awk ‘/^/ { pr.........
         
     <h5>Achives</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">44</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">44</span></li></ul>
     </div>
 
         <hr>

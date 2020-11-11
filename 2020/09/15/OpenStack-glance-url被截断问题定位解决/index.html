@@ -16,11 +16,11 @@
 </script>
     <title>
         
-          Hello World - null
+          [OpenStack]glance url被截断问题定位解决 - null
         
     </title>
 
-    <link rel="canonical" href="http://damonyi.cc/2020/09/03/hello-world/">
+    <link rel="canonical" href="http://damonyi.cc/2020/09/15/OpenStack-glance-url被截断问题定位解决/">
 
     <!-- Bootstrap Core CSS -->
 
@@ -124,12 +124,14 @@
                     <div class="post-heading" style="padding:40px">
                         <div class="tags">
                             
+                              <a class="tag" href="/tags/#OpenStack" title="OpenStack">OpenStack</a>
+                            
                         </div>
-                        <h1>Hello World</h1>
+                        <h1>[OpenStack]glance url被截断问题定位解决</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by 站着工程师 on
-                            2020-09-03
+                            2020-09-15
                         </span>
                         <span  class="meta" id="busuanzi_container_page_pv">
                                 本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -241,19 +243,9 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+                <p>环境信息：两个控制节点做HA，2个计算节点问题描述：<br>    dashboard界面创建VM时，总是创建失败。查看nova日志，是下载镜像失败导致。<br>1、  命令行执行下载镜像命令<br>       glance –debug image-download 33830a96-d8a7-47fc-a732-271fde266d40 &gt; a.img <br>出现错误日志。发现第二次请求的url为空<br>2、查看glance日志 报错的代码位置<br>  /glance/api/middleware/version_negotiation.py<br><img src="http://bbs.iop365.com/iop/data/attachment/forum/201504/20/100426sn8aff8j2rnwcam2.png">   </p>
+<p>非常奇怪，之前从未遇到过该现象<br>2.1 怀疑glance配置错误，与其他环境的glance配置文件对比后，发现没有错误<br>2.2 glance存储可以上传镜像，排查ceph问题<br>在其他机器上验证，发现偶尔能够成功，大部分时间都是失败的。在主控制节点一直成功，怀疑网卡网络问题<br>。。。。。。  </p>
+<p>最终发现是keepalived导致的，主节点备节点IP分别是10.68.25.40  10。68.25.41，浮动IP地址为10.68.25.50<br>在两个控制节点发现都存在10.68.25.50这个浮动IP（正常情况，只能在一个节点有该IP），初步判定是keepalived配置问题，但是对比其他环境，配置一样。。。。。最终发现 我们在配置外部网络的时候配置在了eth0，在eth0创建了<br>一个br-ex网桥，静态IP配置到了br-ex，导致eth0上是没有IP的，这就不太正常了。所以修改 keepalived配置文件监听的端口为br-ex  问题解决。</p>
 
                 
 
@@ -262,9 +254,13 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2020/09/03/my-first-blog/" data-toggle="tooltip" data-placement="top" title="my first blog">&larr; Previous post</a>
+                            <a href="/2020/09/15/OpenStack-Centos6-5-image-制作/" data-toggle="tooltip" data-placement="top" title="OpenStack Centos6.5 image 制作">&larr; Previous post</a>
                         </li>
                     
+                    
+                        <li class="next">
+                            <a href="/2020/09/15/Restore-iSCSI-configuration-for-Cinder-Nova/" data-toggle="tooltip" data-placement="top" title="Restore iSCSI configuration for Cinder/Nova">Next post &rarr;</a>
+                        </li>
                     
                 </ul>
 
@@ -313,6 +309,8 @@
                     <h5><a href="/tags/">Tags</a></h5>
                     <div class="tags">
                        
+                          <a class="tag" href="/tags/#OpenStack" title="OpenStack">OpenStack</a>
+                        
                     </div>
                 </section>
                 
@@ -493,7 +491,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/2020/09/03/hello-world/index.html/js/jquery.tagcloud.js",function(){
+        async("http://damonyi.cc/2020/09/15/OpenStack-glance-url%E8%A2%AB%E6%88%AA%E6%96%AD%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D%E8%A7%A3%E5%86%B3/index.html/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},

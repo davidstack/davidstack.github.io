@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://damonyi.cc/2020/11/11/ngc-cuda11%E9%95%9C%E5%83%8F%E8%BF%90%E8%A1%8Cmpi%E4%BB%BB%E5%8A%A1/</loc>
+    <lastmod>2020-11-11</lastmod>
+  </url>
+  <url>
+    <loc>http://damonyi.cc/2020/10/10/GPU-%E7%9B%B8%E5%85%B3%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</loc>
+    <lastmod>2020-11-11</lastmod>
+  </url>
+  <url>
+    <loc>http://damonyi.cc/2020/09/15/OpenStack-glance-url%E8%A2%AB%E6%88%AA%E6%96%AD%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D%E8%A7%A3%E5%86%B3/</loc>
+    <lastmod>2020-10-06</lastmod>
+  </url>
+  <url>
     <loc>http://damonyi.cc/2020/09/21/com-sun-image-codec-jpeg-does-not-exist/</loc>
     <lastmod>2020-09-21</lastmod>
   </url>
@@ -149,7 +161,7 @@
     <lastmod>2020-09-11</lastmod>
   </url>
   <url>
-    <loc>http://damonyi.cc/2020/09/03/hello-world/</loc>
+    <loc>http://damonyi.cc/2020/10/06/hello-world/</loc>
     <lastmod>2020-09-11</lastmod>
   </url>
   <url>
