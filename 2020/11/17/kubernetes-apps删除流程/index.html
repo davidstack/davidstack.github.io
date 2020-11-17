@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+    <title>
+        
+          kubernetes apps删除流程 - null
+        
+    </title>
+
+    <link rel="canonical" href="http://damonyi.cc/2020/11/17/kubernetes-apps删除流程/">
+
+    <!-- Bootstrap Core CSS -->
+
+   
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
+
+
+    
+
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
+
+
+    
+<link rel="stylesheet" href="/css/donate.css">
+
+	
+<link rel="stylesheet" href="/css/w3.css">
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+    }
+   .post-heading{
+    padding:20px;
+    }
+  .person {
+    border: 10px solid transparent;
+    margin-bottom: 25px;
+    width: 80%;
+    height: 80%;
+    opacity: 0.7;
+  }
+  .person:hover {
+    border-color: #f1f1f1;
+  }
+
+</style>
+
+<header id="headerid" class="w3-indigo intro-header" style="position:relative;">
+    <!-- Signature -->
+	
+        <div class="container">
+            <div class=" row" >
+			
+			<canvas id="particles-js-canvas" style="position:absolute;z-index:1;top:0px;left:0px;" width="100%" height="50%"></canvas>
+			
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="z-index:2;">
+                
+                    <div class="post-heading" style="padding:40px">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                            
+                              <a class="tag" href="/tags/#Kuberentes" title="Kuberentes">Kuberentes</a>
+                            
+                              <a class="tag" href="/tags/#云原生" title="云原生">云原生</a>
+                            
+                        </div>
+                        <h1>kubernetes apps删除流程</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 站着工程师 on
+                            2020-11-17
+                        </span>
+                        <span  class="meta" id="busuanzi_container_page_pv">
+                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                         </span>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+  
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">云里雾里</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a  href="/">Homepage</a>
+                    </li>
+		    
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#技术">技术</a>
+                           
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#教育">教育</a>
+                           
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>##问题描述<br>最近遇到了好几个Kubernetes集群出现了删除Statefulset时，Pod未被删除的问题，经过定位是开发同事，基于farbric 的k8s api进行删除statefulset的操作<br>，调用了删除statefulset的接口后，又调用了删除pod的接口，但是都是使用的默认删除方式，非级联删除（Orphan策略），这在某些情况下，可能只是调用了删除statefulset的接口，但是未调用删除Pod的接口，就会<br>出现Pod未被删除的，此时Pod的metadat内可能仍然存在，但是kube-controller-manager中的garbargecollector会将该Pode的ownerreference移除，但是label中仍然带有controller-revision-hash和statefulset的信息，如下图所示<br><img src="/2020/11/17/kubernetes-apps%E5%88%A0%E9%99%A4%E6%B5%81%E7%A8%8B/pod1.png" alt="avatar"></p>
+<p>借此机会对Statefulset删除的源码进行了分析，原以为是由Statefulset-controller 进行控制，但是看了一下代码，发现Statefulset-controller只是用来控制副本数的变化，但是对于Statefulset的删除，并不做任何处理，statefulset-controller的如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; If the StatefulSet is being deleted, don&#39;t do anything other than updating</span><br><span class="line">&#x2F;&#x2F; status.</span><br><span class="line">if set.DeletionTimestamp !&#x3D; nil &#123;</span><br><span class="line">	return &amp;status, nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>##Kubernetes资源删除的方式<br>Kubernetes 在删除资源时，存在级联删除和非级联删除<br>###控制垃圾收集器删除 Dependent<br>####当删除对象时，可以指定是否该对象的 Dependent 也自动删除掉。自动删除 Dependent 也称为级联删除。Kubernetes 中有两种级联删除的模式：background 模式和 foreground 模式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete statefulset  -n de2ca8d1-94b4-4faa-8077-e9374ca9db4e 5bagk2rivkjno --cascade&#x3D;true </span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Background 级联删除,在 background 级联删除 模式下，Kubernetes 会立即删除 Owner 对象，然后垃圾收集器会在后台删除这些 Dependent。<br>   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">   curl -X DELETE 127.0.0.1:8080&#x2F;apis&#x2F;extensions&#x2F;v1beta1&#x2F;namespaces&#x2F;default&#x2F;replicasets&#x2F;my-repset \</span><br><span class="line">-d &#39;&#123;&quot;kind&quot;:&quot;DeleteOptions&quot;,&quot;apiVersion&quot;:&quot;v1&quot;,&quot;propagationPolicy&quot;:&quot;Background&quot;&#125;&#39; \</span><br><span class="line">-H &quot;Content-Type: application&#x2F;json&quot;</span><br></pre></td></tr></table></figure><br>Foreground 级联删除m在 foreground 级联删除 模式下，根对象首先进入 “删除中” 状态。该对象会设置deletionTimestamp 字段对象的 metadata.finalizers 字段包含了值 “foregroundDeletion”，对象仍然可以通过 REST API 可见，一旦被设置为 “删除中” 状态，垃圾收集器会删除对象的所有 Dependent。垃圾收集器删除了所有 “Blocking” 的 Dependent（对象的 ownerReference.blockOwnerDeletion=true）之后，它会删除 Owner 对象。<br>如果一个对象的ownerReferences 字段被一个 Controller（例如 Deployment 或 ReplicaSet）设置，blockOwnerDeletion 会被自动设置，没必要手动修改这个字段。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -X DELETE localhost:8080&#x2F;apis&#x2F;extensions&#x2F;v1beta1&#x2F;namespaces&#x2F;default&#x2F;replicasets&#x2F;my-repset \</span><br><span class="line">-d &#39;&#123;&quot;kind&quot;:&quot;DeleteOptions&quot;,&quot;apiVersion&quot;:&quot;v1&quot;,&quot;propagationPolicy&quot;:&quot;Foreground&quot;&#125;&#39; \</span><br><span class="line">-H &quot;Content-Type: application&#x2F;json&quot;</span><br></pre></td></tr></table></figure>
+<p>####如果删除对象时，不自动删除它的 Dependent，这些 Dependent 被称作是原对象的 孤儿(Orphan),可以使用以下命令实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete statefulset  -n de2ca8d1-94b4-4faa-8077-e9374ca9db4e 5bagk2rivkjno --cascade&#x3D;false </span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -X DELETE 127.0.0.1:8080&#x2F;apis&#x2F;extensions&#x2F;v1beta1&#x2F;namespaces&#x2F;default&#x2F;replicasets&#x2F;my-repset \</span><br><span class="line">-d &#39;&#123;&quot;kind&quot;:&quot;DeleteOptions&quot;,&quot;apiVersion&quot;:&quot;v1&quot;,&quot;propagationPolicy&quot;:&quot;Orphan&quot;&#125;&#39; \</span><br><span class="line">-H &quot;Content-Type: application&#x2F;json&quot;</span><br></pre></td></tr></table></figure>
+<p>##Kubernetes 删除apps流程分析<br>删除流程中几个重要的过程包括 kube-apiserver 提供的rest服务</p>
+<ol>
+<li><p>通过调用rest api实现etcd数据库中，app对象的状态更新，包括增加deletetimestamp和finalizer自带，触发更新事件</p>
+</li>
+<li><p>kube-controller-manager收到了apps状态的更新事件，通过更新内置的graph（集群内资源依赖附属关系的图）和garbagecollector进行资源极其附属的删除，这里是只在etcd数据库删除</p>
+</li>
+<li><p>kubelet收到第1步中的资源删除事件，进行底层资源的删除和回收</p>
+</li>
+</ol>
+<p>###kube-apiserver<br>kube-apiserver在启动时会基于go-restful将rest服务的handler 进行加载，主要如下所示：<br>pkg/master/master.go</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; InstallAPIs will install the APIs for the restStorageProviders if they are enabled.</span><br><span class="line">func (m *Master) InstallAPIs(apiResourceConfigSource serverstorage.APIResourceConfigSource, restOptionsGetter generic.RESTOptionsGetter, restStorageProviders ...RESTStorageProvider) &#123;</span><br><span class="line">	apiGroupsInfo :&#x3D; []*genericapiserver.APIGroupInfo&#123;&#125;</span><br><span class="line"></span><br><span class="line">	for _, restStorageBuilder :&#x3D; range restStorageProviders &#123;</span><br><span class="line">		groupName :&#x3D; restStorageBuilder.GroupName()</span><br><span class="line">		if !apiResourceConfigSource.AnyVersionForGroupEnabled(groupName) &#123;</span><br><span class="line">			klog.V(1).Infof(&quot;Skipping disabled API group %q.&quot;, groupName)</span><br><span class="line">			continue</span><br><span class="line">		&#125;</span><br><span class="line">		apiGroupInfo, enabled :&#x3D; restStorageBuilder.NewRESTStorage(apiResourceConfigSource, restOptionsGetter)</span><br><span class="line">		if !enabled &#123;</span><br><span class="line">			klog.Warningf(&quot;Problem initializing API group %q, skipping.&quot;, groupName)</span><br><span class="line">			continue</span><br><span class="line">		&#125;</span><br><span class="line">		klog.V(1).Infof(&quot;Enabling API group %q.&quot;, groupName)</span><br><span class="line"></span><br><span class="line">		if postHookProvider, ok :&#x3D; restStorageBuilder.(genericapiserver.PostStartHookProvider); ok &#123;</span><br><span class="line">			name, hook, err :&#x3D; postHookProvider.PostStartHook()</span><br><span class="line">			if err !&#x3D; nil &#123;</span><br><span class="line">				klog.Fatalf(&quot;Error building PostStartHook: %v&quot;, err)</span><br><span class="line">			&#125;</span><br><span class="line">			m.GenericAPIServer.AddPostStartHookOrDie(name, hook)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		apiGroupsInfo &#x3D; append(apiGroupsInfo, &amp;apiGroupInfo)</span><br><span class="line">	&#125;</span><br><span class="line">    #集成API</span><br><span class="line">	if err :&#x3D; m.GenericAPIServer.InstallAPIGroups(apiGroupsInfo...); err !&#x3D; nil &#123;</span><br><span class="line">		klog.Fatalf(&quot;Error in registering group versions: %v&quot;, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>主要的调用链：<br>k8s.io/apiserver/pkg/server/genericapiserver.go:InstallAPIGroups()<br>k8s.io/apiserver/pkg/server/genericapiserver.go:installAPIResources()<br>k8s.io/apiserver/pkg/endpoints/groupversion.go:InstallREST()<br>k8s.io/apiserver/pkg/endpoints/installer.go:Install()<br>k8s.io/apiserver/pkg/endpoints/installer.go:registerResourceHandlers()<br>rest注册的核心函数：将rest请求直接映射为etcd存储的操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">staging&#x2F;src&#x2F;k8s.io&#x2F;apiserver&#x2F;pkg&#x2F;endpoints&#x2F;installer.go:183  registerResourceHandlers()</span><br></pre></td></tr></table></figure>
+<p>删除的rest请求对应的处理请求在这里</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">   .....</span><br><span class="line">actions &#x3D; appendIf(actions, action&#123;&quot;GET&quot;, itemPath, nameParams, namer, false&#125;, isGetter)</span><br><span class="line">	if getSubpath &#123;</span><br><span class="line">		actions &#x3D; appendIf(actions, action&#123;&quot;GET&quot;, itemPath + &quot;&#x2F;&#123;path:*&#125;&quot;, proxyParams, namer, false&#125;, isGetter)</span><br><span class="line">	&#125;</span><br><span class="line">	actions &#x3D; appendIf(actions, action&#123;&quot;PUT&quot;, itemPath, nameParams, namer, false&#125;, isUpdater)</span><br><span class="line">	actions &#x3D; appendIf(actions, action&#123;&quot;PATCH&quot;, itemPath, nameParams, namer, false&#125;, isPatcher)</span><br><span class="line">	#删除的处理函数</span><br><span class="line">	actions &#x3D; appendIf(actions, action&#123;&quot;DELETE&quot;, itemPath, nameParams, namer, false&#125;, isGracefulDeleter)</span><br><span class="line">	.....</span><br></pre></td></tr></table></figure>
+
+<p>该接口的定义如下所示,即Delete函数可能直接删除数据，也可能异步删除资源</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; GracefulDeleter knows how to pass deletion options to allow delayed deletion of a</span><br><span class="line">&#x2F;&#x2F; RESTful object.</span><br><span class="line">type GracefulDeleter interface &#123;</span><br><span class="line">	&#x2F;&#x2F; Delete finds a resource in the storage and deletes it.</span><br><span class="line">	&#x2F;&#x2F; If options are provided, the resource will attempt to honor them or return an invalid</span><br><span class="line">	&#x2F;&#x2F; request error.</span><br><span class="line">	&#x2F;&#x2F; Although it can return an arbitrary error value, IsNotFound(err) is true for the</span><br><span class="line">	&#x2F;&#x2F; returned error value err when the specified resource is not found.</span><br><span class="line">	&#x2F;&#x2F; Delete *may* return the object that was deleted, or a status object indicating additional</span><br><span class="line">	&#x2F;&#x2F; information about deletion.</span><br><span class="line">	&#x2F;&#x2F; It also returns a boolean which is set to true if the resource was instantly</span><br><span class="line">	&#x2F;&#x2F; deleted or false if it will be deleted asynchronously.</span><br><span class="line">	Delete(ctx genericapirequest.Context, name string, options *metav1.DeleteOptions) (runtime.Object, bool, error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里有个比较重要的Delete函数，用于在Delete之前做一些业务处理，就包括了我们前面重点提到的设置deletetimestamp 和finalizers字段，对于Statefulset特有的增删改查的预处理，代码都归档在了k8s.io\kubernetes\pkg\registry\apps\statefulset目录，但是对于通用的增删改查预处理操作<br>，代码被归档在了这里 k8s.io/kubernetes/staging/src/k8s.io/apiserver/pkg/registry/rest/,其中通用的BeforeDelete归档在了staging/src/k8s.io/apiserver/pkg/registry/rest/delete.go:BeforeDelete()<br>其中核心的Delete函数 在staging/src/k8s.io/apiserver/pkg/registry/generic/registry/store.go:Delete()，重点关注下面的代码段,设置删除策略：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">....</span><br><span class="line">var preconditions storage.Preconditions</span><br><span class="line">if options.Preconditions !&#x3D; nil &#123;</span><br><span class="line">	preconditions.UID &#x3D; options.Preconditions.UID</span><br><span class="line">	preconditions.ResourceVersion &#x3D; options.Preconditions.ResourceVersion</span><br><span class="line">&#125;</span><br><span class="line">#调用BeforeDelete获取是否需要graceful 进行删除</span><br><span class="line">graceful, pendingGraceful, err :&#x3D; rest.BeforeDelete(e.DeleteStrategy, ctx, obj, options)</span><br><span class="line">if err !&#x3D; nil &#123;</span><br><span class="line">	return nil, false, err</span><br><span class="line">&#125;</span><br><span class="line">......</span><br><span class="line">&#x2F;&#x2F; Handle combinations of graceful deletion and finalization by issuing</span><br><span class="line">&#x2F;&#x2F; the correct updates.</span><br><span class="line">#设置finalizer，为orphan或者foregroundDeletion策略</span><br><span class="line">shouldUpdateFinalizers, _ :&#x3D; deletionFinalizersForGarbageCollection(ctx, e, accessor, options)</span><br><span class="line">&#x2F;&#x2F; TODO: remove the check, because we support no-op updates now.</span><br><span class="line">if graceful || pendingFinalizers || shouldUpdateFinalizers &#123;</span><br><span class="line">    #在etcd数据库更新资源的metadata信息</span><br><span class="line">	err, ignoreNotFound, deleteImmediately, out, lastExisting &#x3D; e.updateForGracefulDeletionAndFinalizers(ctx, name, key, options, preconditions, obj)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; !deleteImmediately covers all cases where err !&#x3D; nil. We keep both to be future-proof.</span><br><span class="line">if !deleteImmediately || err !&#x3D; nil &#123;</span><br><span class="line">	return out, false, err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>###kube-controller-manager<br>kube-controller-manager内有一个GarbageCollector用于完成资源的清理删除工作，启动的时候首先会运行一个dependencyGraphBuilder 用于构建集群资源的依赖关系图谱，这个graphbuild 会获取集群的全部资源，并根根据资源的metadata信息构建关系图谱<br>，并基于事件监听更新 关系图谱</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">pkg&#x2F;controller&#x2F;garbagecollector&#x2F;graph_builder.go:startMonitors()</span><br><span class="line">func (gb *GraphBuilder) startMonitors() &#123;</span><br><span class="line">	gb.monitorLock.Lock()</span><br><span class="line">	defer gb.monitorLock.Unlock()</span><br><span class="line"></span><br><span class="line">	if !gb.running &#123;</span><br><span class="line">		return</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F; we&#39;re waiting until after the informer start that happens once all the controllers are initialized.  This ensures</span><br><span class="line">	&#x2F;&#x2F; that they don&#39;t get unexpected events on their work queues.</span><br><span class="line">	&lt;-gb.informersStarted</span><br><span class="line">    </span><br><span class="line">    #定义需要为哪些资源建立关系图谱，每个都基于informer进行监听，对于garbargecollect 中的graph，只是获取哪些允许进行删除的资源pkg&#x2F;controller&#x2F;garbagecollector&#x2F;garbagecollector.go:GetDeletableResources() </span><br><span class="line">	monitors :&#x3D; gb.monitors</span><br><span class="line">	started :&#x3D; 0</span><br><span class="line">	for _, monitor :&#x3D; range monitors &#123;</span><br><span class="line">		if monitor.stopCh &#x3D;&#x3D; nil &#123;</span><br><span class="line">			monitor.stopCh &#x3D; make(chan struct&#123;&#125;)</span><br><span class="line">			gb.sharedInformers.Start(gb.stopCh)</span><br><span class="line">			go monitor.Run()</span><br><span class="line">			started++</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+<p>graph_build 中会处理收到的资源状态更新事件，将产生事件的对象放到缓存队列内，主要pkg/controller/garbagecollector/graph_builder.go:processGraphChanges()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Dequeueing an event from graphChanges, updating graph, populating dirty_queue.</span><br><span class="line">func (gb *GraphBuilder) processGraphChanges() bool &#123;</span><br><span class="line">	item, quit :&#x3D; gb.graphChanges.Get()</span><br><span class="line">	....</span><br><span class="line">	case (event.eventType &#x3D;&#x3D; addEvent || event.eventType &#x3D;&#x3D; updateEvent) &amp;&amp; found:</span><br><span class="line">		&#x2F;&#x2F; handle changes in ownerReferences</span><br><span class="line">		added, removed, changed :&#x3D; referencesDiffs(existingNode.owners, accessor.GetOwnerReferences())</span><br><span class="line">		if len(added) !&#x3D; 0 || len(removed) !&#x3D; 0 || len(changed) !&#x3D; 0 &#123;</span><br><span class="line">			&#x2F;&#x2F; check if the changed dependency graph unblock owners that are</span><br><span class="line">			&#x2F;&#x2F; waiting for the deletion of their dependents.</span><br><span class="line">			gb.addUnblockedOwnersToDeleteQueue(removed, changed)</span><br><span class="line">			&#x2F;&#x2F; update the node itself</span><br><span class="line">			existingNode.owners &#x3D; accessor.GetOwnerReferences()</span><br><span class="line">			&#x2F;&#x2F; Add the node to its new owners&#39; dependent lists.</span><br><span class="line">			gb.addDependentToOwners(existingNode, added)</span><br><span class="line">			&#x2F;&#x2F; remove the node from the dependent list of node that are no longer in</span><br><span class="line">			&#x2F;&#x2F; the node&#39;s owners list.</span><br><span class="line">			gb.removeDependentFromOwners(existingNode, removed)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		if beingDeleted(accessor) &#123;</span><br><span class="line">			existingNode.markBeingDeleted()</span><br><span class="line">		&#125;</span><br><span class="line">		gb.processTransitions(event.oldObj, accessor, existingNode)</span><br><span class="line">	case event.eventType &#x3D;&#x3D; deleteEvent:</span><br><span class="line">		if !found &#123;</span><br><span class="line">			klog.V(5).Infof(&quot;%v doesn&#39;t exist in the graph, this shouldn&#39;t happen&quot;, accessor.GetUID())</span><br><span class="line">			return true</span><br><span class="line">		&#125;</span><br><span class="line">		&#x2F;&#x2F; removeNode updates the graph</span><br><span class="line">		gb.removeNode(existingNode)</span><br><span class="line">		existingNode.dependentsLock.RLock()</span><br><span class="line">		defer existingNode.dependentsLock.RUnlock()</span><br><span class="line">		if len(existingNode.dependents) &gt; 0 &#123;</span><br><span class="line">			gb.absentOwnerCache.Add(accessor.GetUID())</span><br><span class="line">		&#125;</span><br><span class="line">		for dep :&#x3D; range existingNode.dependents &#123;</span><br><span class="line">		     #将需要删除的资源加入到attemptToDelete队列</span><br><span class="line">			gb.attemptToDelete.Add(dep)</span><br><span class="line">		&#125;</span><br><span class="line">		for _, owner :&#x3D; range existingNode.owners &#123;</span><br><span class="line">			ownerNode, found :&#x3D; gb.uidToNode.Read(owner.UID)</span><br><span class="line">			if !found || !ownerNode.isDeletingDependents() &#123;</span><br><span class="line">				continue</span><br><span class="line">			&#125;</span><br><span class="line">			&#x2F;&#x2F; this is to let attempToDeleteItem check if all the owner&#39;s</span><br><span class="line">			&#x2F;&#x2F; dependents are deleted, if so, the owner will be deleted.</span><br><span class="line">			#将需要删除的资源加入到attemptToDelete队列</span><br><span class="line">			gb.attemptToDelete.Add(ownerNode)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>pkg/controller/garbagecollector/garbagecollector.go:attemptToDeleteWorker() 处理每个删除对象的事件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">func (gc *GarbageCollector) attemptToDeleteItem(item *node) error &#123;</span><br><span class="line">....</span><br><span class="line">   #在这里出进行处理，当发现需要删除Statefulset时，先判断是否需要进行删除该Statefulset的附属资源，先进行附属资源的删除</span><br><span class="line">	&#x2F;&#x2F; attemptToOrphanWorker() into attemptToDeleteItem() as well.</span><br><span class="line">	if item.isDeletingDependents() &#123;</span><br><span class="line">		return gc.processDeletingDependentsItem(item)</span><br><span class="line">	&#125;</span><br><span class="line">....</span><br><span class="line"></span><br><span class="line">		switch &#123;</span><br><span class="line">		case hasOrphanFinalizer(latest):</span><br><span class="line">			&#x2F;&#x2F; if an existing orphan finalizer is already on the object, honor it.</span><br><span class="line">			policy &#x3D; metav1.DeletePropagationOrphan</span><br><span class="line">		case hasDeleteDependentsFinalizer(latest):</span><br><span class="line">			&#x2F;&#x2F; if an existing foreground finalizer is already on the object, honor it.</span><br><span class="line">			policy &#x3D; metav1.DeletePropagationForeground</span><br><span class="line">		default:</span><br><span class="line">			&#x2F;&#x2F; otherwise, default to background.</span><br><span class="line">			policy &#x3D; metav1.DeletePropagationBackground</span><br><span class="line">		&#125;</span><br><span class="line">		#这里会将Statefulset的POd 在数据库中直接删除</span><br><span class="line">		klog.V(2).Infof(&quot;delete object %s with propagation policy %s&quot;, item.identity, policy)</span><br><span class="line">		return gc.deleteObject(item.identity, &amp;policy)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#完成附属资源的删除</span><br><span class="line">&#x2F;&#x2F; process item that&#39;s waiting for its dependents to be deleted</span><br><span class="line">func (gc *GarbageCollector) processDeletingDependentsItem(item *node) error &#123;</span><br><span class="line">	blockingDependents :&#x3D; item.blockingDependents()</span><br><span class="line">	if len(blockingDependents) &#x3D;&#x3D; 0 &#123;</span><br><span class="line">		klog.V(2).Infof(&quot;remove DeleteDependents finalizer for item %s&quot;, item.identity)</span><br><span class="line">		#在etcd内移除pod的finakuzed字段，会同时将该资源在数据库删除</span><br><span class="line">		return gc.removeFinalizer(item, metav1.FinalizerDeleteDependents)</span><br><span class="line">	&#125;</span><br><span class="line">	for _, dep :&#x3D; range blockingDependents &#123;</span><br><span class="line">		if !dep.isDeletingDependents() &#123;</span><br><span class="line">			klog.V(2).Infof(&quot;adding %s to attemptToDelete, because its owner %s is deletingDependents&quot;, dep.identity, item.identity)</span><br><span class="line">			gc.attemptToDelete.Add(dep)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>##kubelet<br>kubelet主要完成资源的释放,主要的删除Pod的处理逻辑，在kubelet的主函数syncpod中，当发现是删除pod的事件时，立即处理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">func (kl *Kubelet) syncPod(o syncPodOptions) error &#123;</span><br><span class="line">	&#x2F;&#x2F; pull out the required options</span><br><span class="line">	pod :&#x3D; o.pod</span><br><span class="line">	mirrorPod :&#x3D; o.mirrorPod</span><br><span class="line">	podStatus :&#x3D; o.podStatus</span><br><span class="line">	updateType :&#x3D; o.updateType</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F; if we want to kill a pod, do it now!</span><br><span class="line">	if updateType &#x3D;&#x3D; kubetypes.SyncPodKill &#123;</span><br><span class="line">		killPodOptions :&#x3D; o.killPodOptions</span><br><span class="line">		if killPodOptions &#x3D;&#x3D; nil || killPodOptions.PodStatusFunc &#x3D;&#x3D; nil &#123;</span><br><span class="line">			return fmt.Errorf(&quot;kill pod options are required if update type is kill&quot;)</span><br><span class="line">		&#125;</span><br><span class="line">		apiPodStatus :&#x3D; killPodOptions.PodStatusFunc(pod, podStatus)</span><br><span class="line">		kl.statusManager.SetPodStatus(pod, apiPodStatus)</span><br><span class="line">		&#x2F;&#x2F; we kill the pod with the specified grace period since this is a termination</span><br><span class="line">		if err :&#x3D; kl.killPod(pod, nil, podStatus, killPodOptions.PodTerminationGracePeriodSecondsOverride); err !&#x3D; nil &#123;</span><br><span class="line">			kl.recorder.Eventf(pod, v1.EventTypeWarning, events.FailedToKillPod, &quot;error killing pod: %v&quot;, err)</span><br><span class="line">			&#x2F;&#x2F; there was an error killing the pod, so we return that error directly</span><br><span class="line">			utilruntime.HandleError(err)</span><br><span class="line">			return err</span><br><span class="line">		&#125;</span><br><span class="line">		return nil</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/11/11/ngc-cuda11镜像运行mpi任务/" data-toggle="tooltip" data-placement="top" title="ngc cuda11镜像运行mpi任务">Next post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+				
+            </div>
+
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">Tags</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                        
+                          <a class="tag" href="/tags/#Kuberentes" title="Kuberentes">Kuberentes</a>
+                        
+                          <a class="tag" href="/tags/#云原生" title="云原生">云原生</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/davidstack">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 站着工程师 2020 
+                    <br>
+                    鲁ICP备16023683号-1
+                    <br>
+                    Powered by <a target="_blank" rel="noopener" href="http://www.hexo.io">Hexo</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Theme by <a target="_blank" rel="noopener" href="https://github.com/kinggozhang/hexo-theme-ace">ACE</a> 
+					
+					
+					<i class="fa fa-eye" id="leancounter"></i>
+					
+					  <div class="copyright text-muted">
+                        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                        本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+                        本站访客数<span id="busuanzi_value_site_uv"></span>人
+                      </div>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+   
+<script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+
+
+
+
+<!-- Bootstrap Core JavaScript -->
+
+   
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+	
+<script src="/js/particles.js"></script>
+
+	
+<script src="/js/particles_config.js"></script>
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://damonyi.cc/2020/11/17/kubernetes-apps%E5%88%A0%E9%99%A4%E6%B5%81%E7%A8%8B/index.html/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://damonyi.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

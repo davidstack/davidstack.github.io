@@ -1,1 +1,1 @@
-http://damonyi.cc/2020/11/11/ngc-cuda11%E9%95%9C%E5%83%8F%E8%BF%90%E8%A1%8Cmpi%E4%BB%BB%E5%8A%A1/
+http://damonyi.cc/2020/11/17/kubernetes-apps%E5%88%A0%E9%99%A4%E6%B5%81%E7%A8%8B/
