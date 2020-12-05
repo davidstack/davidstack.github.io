@@ -1,532 +1,368 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<!-- Head tag -->
+<html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword"  content="">
-    <link rel="shortcut icon" href="/img/ironman-draw.png">
-    <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"damonyi.cc","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="本来想着刷下积分，换点礼品，结果居然好有限制。附上代码。更新代码，增加摇一摇赚取浪花的功能。找了台服务器，摇浪花啦。 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Discuz 论坛评论回复代码">
+<meta property="og:url" content="http://damonyi.cc/2020/09/21/Discuz-%E8%AE%BA%E5%9D%9B%E8%AF%84%E8%AE%BA%E5%9B%9E%E5%A4%8D%E4%BB%A3%E7%A0%81/index.html">
+<meta property="og:site_name" content="云里雾里">
+<meta property="og:description" content="本来想着刷下积分，换点礼品，结果居然好有限制。附上代码。更新代码，增加摇一摇赚取浪花的功能。找了台服务器，摇浪花啦。 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-21T11:52:58.000Z">
+<meta property="article:modified_time" content="2020-09-21T11:59:12.480Z">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://damonyi.cc/2020/09/21/Discuz-%E8%AE%BA%E5%9D%9B%E8%AF%84%E8%AE%BA%E5%9B%9E%E5%A4%8D%E4%BB%A3%E7%A0%81/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
 </script>
-    <title>
-        
-          Discuz 论坛评论回复代码 - null
-        
-    </title>
-
-    <link rel="canonical" href="http://damonyi.cc/2020/09/21/Discuz-论坛评论回复代码/">
-
-    <!-- Bootstrap Core CSS -->
-
-   
-<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
-
-
-    
-
-    <!-- Custom CSS --> 
-    
-<link rel="stylesheet" href="/css/beantech.min.css">
-
-
-    
-<link rel="stylesheet" href="/css/donate.css">
-
-	
-<link rel="stylesheet" href="/css/w3.css">
-
-    <!-- Pygments Highlight CSS -->
-    
-<link rel="stylesheet" href="/css/highlight.css">
-
-
-    
-<link rel="stylesheet" href="/css/widget.css">
-
-
-    
-<link rel="stylesheet" href="/css/rocket.css">
-
-
-    
-<link rel="stylesheet" href="/css/signature.css">
-
-
-    
-<link rel="stylesheet" href="/css/toc.css">
-
-
-    <!-- Custom Fonts -->
-    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
-    <!-- Hux change font-awesome CDN to qiniu -->
-    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-
-    <!-- Hux Delete, sad but pending in China
-    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
-    css'>
-    -->
-
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-	
-
-    <!-- ga & ba script hoook -->
-    <script></script>
-<meta name="generator" content="Hexo 5.1.1"></head>
-
-
-<!-- hack iOS CSS :active style -->
-<body ontouchstart="">
-	<!-- Modified by Yu-Hsuan Yen -->
-<!-- Post Header -->
-<style type="text/css">
-    header.intro-header{
-    }
-   .post-heading{
-    padding:20px;
-    }
-  .person {
-    border: 10px solid transparent;
-    margin-bottom: 25px;
-    width: 80%;
-    height: 80%;
-    opacity: 0.7;
-  }
-  .person:hover {
-    border-color: #f1f1f1;
-  }
-
-</style>
-
-<header id="headerid" class="w3-indigo intro-header" style="position:relative;">
-    <!-- Signature -->
-	
-        <div class="container">
-            <div class=" row" >
-			
-			<canvas id="particles-js-canvas" style="position:absolute;z-index:1;top:0px;left:0px;" width="100%" height="50%"></canvas>
-			
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="z-index:2;">
-                
-                    <div class="post-heading" style="padding:40px">
-                        <div class="tags">
-                            
-                        </div>
-                        <h1>Discuz 论坛评论回复代码</h1>
-                        <h2 class="subheading"></h2>
-                        <span class="meta">
-                            Posted by 站着工程师 on
-                            2020-09-21
-                        </span>
-                        <span  class="meta" id="busuanzi_container_page_pv">
-                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
-                         </span>
-                    </div>
-                
-                </div>
-            </div>
-        </div>
+<title>Discuz 论坛评论回复代码 | 云里雾里</title>
   
-</header>
 
-	
-    <!-- Navigation -->
-<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header page-scroll">
-            <button type="button" class="navbar-toggle">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">云里雾里</a>
-        </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <!-- Known Issue, found by Hux:
-            <nav>'s height woule be hold on by its content.
-            so, when navbar scale out, the <nav> will cover tags.
-            also mask any touch event of tags, unfortunately.
-        -->
-        <div id="huxblog_navbar">
-            <div class="navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a  href="/">Homepage</a>
-                    </li>
-		    
-                    
 
-                        
-                        <li>
-           
-                            <a  href="#技术">技术</a>
-                           
-                        </li>
-                        
-                    
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
 
-                        
-                        <li>
-           
-                            <a  href="#教育">教育</a>
-                           
-                        </li>
-                        
-                    
-                    
-                </ul>
-            </div>
-        </div>
-        <!-- /.navbar-collapse -->
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
     </div>
-    <!-- /.container -->
-</nav>
-<script>
-    // Drop Bootstarp low-performance Navbar
-    // Use customize navbar with high-quality material design animation
-    // in high-perf jank-free CSS3 implementation
-    var $body   = document.body;
-    var $toggle = document.querySelector('.navbar-toggle');
-    var $navbar = document.querySelector('#huxblog_navbar');
-    var $collapse = document.querySelector('.navbar-collapse');
+  </div>
 
-    $toggle.addEventListener('click', handleMagic)
-    function handleMagic(e){
-        if ($navbar.className.indexOf('in') > 0) {
-        // CLOSE
-            $navbar.className = " ";
-            // wait until animation end.
-            setTimeout(function(){
-                // prevent frequently toggle
-                if($navbar.className.indexOf('in') < 0) {
-                    $collapse.style.height = "0px"
-                }
-            },400)
-        }else{
-        // OPEN
-            $collapse.style.height = "auto"
-            $navbar.className += " in";
-        }
-    }
-</script>
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">云里雾里</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
 
 
-    <!-- Main Content -->
-    <!-- Modify by Yu-Hsuan Yen -->
 
-<!-- Post Content -->
-<article>
-    <div class="container">
-        <div class="row">
 
-            <!-- Post Container -->
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                post-container">
 
-                <p>         本来想着刷下积分，换点礼品，结果居然好有限制。附上代码。更新代码，增加摇一摇赚取浪花的功能。找了台服务器，摇浪花啦。</p>
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description">雾里云里</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://damonyi.cc/2020/09/21/Discuz-%E8%AE%BA%E5%9D%9B%E8%AF%84%E8%AE%BA%E5%9B%9E%E5%A4%8D%E4%BB%A3%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="雾里云里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="云里雾里">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Discuz 论坛评论回复代码
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-09-21 19:52:58 / 修改时间：19:59:12" itemprop="dateCreated datePublished" datetime="2020-09-21T19:52:58+08:00">2020-09-21</time>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>9.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>         本来想着刷下积分，换点礼品，结果居然好有限制。附上代码。更新代码，增加摇一摇赚取浪花的功能。找了台服务器，摇浪花啦。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br></pre></td><td class="code"><pre><span class="line">#-\*-coding:utf-8-\*-</span><br><span class="line">import urllib2, urllib, cookielib</span><br><span class="line">import re</span><br><span class="line">import getpass</span><br><span class="line">import sqlite3</span><br><span class="line">import urlparse</span><br><span class="line">import random</span><br><span class="line">import time</span><br><span class="line">import PyV8</span><br><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">class Discuz:</span><br><span class="line">    def \_\_init\_\_(self,user,pwd,args):</span><br><span class="line">        self.username &#x3D; user</span><br><span class="line">        self.password &#x3D; pwd</span><br><span class="line">        self.args &#x3D; args</span><br><span class="line">        self.regex &#x3D; &#123;</span><br><span class="line">            &#39;loginreg&#39;:&#39;&lt;input\\s\*type&#x3D;&quot;hidden&quot;\\s\*name&#x3D;&quot;formhash&quot;\\s\*value&#x3D;&quot;(\[\\w\\W\]+?)&quot;\\s\*\\&#x2F;&gt;&#39;,</span><br><span class="line">            #input type&#x3D;&quot;hidden&quot; name&#x3D;&quot;formhash&quot; value&#x3D;&quot;7f420ac4&quot;</span><br><span class="line">            &#39;replyreg&#39;:&#39;&lt;input\\s\*type&#x3D;&quot;hidden&quot;\\s\*name&#x3D;&quot;formhash&quot;\\s\*value&#x3D;&quot;(\[\\w\\W\]+?)&quot;\\s\*\\&#x2F;&gt;&#39;,</span><br><span class="line">            &#39;tidreg&#39;: &#39;&lt;tbody\\s\*id&#x3D;&quot;normalthread\_\\d+&quot;&gt;\[\\s\\S\]+?&lt;span\\s\*id&#x3D;&quot;thread\_(\\d+)&quot;&gt;&#39;,</span><br><span class="line">            &#39;subform&#39;:&#39;&lt;a href&#x3D;&quot;forum.php\\?mod&#x3D;forumdisplay&amp;fid&#x3D;\\d+&quot;&gt;\\S+&lt;&#x2F;a&gt;&#39;,</span><br><span class="line">            &#39;topidreg&#39;:&#39;&lt;a href&#x3D;&quot;forum.php\\?mod&#x3D;viewthread&amp;tid&#x3D;\\d+&amp;extra&#x3D;page%3D1&quot; onclick&#x3D;&quot;atarget\\(this\\)&quot; class&#x3D;&quot;s xst&quot;&gt;\\S+&lt;&#x2F;a&gt;&#39;</span><br><span class="line">        &#125;</span><br><span class="line">        self.subform&#x3D;\[&#39;OpenStack&#39;,u&#39;云服务&#39;,u&#39;云管理&#39;,&#39;hadoop&#39;,&#39;storm&#39;,&#39;spark&#39;\]</span><br><span class="line">        self.conn &#x3D; None</span><br><span class="line">        self.cur &#x3D; None</span><br><span class="line">        self.islogin &#x3D; False</span><br><span class="line">        self.login()</span><br><span class="line">        self.InitDB()</span><br><span class="line"></span><br><span class="line">    def login(self):</span><br><span class="line">        try:</span><br><span class="line">            loginPage &#x3D; urllib2.urlopen(self.args\[&#39;loginurl&#39;\]).read()</span><br><span class="line">            print &#39;start login...&#39;</span><br><span class="line">            cj &#x3D; cookielib.CookieJar()</span><br><span class="line">            opener &#x3D; urllib2.build\_opener(urllib2.HTTPCookieProcessor(cj))</span><br><span class="line">            user\_agent &#x3D; &#39;Mozilla&#x2F;4.0 (compatible; MSIE 6.0; Windows NT 5.1; Mozilla&#x2F;4.0 \\</span><br><span class="line">                    (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; .NET CLR 2.0.507&#39;</span><br><span class="line">            opener.addheaders &#x3D; \[(&#39;User-agent&#39;, user\_agent)\]</span><br><span class="line">            urllib2.install\_opener(opener)</span><br><span class="line">            logindata &#x3D; urllib.urlencode(&#123;</span><br><span class="line">                &#39;cookietime&#39;:    2592000,</span><br><span class="line">               # &#39;formhash&#39;: formhash,</span><br><span class="line">                &#39;loginfield&#39;:&#39;username&#39;,</span><br><span class="line">                &#39;username&#39;:    self.username,</span><br><span class="line">                &#39;password&#39;:    self.password,</span><br><span class="line">                &#39;quickforward&#39;:    &#39;yes&#39;,</span><br><span class="line">                &#39;fastloginfield&#39;:&#39;username&#39;,</span><br><span class="line">                &#39;handlekey&#39;:&#39;ls&#39;,</span><br><span class="line">                &#39;referer&#39;: self.args\[&#39;referer&#39;\]</span><br><span class="line">                &#125;)</span><br><span class="line"></span><br><span class="line">            request &#x3D; urllib2.Request(self.args\[&#39;loginsubmiturl&#39;\],logindata)</span><br><span class="line">            response &#x3D; urllib2.urlopen(request)</span><br><span class="line">            self.islogin &#x3D; True</span><br><span class="line">            print &#39;login success...&#39;</span><br><span class="line">        except Exception,e:</span><br><span class="line">                print &#39;loggin error: %s&#39; % e</span><br><span class="line"></span><br><span class="line">    def PostReply(self, fid, tid, topicUrl,content):</span><br><span class="line">        try:</span><br><span class="line">            if self.islogin:</span><br><span class="line">                temp&#x3D;self.args\[&#39;replysubmiturl&#39;\]</span><br><span class="line">                replysubmiturl &#x3D; temp %(fid,tid)</span><br><span class="line">                response &#x3D; urllib2.urlopen(topicUrl)</span><br><span class="line">                content11 &#x3D; response.read()</span><br><span class="line">               # print content11</span><br><span class="line">                # update url</span><br><span class="line">                url&#x3D;self.getNewUrlFromJs(content11);</span><br><span class="line">                newTopicUrl&#x3D; self.args\[&#39;redirectBaseUrl&#39;\]+url</span><br><span class="line">                response &#x3D; urllib2.urlopen(newTopicUrl)</span><br><span class="line">                content11 &#x3D; response.read()</span><br><span class="line">                formhashs &#x3D; re.search(self.regex\[&#39;replyreg&#39;\], content11)</span><br><span class="line">                formhash&#x3D; formhashs.group(1)</span><br><span class="line">                print formhash</span><br><span class="line">                replydata &#x3D; urllib.urlencode(&#123;</span><br><span class="line">                    &#39;formhash&#39;: formhash,</span><br><span class="line">                    &#39;message&#39;: content,</span><br><span class="line">                    &#39;subject&#39;: &#39;&#39;,</span><br><span class="line">                    &#39;usesig&#39;:&#39;1&#39;</span><br><span class="line">                &#125;)</span><br><span class="line">                request &#x3D; urllib2.Request(replysubmiturl,replydata)</span><br><span class="line">                response &#x3D; urllib2.urlopen(request)</span><br><span class="line">                print &#39;reply success for \[%s\]&#39; % topicUrl</span><br><span class="line">            else:</span><br><span class="line">                print &#39;user not login&#39;</span><br><span class="line">        except Exception, e:</span><br><span class="line">                print &#39;reply error: %s&#39; % e</span><br><span class="line"></span><br><span class="line">    def GetSubForms(self):</span><br><span class="line">        if self.islogin:</span><br><span class="line">            fidurl &#x3D; self.args\[&#39;fidurl&#39;\]</span><br><span class="line">            response &#x3D; urllib2.urlopen(fidurl)</span><br><span class="line">            content &#x3D; response.read()</span><br><span class="line">            soup &#x3D; BeautifulSoup(content,&quot;html.parser&quot;)</span><br><span class="line">            h1userSoupList&#x3D;soup.findAll(name&#x3D;&quot;a&quot;, attrs&#x3D;&#123;&quot;href&quot;:re.compile(r&quot;forum.php\\?mod&#x3D;forumdisplay&amp;fid&#x3D;\\d+&quot;)&#125;)</span><br><span class="line">            subformDicts&#x3D;&#123;&#125;</span><br><span class="line">            for subform in h1userSoupList:</span><br><span class="line">                if subform.get\_text() in self.subform:</span><br><span class="line">                   # subforms.append(self.args\[&#39;baseUrl&#39;\]+subform\[&quot;href&quot;\])</span><br><span class="line">                    url&#x3D;self.args\[&#39;baseUrl&#39;\]+subform\[&quot;href&quot;\]</span><br><span class="line">                    result&#x3D;urlparse.urlparse(url)</span><br><span class="line">                    params&#x3D;urlparse.parse\_qs(result.query,True)</span><br><span class="line">                    tag&#x3D; params\[&#39;fid&#39;\]\[0\]</span><br><span class="line">                    subformDicts\[tag\]&#x3D;url</span><br><span class="line">            return subformDicts</span><br><span class="line">        else:</span><br><span class="line">            print &#39;Error Please Login...&#39;</span><br><span class="line"></span><br><span class="line">    def getNewUrlFromJs(self,js):</span><br><span class="line">       js&#x3D;js\[31:-9\]</span><br><span class="line">       for st in \[&#39;window&#39;,&#39;location&#39;,&quot;&#39;assign&#39;&quot;,&quot;&#39;href&#39;&quot;,&quot;&#39;replace&#39;&quot;\]:</span><br><span class="line">            equal&#x3D;re.findall(&#39;\[\_A-Za-z0-9 &#x3D;\]+%s;&#39;%st,js)</span><br><span class="line">            if equal&#x3D;&#x3D;\[\]:</span><br><span class="line">                continue</span><br><span class="line">            else:</span><br><span class="line">               equal&#x3D;equal\[0\]</span><br><span class="line">               var&#x3D;equal.split(&#39;&#x3D;&#39;)\[0\].strip()</span><br><span class="line">               js&#x3D;js.replace(equal,&#39;&#39;)</span><br><span class="line">               js&#x3D;js.replace(var,st)</span><br><span class="line">               js&#x3D;js.replace(&quot;\[&#39;%s&#39;\]&quot;%st.strip(&quot;&#39;&quot;),&#39;.%s&#39;%st.strip(&quot;&#39;&quot;))</span><br><span class="line">       if re.findall(&#39;window\\.href&#x3D;.+&#39;,js)!&#x3D;\[\]:</span><br><span class="line">           js&#x3D;js.replace(re.findall(&#39;window\\.href&#x3D;.+&#39;,js)\[0\],&#39;&#39;)</span><br><span class="line">       js&#x3D;js.replace(&#39;location.href&#x3D;&#39;,&#39;&#39;).replace(&#39;location.replace&#39;,&#39;&#39;).replace(&#39;location.assign&#39;,&#39;&#39;)</span><br><span class="line">       ctxt2 &#x3D; PyV8.JSContext()</span><br><span class="line">       ctxt2.enter()</span><br><span class="line">       return ctxt2.eval(js)</span><br><span class="line"></span><br><span class="line">    def haveAGoodLuck(self):</span><br><span class="line">        luckurl&#x3D;&#39;http:&#x2F;&#x2F;bbs.iop365.com&#x2F;iop&#x2F;&#x2F;plugin.php?id&#x3D;yinxingfei\_zzza:yinxingfei\_zzza\_hall&amp;yjjs&#x3D;yes&#39;</span><br><span class="line">        response &#x3D; urllib2.urlopen(luckurl)</span><br><span class="line">        content &#x3D; response.read()</span><br><span class="line">        formhashs &#x3D; re.search(self.regex\[&#39;replyreg&#39;\], content)</span><br><span class="line">        formhash&#x3D; formhashs.group(1)</span><br><span class="line">        soup &#x3D; BeautifulSoup(content,&quot;html.parser&quot;)</span><br><span class="line">        submitUrl2&#x3D;&#39;http:&#x2F;&#x2F;bbs.iop365.com&#x2F;iop&#x2F;&#x2F;plugin.php?id&#x3D;yinxingfei\_zzza:yinxingfei\_zzza\_post&#39;</span><br><span class="line">        replydata &#x3D; urllib.urlencode(&#123;</span><br><span class="line">                    &#39;formhash&#39;: formhash</span><br><span class="line">                &#125;)</span><br><span class="line">        request &#x3D; urllib2.Request(submitUrl2,replydata)</span><br><span class="line">        response &#x3D; urllib2.urlopen(request)</span><br><span class="line"> </span><br><span class="line">    def visitUser(self):</span><br><span class="line">        baseUrl&#x3D;&#39;http:&#x2F;&#x2F;bbs.iop365.com&#x2F;iop&#x2F;?%s&#39;</span><br><span class="line">        for i in range(1,10):</span><br><span class="line">            randNum&#x3D;random.randint(1, 200)</span><br><span class="line">            visitUrl&#x3D;baseUrl %(randNum)</span><br><span class="line">            response &#x3D; urllib2.urlopen(visitUrl)</span><br><span class="line">            content &#x3D; response.read()</span><br><span class="line">            print visitUrl</span><br><span class="line">    def InitDB(self):</span><br><span class="line">        self.conn &#x3D; sqlite3.connect(&#39;data.db&#39;)</span><br><span class="line">        self.cur &#x3D; self.conn.cursor()</span><br><span class="line">        sql &#x3D; &#39;&#39;&#39;create table if not exists post (</span><br><span class="line">            fid text,</span><br><span class="line">            tid text,</span><br><span class="line">            replied integer)&#39;&#39;&#39;</span><br><span class="line">        self.cur.execute(sql)</span><br><span class="line">        self.conn.commit()</span><br><span class="line"></span><br><span class="line">    def getTopicList(self,sunFormUrl):</span><br><span class="line">         topicDis&#x3D;&#123;&#125;</span><br><span class="line">         if self.islogin:</span><br><span class="line">            fidurl &#x3D; sunFormUrl</span><br><span class="line">            response &#x3D; urllib2.urlopen(fidurl)</span><br><span class="line">            content &#x3D; response.read()</span><br><span class="line">            soup &#x3D; BeautifulSoup(content,&quot;html.parser&quot;)</span><br><span class="line">            h1userSoupList&#x3D;soup.findAll(name&#x3D;&quot;a&quot;, attrs&#x3D;&#123;&quot;href&quot;: re.compile(r&quot;forum.php\\?mod&#x3D;viewthread\\&amp;&quot;),&quot;onclick&quot;:&quot;atarget(this)&quot;&#125;)</span><br><span class="line">            for topic in h1userSoupList:</span><br><span class="line">                 #topics.append(self.args\[&#39;baseUrl&#39;\]+topic\[&quot;href&quot;\])</span><br><span class="line">                 url&#x3D;self.args\[&#39;baseUrl&#39;\]+topic\[&quot;href&quot;\]</span><br><span class="line">                 result&#x3D;urlparse.urlparse(url)</span><br><span class="line">                 params&#x3D;urlparse.parse\_qs(result.query,True)</span><br><span class="line">                 topicDis\[params\[&#39;tid&#39;\]\[0\]\]&#x3D;url</span><br><span class="line">            return topicDis</span><br><span class="line">         else:</span><br><span class="line">             print &#39;user doest not login&#39;</span><br><span class="line"></span><br><span class="line">if \_\_name\_\_ &#x3D;&#x3D; &#39;\_\_main\_\_&#39;:</span><br><span class="line">    #username &#x3D; raw\_input(&#39;username:&#39;).strip()</span><br><span class="line">    #password &#x3D; getpass.getpass(&#39;password:&#39;).strip()</span><br><span class="line">    args &#x3D; &#123;</span><br><span class="line">            &#39;loginurl&#39;: &#39;http:&#x2F;&#x2F;bbs.iop365.com&#x2F;forum.php&#39;,</span><br><span class="line">            &#39;loginsubmiturl&#39;: &#39;http:&#x2F;&#x2F;bbs.iop365.com&#x2F;iop&#x2F;member.php?mod&#x3D;logging&amp;action&#x3D;login&amp;loginsubmit&#x3D;yes&amp;infloat&#x3D;yes&amp;lssubmit&#x3D;yes&amp;inajax&#x3D;1&#39;,</span><br><span class="line">            &#39;fidurl&#39;: &#39;http:&#x2F;&#x2F;bbs.iop365.com&#x2F;iop&#x2F;forum.php&#39;,</span><br><span class="line">            &#39;tidurl&#39;: &#39;http:&#x2F;&#x2F;bbs.iop365.com&#x2F;thread-%s-1-1.html&#39;,</span><br><span class="line">            &#39;replysubmiturl&#39;: &#39;http:&#x2F;&#x2F;bbs.iop365.com&#x2F;iop&#x2F;&#x2F;forum.php?mod&#x3D;post&amp;action&#x3D;reply&amp;fid&#x3D;%s&amp;tid&#x3D;%s&amp;extra&#x3D;&amp;replysubmit&#x3D;yes&amp;infloat&#x3D;yes&amp;handlekey&#x3D;fastpost&amp;inajax&#x3D;1&#39;,</span><br><span class="line">            &#39;referer&#39;:&#39;http:&#x2F;&#x2F;bbs.iop365.com&#x2F;forum.php&#39; ,</span><br><span class="line">            &#39;baseUrl&#39;:&#39;http:&#x2F;&#x2F;bbs.iop365.com&#x2F;iop&#x2F;&#39;,</span><br><span class="line">             &#39;redirectBaseUrl&#39;: &#39;http:&#x2F;&#x2F;bbs.iop365.com&#x2F;&#39;&#125;</span><br><span class="line">    userInfo&#x3D;&#123;&#39;wangdk&#39;:&#39;\*\*\*\*&#39;&#125;</span><br><span class="line">    for (username,password) in userInfo.items():</span><br><span class="line">        dz &#x3D; Discuz(username, password,args)</span><br><span class="line">        subforms &#x3D; dz.GetSubForms()</span><br><span class="line">        dz.visitUser()</span><br><span class="line">        topicNum&#x3D;0</span><br><span class="line">        allTopics&#x3D;&#123;&#125;</span><br><span class="line">        for fid in subforms:</span><br><span class="line">          topics&#x3D;dz.getTopicList(subforms\[fid\])</span><br><span class="line">          for tid in topics:</span><br><span class="line">               topicNum&#x3D;topicNum+1</span><br><span class="line">               allTopics\[topicNum\]&#x3D;&#123;&#39;fid&#39;:fid,&#39;tid&#39;:tid,&#39;topicUrl&#39;:topics\[tid\]&#125;</span><br><span class="line">        randNum&#x3D;random.randint(1, topicNum)</span><br><span class="line">        print  &#39;good luck time&#x3D;%s&#39;,time.strftime( &quot;%Y-%m-%d %H:%M:%S&quot;, time.localtime() )</span><br><span class="line">        dz.PostReply(allTopics\[randNum\]\[&#39;fid&#39;\],allTopics\[randNum\]\[&#39;tid&#39;\],allTopics\[randNum\]\[&#39;topicUrl&#39;\],&#39;guanshui,haha&#39;)</span><br><span class="line">        print &#39;topicUrl %s&#39;,allTopics\[randNum\]\[&#39;topicUrl&#39;\]</span><br><span class="line">        dz.haveAGoodLuck()</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-                
-
-                <hr>
-                <!-- Pager -->
-                <ul class="pager">
-                    
-                        <li class="previous">
-                            <a href="/2020/09/21/DevOps-理解整理/" data-toggle="tooltip" data-placement="top" title="DevOps 理解整理">&larr; Previous post</a>
-                        </li>
-                    
-                    
-                        <li class="next">
-                            <a href="/2020/09/21/Docker以网络插件方式实现Pipework/" data-toggle="tooltip" data-placement="top" title="Docker以网络插件方式实现Pipework">Next post &rarr;</a>
-                        </li>
-                    
-                </ul>
-
-                <br>
-
-                <!--打赏-->
-                
-                <!--打赏-->
-
-                <br>
-                <!--分享-->
-                
-                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
-                    <!--  css & js -->
-                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
-                
-                <!--分享-->
-                <br>                       
-                
-                <!-- require APlayer -->
-                
-
-                <!-- disqus comment start -->
-                
-                <!-- disqus comment end -->
-
-                
-				
-            </div>
-
-            <!-- Tabe of Content -->
-            <!-- Table of Contents -->
-
-                
-            <!-- Sidebar Container -->
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                sidebar-container">
-
-                <!-- Featured Tags -->
-                
-                <section>
-                    <!-- no hr -->
-                    <h5><a href="/tags/">Tags</a></h5>
-                    <div class="tags">
-                       
-                    </div>
-                </section>
-                
-
-                <!-- Friends Blog -->
-                
-                <hr>
-                <h5>FRIENDS</h5>
-                <ul class="list-inline">
-
-                    
-                        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
-                    
-                </ul>
-                
-            </div>
-        </div>
     </div>
-</article>
 
+    
+    
+    
 
+    <footer class="post-footer">
 
+        
 
-
-
-<!-- async load function -->
-<script>
-    function async(u, c) {
-      var d = document, t = 'script',
-          o = d.createElement(t),
-          s = d.getElementsByTagName(t)[0];
-      o.src = u;
-      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-      s.parentNode.insertBefore(o, s);
-    }
-</script>
-<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
-<script>
-    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
-        anchors.options = {
-          visible: 'hover',
-          placement: 'left',
-          icon: 'ℬ'
-        };
-        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
-    })
-</script>
-<style>
-    /* place left on bigger screen */
-    @media all and (min-width: 800px) {
-        .anchorjs-link{
-            position: absolute;
-            left: -0.75em;
-            font-size: 1.1em;
-            margin-top : -0.1em;
-        }
-    }
-</style>
-
-
-
-    <!-- Footer -->
-    <!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <ul class="list-inline text-center">
-                
-                
-                
-
-                
-
-                
-
-                
-                    <li>
-                        <a target="_blank"  href="https://github.com/davidstack">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
-
-                
-
-                </ul>
-                <p class="copyright text-muted">
-                    Copyright &copy; 站着工程师 2020 
-                    <br>
-                    鲁ICP备16023683号-1
-                    <br>
-                    Powered by <a target="_blank" rel="noopener" href="http://www.hexo.io">Hexo</a> 
-                    <span style="display: inline-block; margin: 0 5px;">
-                        <i class="fa fa-heart"></i>
-                    </span> 
-                    Theme by <a target="_blank" rel="noopener" href="https://github.com/kinggozhang/hexo-theme-ace">ACE</a> 
-					
-					
-					<i class="fa fa-eye" id="leancounter"></i>
-					
-					  <div class="copyright text-muted">
-                        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-                        本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
-                        本站访客数<span id="busuanzi_value_site_uv"></span>人
-                      </div>
-                </p>
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/09/21/Docker%E4%BB%A5%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0Pipework/" rel="prev" title="Docker以网络插件方式实现Pipework">
+                  <i class="fa fa-chevron-left"></i> Docker以网络插件方式实现Pipework
+                </a>
             </div>
-        </div>
+            <div class="post-nav-item">
+                <a href="/2020/09/21/DevOps-%E7%90%86%E8%A7%A3%E6%95%B4%E7%90%86/" rel="next" title="DevOps 理解整理">
+                  DevOps 理解整理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">205k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:06</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
     </div>
-</footer>
+  </footer>
 
-<!-- jQuery -->
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
-   
-<script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
-
-
-
-
-<!-- Bootstrap Core JavaScript -->
-
-   
-<script src="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-
-
-<!-- Custom Theme JavaScript -->
-
-<script src="/js/hux-blog.min.js"></script>
-
-
-
-	
-<script src="/js/particles.js"></script>
-
-	
-<script src="/js/particles_config.js"></script>
+  
 
 
 
 
-<!-- async load function -->
-<script>
-    function async(u, c) {
-      var d = document, t = 'script',
-          o = d.createElement(t),
-          s = d.getElementsByTagName(t)[0];
-      o.src = u;
-      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-      s.parentNode.insertBefore(o, s);
-    }
-</script>
-
-<!-- 
-     Because of the native support for backtick-style fenced code blocks 
-     right within the Markdown is landed in Github Pages, 
-     From V1.6, There is no need for Highlight.js, 
-     so Huxblog drops it officially.
-
-     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
-     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
--->
-<!--
-    <script>
-        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
-            hljs.initHighlightingOnLoad();
-        })
-    </script>
-    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
--->
 
 
-<!-- jquery.tagcloud.js -->
-<script>
-    // only load tagcloud.js in tag.html
-    if($('#tag_cloud').length !== 0){
-        async("http://damonyi.cc/2020/09/21/Discuz-%E8%AE%BA%E5%9D%9B%E8%AF%84%E8%AE%BA%E5%9B%9E%E5%A4%8D%E4%BB%A3%E7%A0%81/index.html/js/jquery.tagcloud.js",function(){
-            $.fn.tagcloud.defaults = {
-                //size: {start: 1, end: 1, unit: 'em'},
-                color: {start: '#bbbbee', end: '#0085a1'},
-            };
-            $('#tag_cloud a').tagcloud();
-        })
-    }
-</script>
 
-<!--fastClick.js -->
-<script>
-    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
-        var $nav = document.querySelector("nav");
-        if($nav) FastClick.attach($nav);
-    })
-</script>
-
-
-<!-- Google Analytics -->
+  
 
 
 
 
-<!-- Baidu Tongji -->
 
-<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-</script>
-<span id="busuanzi_container_site_pv">
-    本站总访问量<span id="busuanzi_value_site_pv"></span>次
-</span>
-
-
-
-
-	<a id="rocket" href="#top" class=""></a>
-	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
-    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
-<!-- Image to hack wechat -->
-<img src="http://damonyi.cc/img/icon_wechat.png" width="0" height="0" />
-<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
-
 </html>
