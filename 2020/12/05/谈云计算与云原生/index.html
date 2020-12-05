@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+    <title>
+        
+          谈云计算与云原生 - null
+        
+    </title>
+
+    <link rel="canonical" href="http://damonyi.cc/2020/12/05/谈云计算与云原生/">
+
+    <!-- Bootstrap Core CSS -->
+
+   
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
+
+
+    
+
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
+
+
+    
+<link rel="stylesheet" href="/css/donate.css">
+
+	
+<link rel="stylesheet" href="/css/w3.css">
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+    }
+   .post-heading{
+    padding:20px;
+    }
+  .person {
+    border: 10px solid transparent;
+    margin-bottom: 25px;
+    width: 80%;
+    height: 80%;
+    opacity: 0.7;
+  }
+  .person:hover {
+    border-color: #f1f1f1;
+  }
+
+</style>
+
+<header id="headerid" class="w3-indigo intro-header" style="position:relative;">
+    <!-- Signature -->
+	
+        <div class="container">
+            <div class=" row" >
+			
+			<canvas id="particles-js-canvas" style="position:absolute;z-index:1;top:0px;left:0px;" width="100%" height="50%"></canvas>
+			
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="z-index:2;">
+                
+                    <div class="post-heading" style="padding:40px">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#云计算  云原生" title="云计算  云原生">云计算  云原生</a>
+                            
+                        </div>
+                        <h1>谈云计算与云原生</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 站着工程师 on
+                            2020-12-05
+                        </span>
+                        <span  class="meta" id="busuanzi_container_page_pv">
+                                本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+                         </span>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+  
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">云里雾里</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a  href="/">Homepage</a>
+                    </li>
+		    
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#技术">技术</a>
+                           
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+           
+                            <a  href="#教育">教育</a>
+                           
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="云计算中的IAAS-PAAS-SAAS"><a href="#云计算中的IAAS-PAAS-SAAS" class="headerlink" title="云计算中的IAAS/PAAS/SAAS"></a>云计算中的IAAS/PAAS/SAAS</h2><p>云计算的概念提出者是IBM，但是IBM并没有很好的落地的产品，对于在线图书商店AWS，却有可以落地的场景，买了大量服务器，但是在图书销售淡季，造成了资源的浪费，因此逐渐有了目前云计算的领导者AWS，对于云计算相关工作者来说，我们<br>对AWS最深的印象时公有云NO.1，尝尝会忽略人家盈利最多的在线商城。</p>
+<p>云计算刚提出的时候是提出了三个层次，即IAAS、PAAS、SAAS，这三个层次我们可以认为是云计算能力不同范围的概括，如下图所示：</p>
+<p><img src="/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud1.png" alt="avatar"></p>
+<p>但实际上这代表了云计算发展的三个阶段，更直白的说就是PAAS的发展需要在IAAS发展成熟的基础上，SAAS的发展需要在PAAS发展成熟的基础上，不可能并行发展，也不可能跳跃发展。当然对于细分领域的PAAS平台肯定就没有这个限制了，我这里主要还是指的通用的云平台，以公有云厂商的能力为准。</p>
+<ol>
+<li><p>IAAS的发展阶段，主要包括这样的内容</p>
+<p> 1.1.各大厂商争相模仿AWS、自研底层虚拟化平台，比提供兼容AWS的接口，此时都以AWS作为需求开发的标准</p>
+<p> 1.2.底层虚拟化软件除了商业版的Vmware，出现了越来越多的开源的虚拟化软件，例如XEN、KVM、libvirt等，定位与私有云平台厂商的产品开始基于这些虚拟化软件做二次开发</p>
+<p> 1.3.出现了越来越多的不同厂家的云管理平台，以及开源的云平台，OpenStack/CloudStack/Zstack等，随后各个厂家开始基于OpenStack作为标准进行自家云平台的二次开发或深度定制，此时越来越多的云厂家基于利旧（充分发挥老旧服务器的作用）、平台不绑定、资源异构（计算资源异构、存储资源异构、网络资源异构）的标准进行产品定位和宣传</p>
+<p> 1.4IAAS尝试提出为了解决资源利用率与降低成本，自动化运维进行市场宣传，传统厂商开始逐渐接受云的能力，并逐渐将自己业务迁移到公有云平台或者私有云平台</p>
+<p> 1.6.此时，市场对PAAS的认可度不高，我觉得市场度认可不够的原因有两个，一个是技术成熟度，有基于虚拟机做的PAAS，但是不是很好用，另一方面，云厂商对这方面的市场宣传不多，大家还都是主要发力于底层IAAS建设</p>
+</li>
+<li><p>PAAS发展的阶段，包含这样的内容</p>
+<p> 2.1 以虚拟机为代表的PAAS平台，自动编排虚拟机+应用+服务，这个其实我们在OpenStack的发展过程中就能看到，从只包含nova、neutron、cinder组件，到现在各种基于虚拟机的编排heat、sahara等，开始基于虚拟机的编排，来做服务的自动化创建，但是这种PAAS 很笨重，侧重于服务的自动化创建，距离应用的自动化管理有不少差距</p>
+<p> 2.2以容器为代表的PAAS平台，这里的开源项目有Docker、CloudFoundry+warden、Kubernetes，我做的第一个PAAS项目其实是基于CLoudFoundry+warden，这是有Privotal公司开源的业界第一个容器的PAAS平台，在当时来说还是非常先进的，但是受限于CloudFoundry中并没有像docker中镜像的概念来持久化打包应用，他里面是有一个叫buildpack的东西，需要对不同的开发语言版本、运行环境制作不同的buildpack，还是很麻烦的，跨平台迁移也比较费劲。现在最火的就是Kubernetes+Docker和围绕他们的技术栈</p>
+<p> 2.3.PAAS的定位也越来越清晰，以应用为中心，为应用的自动化运维提供支撑，例如应用需要的服务（数据库、缓存、消息队列）、运维管理（监控告警、弹性伸缩）等</p>
+<p> 2.4.平台+生态，更多的服务能够集成到生态，传统厂商也希望基于云平台厂商的能力，来拿到更多的客户，逐渐兴起了平台+生态的概念，希望大的平台厂商能够给传统厂商带来客户</p>
+<p> 2.5 随着iaas的成熟，这些年在不同的行业出现了不同的paas平台，不同的细分行业的技术平台积累，也都开始叫做XX PAAS云平台</p>
+</li>
+<li><p>SAAS的发展阶段，SAAS更多是属于应用的范围，需要应用来支持多租户，从而可以实现一个产品来支持多个客户，通常多租户有两种方案，一种是多实例部署，即不同的客户，我给你部署一个实例，还有一种方案是基于应用改造，即应用通过分库分表，在自己的业务层进行多租户的区分。这里云平台厂商目前提供的能力有限</p>
+</li>
+</ol>
+<p><img src="/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud2.png" alt="avatar"></p>
+<h2 id="云原生"><a href="#云原生" class="headerlink" title="云原生"></a>云原生</h2><p>好多概念我们可以发现都是来自于互联网，我们先说一下传统应用与互联网应用的区别，</p>
+<ol>
+<li><p>对于传统应用通常具有以下特征,需求比较固定，是个项目，完成以后就是运维，用户访问量可以预测，较为固定，用户访问的并发量比较低，非在线业务，允许一定时间的业务停顿，此时的开发方式通常是瀑布式，当软件开发完成时，可能就交给运维部门了，然后就是会有些打补丁的工作，项目组开发人员也可能解散了。</p>
+</li>
+<li><p>但是对于互联网应用，需求是持续发展的，是一个产品，持续发展，版本特性不断累加和变化，用户访问量难以预测，用户访问的并发量是万级、十万、百万，属于在线业务，业务不能停顿，互联网应用需要24小时保持稳定可靠。对于该类应用的开发人员通常会一直围绕这个产品进行开发，需要一直对这个产品的功能、稳定性进行负责并持续优化。这里对技术就提出了更高的要求，你需要支持敏捷开发、弹性伸缩，强大的监控能力，支持海量并发，灰度发布等等。</p>
+</li>
+</ol>
+<h3 id="传统应用的典型架构"><a href="#传统应用的典型架构" class="headerlink" title="传统应用的典型架构"></a>传统应用的典型架构</h3><p><img src="/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud3.png" alt="avatar"></p>
+<p>上图是一个常见的包含三层应用的架构，通常对于传统应用都会包含多个模块，每个模块都实现了一些功能，模块之间是紧耦合在一起的，通过对象的调用(函数级API的调用)，功能调用紧密的结合在一起。这种高耦合性最典型的表现就是，哪怕开发者改了一行代码，整个应用都要重新编译部署；应用有可能是有状态的，例如通常会在程序内存中保存一些业务数据或者在应用使用的本地存储持久化一些信息，还有例如spring中的有状态bean和无状态bean（有状态bena保存了会话信息）由于这种高耦合性以及有状态，对于提供应用服务的挑战在于，要保证应用服务的持续运行。在生产环境中，一般都是要实施HA的解决方案的，比如App的集群，数据库的HA等等，同时为了保证服务宕机的时候，要能够快速恢复服务。因此，数据库会进行定期的备份。</p>
+<p>我们在开发传统应用时，通常会有这样的场景，在开发环境中可以运行的应用，在生产环境中会出现很多问题，因为基本上开发者是没有精力去维护一个复杂的高可用的和生产环境一样的开发环境。而对于运维人员，他们的任务是什么，不管是物理机还是虚机，都要全力保证物理机和虚机的运行。一旦物理机或虚机发生故障，对服务的影响也是灾难性的，往往需要一个手动恢复服务的过程。在开发人员和运维人员之间有一个gap。开发人员和运维人员不太喜欢进行产品的功能变更，带来的工作量很大。这里总结一下传统应用架构的问题，我觉得可以归为三类：故障运维、应用伸缩、需求变更</p>
+<h3 id="云原生应用的典型架构"><a href="#云原生应用的典型架构" class="headerlink" title="云原生应用的典型架构"></a>云原生应用的典型架构</h3><p><img src="/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud4.png" alt="avatar"></p>
+<p>你可能不太懂云原生，但是我们在做架构设计的时候，可能已经潜意识的去这样做了，因为现在这个DevOps、微服务、容器太火了，不管IT的什么行业，我觉得都应该听过这几个名词。我们看到图中，角色并没有太大变化，仍然是有web，app，和db。这里要说明的一点，传统应用也许是部署在物理服务器或者虚拟化平台上，但是云原生应用一定是部署在云平台上的主要的变化包括：</p>
+<p> 第一，应用被拆分成了几个小的应用，紧耦合变为松耦合；由模块变成线程级的微服务；</p>
+<p> 第二，应用由有状态变为无状态的。大家也许会问，在业务逻辑中总是会有状态产生的，应该怎么办呢？这里重要的是对状态的一个管理，就是把状态保存在有状态服务中去。这些有状态服务包括缓存，比如memcache，数据库，比如mysql，mongodb，文件系统，消息对了等等。这些有状态服务以资源的形式提供给应用。这些资源在应用部署的时候，是以显性的依赖来声明的</p>
+<p>第三，通过container技术，打包/隔离运行环境；在虚机和应用之间增加一层来隔离，在不同执行环境之间提供最大化的可移植性</p>
+<p>对于传统应用，我们可以发现云原生应用的几个特点：微服务、无状态、弹性伸缩、DevOps</p>
+<p>找到一张阿里云给云原生定义的图，如下，可以看出，云原生架构 可以理解为在进行软件架构设计时，就基于云平台的能力去设计，例如DevOps、微服务、容器，能够充分发挥云平态对应用的运维管理能力，即非业务功能交给云平台去处理。</p>
+<p><img src="/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud5.png" alt="avatar"></p>
+<p>云原生定义的几个阶段</p>
+<p><img src="/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud6.png" alt="avatar"></p>
+<h3 id="云原生十二要素"><a href="#云原生十二要素" class="headerlink" title="云原生十二要素"></a>云原生十二要素</h3><p>这里有一个云原生的十二要素，这个其实是最开始对云原生定义时，使用，虽然云原生的定义已经变化多次，但是这个十二要素可以作为我们进行软件设计的参考</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">1. 基准代码：一份基准代码，多份部署。基准代码和应用之间总是保持一一对应的关系。所有部署的基准代码相同，但每份部署可以使用其不同的版本。</span><br><span class="line">2. 依赖：显式声明依赖关系。应用程序一定通过依赖清单 ，确切地声明所有依赖项。</span><br><span class="line">3. 配置：在环境中存储配置。将应用的配置存储于环境变量中。环境变量可以非常方便地在不同的部署间做修改，却不动一行代码。</span><br><span class="line">4. 后端服务：把后端服务当作附加资源。应用不会区别对待本地或第三方服务。对应用程序而言，两种都是附加资源。</span><br><span class="line">5. 构建，发布，运行：严格区分构建，发布，运行这三个步骤。</span><br><span class="line">6. 进程：以一个或多个无状态进程运行应用。应用的进程必须无状态且无共享。</span><br><span class="line">7. 端口绑定：通过端口绑定提供服务。应用完全自我加载而不依赖于任何网络服务器就可以创建一个面向网络的服务。</span><br><span class="line">8. 并发：通过进程模型进行扩展。开发人员可以运用这个模型去设计应用架构，将不同的工作分配给不同的进程类型。</span><br><span class="line">9. 易处理：快速启动和优雅终止可最大化健壮性。应用的进程是可支配的，意思是说它们可以瞬间开启或停止。</span><br><span class="line">10. 开发环境与线上环境等价：尽可能保持开发、预发布、线上环境相同。应用想要做到持续部署就必须缩小本地与线上差异。</span><br><span class="line">11. 日志：把日志当作事件流。应用本身考虑存储自己的输出流。不应该试图去写或者管理日志文件。</span><br><span class="line">12. 管理进程：后台管理任务当作一次性进程运行。一次性管理进程应该和正常的常驻进程使用同样的环境。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/12/01/Linux的tempfs/" data-toggle="tooltip" data-placement="top" title="Linux的tempfs">Next post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+				
+            </div>
+
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">Tags</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#云计算  云原生" title="云计算  云原生">云计算  云原生</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.sumoon.com" target="_blank">ACE theme</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/davidstack">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 站着工程师 2020 
+                    <br>
+                    鲁ICP备16023683号-1
+                    <br>
+                    Powered by <a target="_blank" rel="noopener" href="http://www.hexo.io">Hexo</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Theme by <a target="_blank" rel="noopener" href="https://github.com/kinggozhang/hexo-theme-ace">ACE</a> 
+					
+					
+					<i class="fa fa-eye" id="leancounter"></i>
+					
+					  <div class="copyright text-muted">
+                        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                        本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+                        本站访客数<span id="busuanzi_value_site_uv"></span>人
+                      </div>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+   
+<script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+
+
+
+
+<!-- Bootstrap Core JavaScript -->
+
+   
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+	
+<script src="/js/particles.js"></script>
+
+	
+<script src="/js/particles_config.js"></script>
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/index.html/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://damonyi.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
