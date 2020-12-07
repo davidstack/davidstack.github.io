@@ -1,28 +1,84 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.1.1">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
 
 
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
 
-<script class="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"damonyi.cc","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
-  </script>
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
 <meta name="description" content="Restore iSCSI configuration for Cinder &#x2F; NovaIn few cases (i.e. cinder-volume crash), some cinder volumes cannot be accessed by a VM (I&#x2F;O errors), but are still displayed as associated when using cind">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Restore iSCSI configuration for Cinder&#x2F;Nova">
@@ -35,325 +91,548 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://damonyi.cc/2020/09/15/Restore-iSCSI-configuration-for-Cinder-Nova/">
 
-
-<script class="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
   };
 </script>
-<title>Restore iSCSI configuration for Cinder/Nova | 云里雾里</title>
+
+
+
+  <link rel="canonical" href="http://damonyi.cc/2020/09/15/Restore-iSCSI-configuration-for-Cinder-Nova/"/>
+
+
+
+
+
+  <title>Restore iSCSI configuration for Cinder/Nova | 云里雾里</title>
   
 
 
 
-  <noscript>
-  <style>
-  body { margin-top: 2rem; }
 
-  .use-motion .menu-item,
-  .use-motion .sidebar,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header {
-    visibility: visible;
-  }
 
-  .use-motion .header,
-  .use-motion .site-brand-container .toggle,
-  .use-motion .footer { opacity: initial; }
 
-  .use-motion .site-title,
-  .use-motion .site-subtitle,
-  .use-motion .custom-logo-image {
-    opacity: initial;
-    top: initial;
-  }
 
-  .use-motion .logo-line {
-    transform: scaleX(1);
-  }
 
-  .search-pop-overlay, .sidebar-nav { display: none; }
-  .sidebar-panel { display: block; }
-  </style>
-</noscript>
+<meta name="generator" content="Hexo 4.2.1"></head>
 
-</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
+  
+  
+    
+  
 
-  <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">云里雾里</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <h1 class="site-title">云里雾里</h1>
-      <i class="logo-line"></i>
-    </a>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-    </div>
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
   </div>
 </div>
 
-
-
-
-
-
-
-</div>
-        
+<nav class="site-nav">
   
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
 
-  <aside class="sidebar">
-
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
         </li>
-        <li class="sidebar-nav-overview">
-          站点概览
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
         </li>
-      </ul>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
 
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Restore-iSCSI-configuration-for-Cinder-Nova"><span class="nav-number">1.</span> <span class="nav-text">Restore iSCSI configuration for Cinder &#x2F; Nova</span></a></li></ol></div>
-        </section>
-        <!--/noindex-->
+      
+    </ul>
+  
 
-        <section class="site-overview-wrap sidebar-panel">
-          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name"></p>
-  <div class="site-description" itemprop="description">雾里云里</div>
-</div>
-<div class="site-state-wrap site-overview-item animated">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives">
-          <span class="site-state-item-count">50</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">15</span>
-        <span class="site-state-item-name">标签</span>
-      </div>
-  </nav>
-</div>
+  
+</nav>
 
 
 
-        </section>
-      </div>
-    </div>
-  </aside>
-  <div class="sidebar-dimmer"></div>
-
-
+ </div>
     </header>
 
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
     
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
-
-    <div class="main-inner post posts-expand">
-
 
   
 
-
-<div class="post-block">
   
   
+  
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://damonyi.cc/2020/09/15/Restore-iSCSI-configuration-for-Cinder-Nova/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="">
-      <meta itemprop="description" content="雾里云里">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="云里雾里">
     </span>
+
+    
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Restore iSCSI configuration for Cinder/Nova
-        </h1>
 
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
+        
+        
+          <h2 class="post-title" itemprop="name headline">Restore iSCSI configuration for Cinder/Nova</h2>
+        
 
-      <time title="创建时间：2020-09-15 20:57:21 / 修改时间：21:07:15" itemprop="dateCreated datePublished" datetime="2020-09-15T20:57:21+08:00">2020-09-15</time>
-    </span>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-15T20:57:21+08:00">
+                2020-09-15
+              </time>
+            
 
-  
-      </div>
-      <div class="post-meta">
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>5.7k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>5 分钟</span>
-    </span>
-</div>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  
+                </span>
+              
+            </div>
+          
+
+          
 
         </div>
       </header>
+    
 
     
     
     
     <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
         <h3 id="Restore-iSCSI-configuration-for-Cinder-Nova"><a href="#Restore-iSCSI-configuration-for-Cinder-Nova" class="headerlink" title="Restore iSCSI configuration for Cinder / Nova"></a>Restore iSCSI configuration for Cinder / Nova</h3><p>In few cases (i.e. cinder-volume crash), some cinder volumes cannot be accessed by a VM (I/O errors), but are still displayed as associated when using cinder or nova CLI. Looking at the hypervisor’s log, you may see:<br>May 11 13:26:45 cloudhyp1 iscsid: conn 0 login rejected: target error (03/01)<br>May 11 13:26:45 cloudhyp1 iscsid: conn 0 login rejected: initiator failed authorization with target<br>May 11 13:26:45 cloudhyp1 iscsid: conn 0 login rejected: initiator failed authorization with target<br>On the cinder-volume host, check the configuration of iSCSI target:  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">\[root@controller?~\]\# targetcli ls  </span><br><span class="line">o- &#x2F; ......................................................................................................................... [...]  </span><br><span class="line">? o- backstores .............................................................................................................. [...]  </span><br><span class="line">? | o- block .................................................................................................. [Storage Objects: 1]  </span><br><span class="line">? | | o- iqn.2010-10.org.openstack:volume-6e95e5b6-83e1-4958-a5e1-ba5afc94559e? \[&#x2F;dev&#x2F;cinder-volumes&#x2F;volume-6e95e5b6-83e1-4958-a5e1-ba5afc94559e (20.0GiB) write-thru activated]  </span><br><span class="line">? | o- fileio ................................................................................................. [Storage Objects: 0]  </span><br><span class="line">? | o- pscsi .................................................................................................. [Storage Objects: 0]  </span><br><span class="line">? | o- ramdisk ................................................................................................ [Storage Objects: 0]  </span><br><span class="line">? o- iscsi ............................................................................................................ [Targets: 7]  </span><br><span class="line">? | o- iqn.2010-10.org.openstack:volume-6e95e5b6-83e1-4958-a5e1-ba5afc94559e ............................................. [TPGs: 1]  </span><br><span class="line">? | | o- tpg1 .......................................................................................... [no-gen-acls, auth per-acl]  </span><br><span class="line">? | |?? o- acls .......................................................................................................... [ACLs: 0]  </span><br><span class="line">? | |?? o- luns .......................................................................................................... [LUNs: 1]  </span><br><span class="line">? | |?? | o- lun0? [block&#x2F;iqn.2010-10.org.openstack:volume-6e95e5b6-83e1-4958-a5e1-ba5afc94559e (&#x2F;dev&#x2F;cinder-volumes&#x2F;volume-6e95e5b6-83e1-4958-a5e1-ba5afc94559e)\]  </span><br><span class="line">? | |?? o- portals .................................................................................................... [Portals: 1]  </span><br><span class="line">? | |???? o- 192.168.1.1:3260 ................................................................................................. [OK]  </span><br><span class="line">? o- loopback ......................................................................................................... [Targets: 0]  </span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">\[root@controller?~\]\# targetcli ls  </span><br><span class="line">o- &#x2F; ......................................................................................................................... [...]  </span><br><span class="line">? o- backstores .............................................................................................................. [...]  </span><br><span class="line">? | o- block .................................................................................................. [Storage Objects: 1]  </span><br><span class="line">? | | o- iqn.2010-10.org.openstack:volume-6e95e5b6-83e1-4958-a5e1-ba5afc94559e? \[&#x2F;dev&#x2F;cinder-volumes&#x2F;volume-6e95e5b6-83e1-4958-a5e1-ba5afc94559e (20.0GiB) write-thru activated]  </span><br><span class="line">? | o- fileio ................................................................................................. [Storage Objects: 0]  </span><br><span class="line">? | o- pscsi .................................................................................................. [Storage Objects: 0]  </span><br><span class="line">? | o- ramdisk ................................................................................................ [Storage Objects: 0]  </span><br><span class="line">? o- iscsi ............................................................................................................ [Targets: 7]  </span><br><span class="line">? | o- iqn.2010-10.org.openstack:volume-6e95e5b6-83e1-4958-a5e1-ba5afc94559e ............................................. [TPGs: 1]  </span><br><span class="line">? | | o- tpg1 .......................................................................................... [no-gen-acls, auth per-acl]  </span><br><span class="line">? | |?? o- acls .......................................................................................................... [ACLs: 0]  </span><br><span class="line">? | |?? o- luns .......................................................................................................... [LUNs: 1]  </span><br><span class="line">? | |?? | o- lun0? [block&#x2F;iqn.2010-10.org.openstack:volume-6e95e5b6-83e1-4958-a5e1-ba5afc94559e (&#x2F;dev&#x2F;cinder-volumes&#x2F;volume-6e95e5b6-83e1-4958-a5e1-ba5afc94559e)\]  </span><br><span class="line">? | |?? o- portals .................................................................................................... [Portals: 1]  </span><br><span class="line">? | |???? o- 192.168.1.1:3260 ................................................................................................. [OK]  </span><br><span class="line">? o- loopback ......................................................................................................... [Targets: 0]</span><br></pre></td></tr></table></figure>
 <p>In that case, the cloudhyp1 cannot connect to the target because no ACL are defined ([ACLs: 0])  </p>
 <p>?You have to setup the ACL manually:  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">[root@controller?~]# mysql -u cinder -p -e &quot;select provider_auth from volumes where id&#x3D;&#39;6e95e5b6-83e1-4958-a5e1-ba5afc94559e&#39;&quot; cinder  </span><br><span class="line">Enter password:?  </span><br><span class="line">+------------------------------------------------+  </span><br><span class="line">| provider_auth????????????????????????????????? |  </span><br><span class="line">+------------------------------------------------+  </span><br><span class="line">| CHAP xjrFIwOQ66ktkxjrFIwO?vr2twXxoDww7wvr2twXx |  </span><br><span class="line">+------------------------------------------------+  </span><br><span class="line">The first entry is the username and the second the password. You can check that you have the same value on the hypervisor (1, 2):  </span><br><span class="line">[root@cloudhyp1 ~]# grep node.session.auth &#x2F;var&#x2F;lib&#x2F;iscsi&#x2F;nodes&#x2F;iqn.2010-10.org.openstack:volume-6e95e5b6-83e1-4958-a5e1-ba5afc94559e&#x2F;192.168.1.1,3260,1&#x2F;default?  </span><br><span class="line">node.session.auth.authmethod &#x3D; CHAP  </span><br><span class="line">node.session.auth.username &#x3D;?xjrFIwOQ66ktkxjrFIwO  </span><br><span class="line">node.session.auth.password &#x3D;?vr2twXxoDww7wvr2twXx  </span><br><span class="line">On the hypervisor, you need also to get the initiator id (3):  </span><br><span class="line">[root@cloudhyp1 ~]# cat &#x2F;etc&#x2F;iscsi&#x2F;initiatorname.iscsi  </span><br><span class="line">InitiatorName&#x3D;iqn.1994-05.com.redhat:1abc12d345e6  </span><br><span class="line">  </span><br><span class="line">To update the ACL, first save the targetcli configuration:  </span><br><span class="line">[root@controller?~]# targetctl save  </span><br><span class="line">[root@controller?~]# cp &#x2F;etc&#x2F;target&#x2F;saveconfig.json &#x2F;etc&#x2F;target&#x2F;saveconfig.old  </span><br><span class="line">  </span><br><span class="line">Replace:  </span><br><span class="line">????????? &quot;node_acls&quot;: []?  </span><br><span class="line">  </span><br><span class="line">By for the right volume (iqn.2010-10.org.openstack:volume-6e95e5b6-83e1-4958-a5e1-ba5afc94559e?in our case) :  </span><br><span class="line">????????? &quot;node_acls&quot;: [  </span><br><span class="line">??????????? &#123;  </span><br><span class="line">????????????? &quot;attributes&quot;: &#123;  </span><br><span class="line">??????????????? &quot;dataout_timeout&quot;: 3,?  </span><br><span class="line">??????????????? &quot;dataout_timeout_retries&quot;: 5,?  </span><br><span class="line">??????????????? &quot;default_erl&quot;: 0,?  </span><br><span class="line">??????????????? &quot;nopin_response_timeout&quot;: 30,?  </span><br><span class="line">??????????????? &quot;nopin_timeout&quot;: 15,?  </span><br><span class="line">??????????????? &quot;random_datain_pdu_offsets&quot;: 0,?  </span><br><span class="line">??????????????? &quot;random_datain_seq_offsets&quot;: 0,?  </span><br><span class="line">??????????????? &quot;random_r2t_offsets&quot;: 0  </span><br><span class="line">????????????? &#125;,?  </span><br><span class="line">????????????? &quot;chap_password&quot;: &quot;vr2twXxoDww7wvr2twXx&quot;,?  </span><br><span class="line">????????????? &quot;chap_userid&quot;: &quot;xjrFIwOQ66ktkxjrFIwO&quot;,?  </span><br><span class="line">????????????? &quot;mapped_luns&quot;: [  </span><br><span class="line">??????????????? &#123;  </span><br><span class="line">????????????????? &quot;index&quot;: 0,?  </span><br><span class="line">????????????????? &quot;tpg_lun&quot;: 0,?  </span><br><span class="line">????????????????? &quot;write_protect&quot;: false  </span><br><span class="line">??????????????? &#125;  </span><br><span class="line">????????????? ],?  </span><br><span class="line">????????????? &quot;node_wwn&quot;: &quot;iqn.1994-05.com.redhat:1abc12d345e6&quot;  </span><br><span class="line">??????????? &#125;?  </span><br><span class="line">????????? ]?  </span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">[root@controller?~]# mysql -u cinder -p -e &quot;select provider_auth from volumes where id&#x3D;&#39;6e95e5b6-83e1-4958-a5e1-ba5afc94559e&#39;&quot; cinder  </span><br><span class="line">Enter password:?  </span><br><span class="line">+------------------------------------------------+  </span><br><span class="line">| provider_auth????????????????????????????????? |  </span><br><span class="line">+------------------------------------------------+  </span><br><span class="line">| CHAP xjrFIwOQ66ktkxjrFIwO?vr2twXxoDww7wvr2twXx |  </span><br><span class="line">+------------------------------------------------+  </span><br><span class="line">The first entry is the username and the second the password. You can check that you have the same value on the hypervisor (1, 2):  </span><br><span class="line">[root@cloudhyp1 ~]# grep node.session.auth &#x2F;var&#x2F;lib&#x2F;iscsi&#x2F;nodes&#x2F;iqn.2010-10.org.openstack:volume-6e95e5b6-83e1-4958-a5e1-ba5afc94559e&#x2F;192.168.1.1,3260,1&#x2F;default?  </span><br><span class="line">node.session.auth.authmethod &#x3D; CHAP  </span><br><span class="line">node.session.auth.username &#x3D;?xjrFIwOQ66ktkxjrFIwO  </span><br><span class="line">node.session.auth.password &#x3D;?vr2twXxoDww7wvr2twXx  </span><br><span class="line">On the hypervisor, you need also to get the initiator id (3):  </span><br><span class="line">[root@cloudhyp1 ~]# cat &#x2F;etc&#x2F;iscsi&#x2F;initiatorname.iscsi  </span><br><span class="line">InitiatorName&#x3D;iqn.1994-05.com.redhat:1abc12d345e6  </span><br><span class="line">  </span><br><span class="line">To update the ACL, first save the targetcli configuration:  </span><br><span class="line">[root@controller?~]# targetctl save  </span><br><span class="line">[root@controller?~]# cp &#x2F;etc&#x2F;target&#x2F;saveconfig.json &#x2F;etc&#x2F;target&#x2F;saveconfig.old  </span><br><span class="line">  </span><br><span class="line">Replace:  </span><br><span class="line">????????? &quot;node_acls&quot;: []?  </span><br><span class="line">  </span><br><span class="line">By for the right volume (iqn.2010-10.org.openstack:volume-6e95e5b6-83e1-4958-a5e1-ba5afc94559e?in our case) :  </span><br><span class="line">????????? &quot;node_acls&quot;: [  </span><br><span class="line">??????????? &#123;  </span><br><span class="line">????????????? &quot;attributes&quot;: &#123;  </span><br><span class="line">??????????????? &quot;dataout_timeout&quot;: 3,?  </span><br><span class="line">??????????????? &quot;dataout_timeout_retries&quot;: 5,?  </span><br><span class="line">??????????????? &quot;default_erl&quot;: 0,?  </span><br><span class="line">??????????????? &quot;nopin_response_timeout&quot;: 30,?  </span><br><span class="line">??????????????? &quot;nopin_timeout&quot;: 15,?  </span><br><span class="line">??????????????? &quot;random_datain_pdu_offsets&quot;: 0,?  </span><br><span class="line">??????????????? &quot;random_datain_seq_offsets&quot;: 0,?  </span><br><span class="line">??????????????? &quot;random_r2t_offsets&quot;: 0  </span><br><span class="line">????????????? &#125;,?  </span><br><span class="line">????????????? &quot;chap_password&quot;: &quot;vr2twXxoDww7wvr2twXx&quot;,?  </span><br><span class="line">????????????? &quot;chap_userid&quot;: &quot;xjrFIwOQ66ktkxjrFIwO&quot;,?  </span><br><span class="line">????????????? &quot;mapped_luns&quot;: [  </span><br><span class="line">??????????????? &#123;  </span><br><span class="line">????????????????? &quot;index&quot;: 0,?  </span><br><span class="line">????????????????? &quot;tpg_lun&quot;: 0,?  </span><br><span class="line">????????????????? &quot;write_protect&quot;: false  </span><br><span class="line">??????????????? &#125;  </span><br><span class="line">????????????? ],?  </span><br><span class="line">????????????? &quot;node_wwn&quot;: &quot;iqn.1994-05.com.redhat:1abc12d345e6&quot;  </span><br><span class="line">??????????? &#125;?  </span><br><span class="line">????????? ]?</span><br></pre></td></tr></table></figure>
 <p>You have to replace?<em>chap_userid_,?_chap_password</em>?and?_node_wwn_?by values obtained in steps?<strong>1</strong>,?<strong>2</strong>and?<strong>3</strong>?respectively.<br>Then check and load the configuration:  </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@controller ~]# cat &#x2F;etc&#x2F;target&#x2F;saveconfig.json | json_verify  </span><br><span class="line">JSON is valid  </span><br><span class="line">[root@controller ~]# targetctl restore  </span><br><span class="line">You can connect again to the iSCSI target from the hypervisor:  </span><br><span class="line">[root@cloudhyp1 ~]# iscsiadm -m node -T iqn.2010-10.org.openstack:volume-6e95e5b6-83e1-4958-a5e1-ba5afc94559e -l</span><br></pre></td></tr></table></figure>
+      
     </div>
+    
+    
+    
 
     
+
     
+
     
 
     <footer class="post-footer">
+      
 
-        
+      
+      
+      
 
-          <div class="post-nav">
-            <div class="post-nav-item">
-                <a href="/2020/09/15/Spring%E7%9A%84IOC%E4%B8%8EAOP%EF%BC%88%E8%BD%AC%E8%BD%BD%EF%BC%89/" rel="prev" title="Spring的IOC与AOP（转载）">
-                  <i class="fa fa-chevron-left"></i> Spring的IOC与AOP（转载）
-                </a>
-            </div>
-            <div class="post-nav-item">
-                <a href="/2020/09/15/OpenStack-glance-url%E8%A2%AB%E6%88%AA%E6%96%AD%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D%E8%A7%A3%E5%86%B3/" rel="next" title="[OpenStack]glance url被截断问题定位解决">
-                  [OpenStack]glance url被截断问题定位解决 <i class="fa fa-chevron-right"></i>
-                </a>
-            </div>
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/15/Spring%E7%9A%84IOC%E4%B8%8EAOP%EF%BC%88%E8%BD%AC%E8%BD%BD%EF%BC%89/" rel="next" title="Spring的IOC与AOP（转载）">
+                <i class="fa fa-chevron-left"></i> Spring的IOC与AOP（转载）
+              </a>
+            
           </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/15/OpenStack-glance-url%E8%A2%AB%E6%88%AA%E6%96%AD%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D%E8%A7%A3%E5%86%B3/" rel="prev" title="[OpenStack]glance url被截断问题定位解决">
+                [OpenStack]glance url被截断问题定位解决 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
     </footer>
+  </div>
+  
+  
+  
   </article>
-</div>
 
 
 
-
-
-
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      const commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-
-<div class="copyright">
-  &copy; 
-  <span itemprop="copyrightYear">2020</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder"></span>
-</div>
-<div class="wordcount">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-line"></i>
-    </span>
-    <span title="站点总字数">205k</span>
-  </span>
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-    <span title="站点阅读时长">3:06</span>
-  </span>
-</div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+    <div class="post-spread">
+      
+    </div>
   </div>
 
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
     </div>
-  </footer>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7Carchive">
+              
+                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/davidstack" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Restore-iSCSI-configuration-for-Cinder-Nova"><span class="nav-number">1.</span> <span class="nav-text">Restore iSCSI configuration for Cinder &#x2F; Nova</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DavidStack</span>
 
   
-  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
 
   
 
@@ -363,12 +642,135 @@
 
 
 
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
   
 
 
 
 
 
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
 
 </body>
 </html>
