@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="云计算," />
 
 
 
@@ -79,16 +79,23 @@
 
 
 
-<meta name="description" content="###tempfs简介  tmpfs 是 Linux&#x2F;Unix 系统上的一种基于内存的文件系统，即 tmpfs 使用内存或 swap 分区来存储文件。Linux 内核中的 VM 子系统负责在后台管理虚拟内存资源 Virtual Memory，即 RAM 和 swap 资源，透明地将 RAM 页移动到交换分区或从交换分区到 RAM 页，tmpfs 文件系统需要 VM 子系统的页面来存储文件。tmpf">
+<meta name="description" content="上一篇文章介绍了云计算和云原生，这里讲一下云原生的主要技术，主要包括容器、微服务、DevOps、ServiceMesh、ServerLess、声明式API，当然我这里并不会将具体的技术，主要还是概念相关的东西了。先上一个CNCF 生态的技术栈，前几年看的时候，没有几个，今天一看，真多啊  容器还是先上一张PPT的截图吧，简单明了。  1、容器作为应用的集装箱，封装应用的依赖，简化应用的部署，集装箱">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux的tempfs">
-<meta property="og:url" content="http://damonyi.cc/2020/12/01/Linux%E7%9A%84tempfs/index.html">
+<meta property="og:title" content="云原生主要技术">
+<meta property="og:url" content="http://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/index.html">
 <meta property="og:site_name" content="云里雾里">
-<meta property="og:description" content="###tempfs简介  tmpfs 是 Linux&#x2F;Unix 系统上的一种基于内存的文件系统，即 tmpfs 使用内存或 swap 分区来存储文件。Linux 内核中的 VM 子系统负责在后台管理虚拟内存资源 Virtual Memory，即 RAM 和 swap 资源，透明地将 RAM 页移动到交换分区或从交换分区到 RAM 页，tmpfs 文件系统需要 VM 子系统的页面来存储文件。tmpf">
+<meta property="og:description" content="上一篇文章介绍了云计算和云原生，这里讲一下云原生的主要技术，主要包括容器、微服务、DevOps、ServiceMesh、ServerLess、声明式API，当然我这里并不会将具体的技术，主要还是概念相关的东西了。先上一个CNCF 生态的技术栈，前几年看的时候，没有几个，今天一看，真多啊  容器还是先上一张PPT的截图吧，简单明了。  1、容器作为应用的集装箱，封装应用的依赖，简化应用的部署，集装箱">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-12-01T00:23:56.000Z">
-<meta property="article:modified_time" content="2020-12-05T03:03:47.935Z">
+<meta property="og:image" content="http://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/cncf.png">
+<meta property="og:image" content="http://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/docker1.png">
+<meta property="og:image" content="http://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/docker.png">
+<meta property="og:image" content="http://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/k8s1.png">
+<meta property="og:image" content="http://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/weifuwu.png">
+<meta property="article:published_time" content="2020-12-07T11:26:12.000Z">
+<meta property="article:modified_time" content="2020-12-08T06:44:59.983Z">
+<meta property="article:tag" content="云计算">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/cncf.png">
 
 
 
@@ -118,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://damonyi.cc/2020/12/01/Linux的tempfs/"/>
+  <link rel="canonical" href="http://damonyi.cc/2020/12/07/云原生主要技术/"/>
 
 
 
 
 
-  <title>Linux的tempfs | 云里雾里</title>
+  <title>云原生主要技术 | 云里雾里</title>
   
 
 
@@ -261,7 +268,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://damonyi.cc/2020/12/01/Linux%E7%9A%84tempfs/">
+    <link itemprop="mainEntityOfPage" href="http://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -278,7 +285,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Linux的tempfs</h2>
+          <h2 class="post-title" itemprop="name headline">云原生主要技术</h2>
         
 
         <div class="post-meta">
@@ -290,8 +297,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-01T08:23:56+08:00">
-                2020-12-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-07T19:26:12+08:00">
+                2020-12-07
               </time>
             
 
@@ -364,17 +371,28 @@
       
 
       
-        <p>###tempfs简介</p>
-<ol>
-<li><p>tmpfs 是 Linux/Unix 系统上的一种基于内存的文件系统，即 tmpfs 使用内存或 swap 分区来存储文件。Linux 内核中的 VM 子系统负责在后台管理虚拟内存资源 Virtual Memory，即 RAM 和 swap 资源，透明地将 RAM 页移动到交换分区或从交换分区到 RAM 页，tmpfs 文件系统需要 VM 子系统的页面来存储文件。tmpfs 自己并不知道这些页面是在交换分区还是在 RAM 中；做这种决定是 VM 子系统的工作。tmpfs 文件系统所知道的就是它正在使用某种形式的虚拟内存。</p>
-</li>
-<li><p>由于 tmpfs 是基于内存的，因此速度是相当快的。另外 tmpfs 使用的 VM 资源是动态的，当删除 tmpfs 中文件，tmpfs 文件系统驱动程序会动态地减小文件系统并释放 VM 资源，当然在其中创建文件时也会动态的分配VM资源。另外，tmpfs 不具备持久性，重启后数据不保留。</p>
-</li>
-</ol>
-<p>在Linux主机上，查看常用tempfs的目录如下所示</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@node2 ~]# df -h</span><br><span class="line">Filesystem                  Size  Used Avail Use% Mounted on</span><br><span class="line">&#x2F;dev&#x2F;mapper&#x2F;centos-root     442G   78G  364G  18% &#x2F;</span><br><span class="line">devtmpfs                     94G     0   94G   0% &#x2F;dev</span><br><span class="line">tmpfs                        94G     0   94G   0% &#x2F;dev&#x2F;shm</span><br><span class="line">tmpfs                        94G  1.2G   93G   2% &#x2F;run</span><br><span class="line">tmpfs                        94G     0   94G   0% &#x2F;sys&#x2F;fs&#x2F;cgroup</span><br></pre></td></tr></table></figure>
-<p>1.其中/run 目录主要存放的是自系统启动以来描述系统信息的文件。比较常见的用途是 daemon 进程将自己的 pid 保存到这个目录。</p>
-<p>2./dev/shm/ 是 Linux 下一个非常有用的目录，它的意思是 Shared memory，也就是共享内存。由于它在内存上，所以所有系统进程都能共享该目录。默认情况下它的大小是内存的一半</p>
+        <p>上一篇文章介绍了云计算和云原生，这里讲一下云原生的主要技术，主要包括容器、微服务、DevOps、ServiceMesh、ServerLess、声明式API，当然我这里并不会将具体的技术，主要还是概念相关的东西了。先上一个CNCF 生态的技术栈，前几年看的时候，没有几个，今天一看，真多啊</p>
+<p><img src="/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/cncf.png" alt="avatar"></p>
+<h2 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h2><p>还是先上一张PPT的截图吧，简单明了。</p>
+<p><img src="/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/docker1.png" alt="avatar"></p>
+<p>1、容器作为应用的集装箱，封装应用的依赖，简化应用的部署，集装箱的这个类比，戳中了众多应用开发者的痛点，在没有使用容器之前，部署一个应用+升级一个应用是非常复杂，而且也是非常容易出现问题的地方。</p>
+<p>2、容器的隔离特性，将虚拟化的隔离特性带给应用开发者，当然这里并没有多少新的技术，还是靠Linux底层的Cgroup、Namespace、Quota等等，对这些做了封装。刚看到这个类比：我们无论什么样的开发，其实都是对接口的封装，例如我们做IAAS、PAAS平台是对vmware、Kubernetes的接口的二次开发，我们比较陌生的docker，其实是对linux接口的开发，Linux其实是对底层软硬件驱动的接口开发。。。</p>
+<p>3、轻量级虚拟化，如果现在最火的docker 不是轻量级，估计也会沦为CloudFoundry 中DEA+warden的下场</p>
+<p>基于比较易用的镜像能力，Docker以“Build Once,Run Anywhere” 的宣传口语，一统容器江湖.<br><img src="/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/docker.png" alt="avatar"></p>
+<h2 id="容器编排"><a href="#容器编排" class="headerlink" title="容器编排"></a>容器编排</h2><p>按照云原生应用的十二要素原则，其实一个容器只能用于运行一个进程，那么对于分布式应用来说，必然需要一套编排管理工具，也就是用于容器的编排管理和运维，例如Kubernetes、Swarm、Mesos等，大部分还都是使用Kubernetes，由Google背书，并且具有丰富的网络、存储、计算扩展机制（好像容易扩展的开源项目才能活，例如IAAS领域的OpenStack），就下下图描述的宠物与家畜，电话接线员一样，Kubernetes 解决了容器管理/应用管理的问题，开发者把应用丢到K8s集群，然后访问应用即可。</p>
+<p><img src="/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/k8s1.png" alt="avatar"></p>
+<p>管理：Kubernetes的目标是让你可以像管理牲畜一样管理你的服务，而不是像宠物一样</p>
+<p>编排：丰富的编排策略，用户只需要创建应用与访问应用，对于应用相关的网络、存储、数据等都不需要用户管理</p>
+<h2 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h2><p>微服务改造意味着先选择一套大型的应用程序，然后识别出限界上下文（bounded contexts）及其内部的业务功能，并对它们进行分割，重要的是要将数据一起进行分割，也就<br>是说要采用应用数据库而非集成数据库。为了理解业务领域的内容，关键的一点就是要在一开始就采用上下文图（context map ）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">微服务 (Microservices) 是一种软件架构风格，它是以专注于单一责任与功能的小型功能区块 (Small Building Blocks) 为基础，利用模块化的方式组合出复杂的大型应用程序，各功能区块使用与语言无关 (Language-Independent&#x2F;Language agnostic) 的 API 集相互通信---维基百科</span><br></pre></td></tr></table></figure>
+<p><big>微服务架构带来的优势</big>：<br>1、各服务开发语言无关性<br>2、各服务编译构建部署无关性<br>3、服务复用（在传统厂商，这个很难，大部分的微服务还都是定制开发的）</p>
+<p>微服务架构的两个问题:</p>
+<ul>
+<li>服务发现：在众多的微服务组件中，服务使用者如何找到准确的微服务组件  </li>
+<li>负载均衡：多实例微服务，如果实现负载均衡</li>
+</ul>
+<p>微服务带来的比较头大的问题，如下图，这也是云原生的下一个技术 ServiceMesh逐渐普及的原因</p>
+<p><img src="/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/weifuwu.png" alt="avatar"></p>
 
       
     </div>
@@ -390,6 +408,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" rel="tag"># 云计算</a>
+          
+        </div>
+      
 
       
       
@@ -399,8 +423,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/11/17/kubernetes-apps%E5%88%A0%E9%99%A4%E6%B5%81%E7%A8%8B/" rel="next" title="kubernetes apps删除流程">
-                <i class="fa fa-chevron-left"></i> kubernetes apps删除流程
+              <a href="/2020/12/07/%E5%A3%B0%E6%98%8E%E5%BC%8FAPI/" rel="next" title="声明式API">
+                <i class="fa fa-chevron-left"></i> 声明式API
               </a>
             
           </div>
@@ -409,8 +433,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/" rel="prev" title="谈云计算与云原生">
-                谈云计算与云原生 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/12/10/GPU%E4%B8%AD%E7%9A%84Hyper-Q%E6%8A%80%E6%9C%AF/" rel="prev" title="GPU中的Hyper-Q技术">
+                GPU中的Hyper-Q技术 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -463,8 +487,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -524,6 +557,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#容器"><span class="nav-number">1.</span> <span class="nav-text">容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器编排"><span class="nav-number">2.</span> <span class="nav-text">容器编排</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微服务"><span class="nav-number">3.</span> <span class="nav-text">微服务</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
