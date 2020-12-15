@@ -82,21 +82,21 @@
 <meta name="description" content="云计算中的IAAS&#x2F;PAAS&#x2F;SAAS云计算的概念提出者是IBM，但是IBM并没有很好的落地的产品，对于在线图书商店AWS，却有可以落地的场景，买了大量服务器，但是在图书销售淡季，造成了资源的浪费，因此逐渐有了目前云计算的领导者AWS，对于云计算相关工作者来说，我们对AWS最深的印象时公有云NO.1，尝尝会忽略人家盈利最多的在线商城。 云计算刚提出的时候是提出了三个层次，即IAAS、PAAS、SA">
 <meta property="og:type" content="article">
 <meta property="og:title" content="谈云计算与云原生">
-<meta property="og:url" content="http://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/index.html">
+<meta property="og:url" content="https://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/index.html">
 <meta property="og:site_name" content="云里雾里">
 <meta property="og:description" content="云计算中的IAAS&#x2F;PAAS&#x2F;SAAS云计算的概念提出者是IBM，但是IBM并没有很好的落地的产品，对于在线图书商店AWS，却有可以落地的场景，买了大量服务器，但是在图书销售淡季，造成了资源的浪费，因此逐渐有了目前云计算的领导者AWS，对于云计算相关工作者来说，我们对AWS最深的印象时公有云NO.1，尝尝会忽略人家盈利最多的在线商城。 云计算刚提出的时候是提出了三个层次，即IAAS、PAAS、SA">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud1.png">
-<meta property="og:image" content="http://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud2.png">
-<meta property="og:image" content="http://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud3.png">
-<meta property="og:image" content="http://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud4.png">
-<meta property="og:image" content="http://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud5.png">
-<meta property="og:image" content="http://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud6.png">
+<meta property="og:image" content="https://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud1.png">
+<meta property="og:image" content="https://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud2.png">
+<meta property="og:image" content="https://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud3.png">
+<meta property="og:image" content="https://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud4.png">
+<meta property="og:image" content="https://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud5.png">
+<meta property="og:image" content="https://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud6.png">
 <meta property="article:published_time" content="2020-12-05T00:40:08.000Z">
 <meta property="article:modified_time" content="2020-12-05T13:16:41.813Z">
 <meta property="article:tag" content="云计算  云原生">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud1.png">
+<meta name="twitter:image" content="https://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/cloud1.png">
 
 
 
@@ -126,7 +126,7 @@
 
 
 
-  <link rel="canonical" href="http://damonyi.cc/2020/12/05/谈云计算与云原生/"/>
+  <link rel="canonical" href="https://damonyi.cc/2020/12/05/谈云计算与云原生/"/>
 
 
 
@@ -269,7 +269,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/">
+    <link itemprop="mainEntityOfPage" href="https://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -537,7 +537,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-count">54</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -550,7 +550,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>
