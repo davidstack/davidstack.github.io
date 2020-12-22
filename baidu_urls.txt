@@ -1,1 +1,1 @@
-https://damonyi.cc/2020/12/15/%E7%BC%96%E8%AF%91tensorflow-%E6%BA%90%E7%A0%81/
+https://damonyi.cc/2020/12/21/nvidia-docker-%E9%85%8D%E7%BD%AEGPU/
