@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="c5YHonM6Ek6i_dIKMceKoszIqEtrVddsax9qcaoQfR4" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="docker," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="容器占用资源监控和故障隔离，训练性能不一致 关键技术一：命名空间 PID：PID命名空间为某个进程及其子进程提供了系统中进程的一个子集的视图。你可以将其想象为一个映射表。当PID命名空间中的某个进程向kernel请求一个进程列表时，kernel将会检查这个映射表。如果该进程已经存在于表中，那么kernel就会返回其映射ID，而不是真实的ID。而如果该进程不存在于映射表中，那么kernel会假设该进">
+<meta property="og:type" content="article">
+<meta property="og:title" content="100 行代码创建一个容器">
+<meta property="og:url" content="https://damonyi.cc/2020/12/23/100-%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%AE%B9%E5%99%A8/index.html">
+<meta property="og:site_name" content="云里雾里">
+<meta property="og:description" content="容器占用资源监控和故障隔离，训练性能不一致 关键技术一：命名空间 PID：PID命名空间为某个进程及其子进程提供了系统中进程的一个子集的视图。你可以将其想象为一个映射表。当PID命名空间中的某个进程向kernel请求一个进程列表时，kernel将会检查这个映射表。如果该进程已经存在于表中，那么kernel就会返回其映射ID，而不是真实的ID。而如果该进程不存在于映射表中，那么kernel会假设该进">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-23T01:31:01.000Z">
+<meta property="article:modified_time" content="2020-12-23T01:57:35.289Z">
+<meta property="article:tag" content="docker">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://damonyi.cc/2020/12/23/100-行代码创建一个容器/"/>
+
+
+
+
+
+  <title>100 行代码创建一个容器 | 云里雾里</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">云里雾里</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://damonyi.cc/2020/12/23/100-%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%AE%B9%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="云里雾里">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">100 行代码创建一个容器</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-23T09:31:01+08:00">
+                2020-12-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>容器占用资源监控和故障隔离，训练性能不一致</p>
+<h3 id="关键技术一：命名空间"><a href="#关键技术一：命名空间" class="headerlink" title="关键技术一：命名空间"></a>关键技术一：命名空间</h3><ol>
+<li>PID：PID命名空间为某个进程及其子进程提供了系统中进程的一个子集的视图。你可以将其想象为一个映射表。当PID命名空间中的某个进程向kernel请求一个进程列表时，kernel将会检查这个映射表。如果该进程已经存在于表中，那么kernel就会返回其映射ID，而不是真实的ID。而如果该进程不存在于映射表中，那么kernel会假设该进程完全不存在。在PID命名空间中创建的第一个进程的pid为1（因此其主机ID的映射值为1），该命名空间在容器中会表现为一个隔离的进程树。</li>
+<li>MNT：在某种意义上说，mount命名空间是最重要的一个命名空间，它为其中所包含的进程提供了一个独有的mount表。这也意味着当这些进程对目录进行挂载或取消挂载时不会影响其他命名空间（包括主机命名空间）。更重要的是，我们将看到，<font size="8">通过与pivot_root这个系统调用的结合，它让某个进程能够拥有一个独有的文件系统</font>。因此，只需交换容器的文件系统，进程就会认为它正运行在某个Ubuntu、BusyBox或Alpine中。</li>
+<li>NET：network命名空间为使用它的进程赋予了独立的网络栈。通常来说，只有在主network命名空间（也就是当机器启动时会自动启动的进程所在的命名空间）中才会被分配真实的物理网卡。但我们可以创建虚拟的网络设备对，即互联的网卡，其中一端属于某个network命名空间，而另一端则属于另一个network命名空间，通过这种方式在两个network命名空间之间创建了一个虚拟的连接。这种方式有些类似于在同一台主机中让多个IP栈进行通信。通过一定的路由逻辑，每个容器就能够保持自己独立的网络栈，同时能够与外界进行通信。</li>
+<li>UTS：UTS（UNIX Time-sharing System）命名空间为其中的进程提供了系统主机名与域名的独有视图。当进入某个UTS命名空间之后，对于主机名与域名的修改不会影响其他进程。</li>
+<li>IPC：IPC（Interprocess Communication）命名空间能够隔离各种进程间的通信机制，例如消息队列等等。可参考命名空间的相关文档，以了解更多细节。</li>
+<li>USER：user命名空间最近刚刚得到支持，从安全性的角度来看，它可能是最强大的一种命名空间了。user命名空间能够将某个进程所看到的uid映射为主机中一个不同的uid（以及gid）集合。这一特性非常实用，通过使用user命名空间，我们就能够将容器的root user ID（比如0）映射为主机中一个任意的（并且未赋予特权的）uid。这就意味着我们可以让某个容器认为它具有对root的访问权，而同时又无需为其赋予任何root命名空间中的权限（我们甚至可以为其访问特定于容器的资源赋予类似于root的权限）。容器可随意以uid 0运行进程（这通常意味着该用户具备root权限），而kernel会在内部将该uid映射为某个未赋予特权的真实uid。大多数容器系统都不会将容器中的任何一个uid映射为调用命名空间中的uid 0，换句话说，在容器中不存在任何一个具有root权限的uid。</li>
+</ol>
+<h3 id="关键技术二：-cgroups"><a href="#关键技术二：-cgroups" class="headerlink" title="关键技术二： cgroups"></a>关键技术二： cgroups</h3><p>Cgroups全称Control Groups，是Linux内核提供的物理资源隔离机制，通过这种机制，可以实现对Linux进程或者进程组的资源限制、隔离和统计功能。比如可以通过cgroup限制特定进程的资源使用，比如使用特定数目的cpu核数和特定大小的内存，如果资源超限的情况下，会被暂停或者杀掉。Cgroup是于2.6内核由Google公司主导引入的，它是Linux内核实现资源虚拟化的技术基石，LXC(Linux Containers)和docker容器所用到的资源隔离技术，正是Cgroup。</p>
+<p>cgroup 内容很多，具体可以参见<a href="https://zhuanlan.zhihu.com/p/81668069" target="_blank" rel="noopener">这里</a></p>
+<h3 id="关键技术三：-分层文件系统"><a href="#关键技术三：-分层文件系统" class="headerlink" title="关键技术三： 分层文件系统"></a>关键技术三： 分层文件系统</h3><p>命名空间与CGroups负责容器化的隔离与资源共享，他们实现了容器的主体功能以及安全保障。而分层文件系统使我们能够高效地移动完整的机器镜像，它保证了容器的持续运作。从本质上来看，分层文件系统的作用是使为每个容器创建一份root文件系统的拷贝的调用过程进行优化。有多种不同的方式可以实现这一目标。Btrfs在文件系统层使用了写时拷贝（copy-on-write）技术，而Aufs则使用了“union mounts”这种挂载机制。由于可以通过多种方式实现这一步骤，因此本文选择了一种非常简单的方式：我们将真正地创建一个拷贝。虽然这种方式很慢，但确实能够完成任务。</p>
+<h3 id="code"><a href="#code" class="headerlink" title="code"></a>code</h3><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"os"</span></span><br><span class="line">    <span class="string">"os/exec"</span></span><br><span class="line">    <span class="string">"syscall"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> os.Args[<span class="number">1</span>] &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">"run"</span>:</span><br><span class="line">        parent()</span><br><span class="line">    <span class="keyword">case</span> <span class="string">"child"</span>:</span><br><span class="line">        child()</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="built_in">panic</span>(<span class="string">"wat should I do"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"># step <span class="number">1</span> ‘/proc/self/exe’，这是一个特殊文件，它包含了当前可执行文件的一个内存镜像。换句话说，我们将重新调用这个程序本身，将‘child’作为第一个参数进行传递</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">parent</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cmd := exec.Command(<span class="string">"/proc/self/exe"</span>, <span class="built_in">append</span>([]<span class="keyword">string</span>&#123;<span class="string">"child"</span>&#125;, os.Args[<span class="number">2</span>:]...)...)</span><br><span class="line">    # step <span class="number">2</span> 在程序中添加命名空间</span><br><span class="line">    cmd.SysProcAttr = &amp;syscall.SysProcAttr&#123;</span><br><span class="line">        Cloneflags: syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,</span><br><span class="line">    &#125;</span><br><span class="line">    cmd.Stdin = os.Stdin</span><br><span class="line">    cmd.Stdout = os.Stdout</span><br><span class="line">    cmd.Stderr = os.Stderr</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> err := cmd.Run(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"ERROR"</span>, err)</span><br><span class="line">        os.Exit(<span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">child</span><span class="params">()</span></span> &#123;</span><br><span class="line">    # step3 第<span class="number">2</span>步中已经将该进程运行在了新的mnt命名空间，此处进行rootfs 的切换</span><br><span class="line">    must(syscall.Mount(<span class="string">"rootfs"</span>, <span class="string">"rootfs"</span>, <span class="string">""</span>, syscall.MS_BIND, <span class="string">""</span>))</span><br><span class="line">    must(os.MkdirAll(<span class="string">"rootfs/oldrootfs"</span>, <span class="number">0700</span>))</span><br><span class="line">    must(syscall.PivotRoot(<span class="string">"rootfs"</span>, <span class="string">"rootfs/oldrootfs"</span>))</span><br><span class="line">    </span><br><span class="line">    # 当‘pivotroot’调用 结束之后，容器中的‘/’目录将指向rootfs目录</span><br><span class="line">    must(os.Chdir(<span class="string">"/"</span>))</span><br><span class="line"></span><br><span class="line">    cmd := exec.Command(os.Args[<span class="number">2</span>], os.Args[<span class="number">3</span>:]...)</span><br><span class="line">    cmd.Stdin = os.Stdin</span><br><span class="line">    cmd.Stdout = os.Stdout</span><br><span class="line">    cmd.Stderr = os.Stderr</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> err := cmd.Run(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"ERROR"</span>, err)</span><br><span class="line">        os.Exit(<span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">must</span><span class="params">(err error)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/docker/" rel="tag"># docker</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/12/21/nvidia-docker-%E9%85%8D%E7%BD%AEGPU/" rel="next" title="nvidia-docker 配置GPU">
+                <i class="fa fa-chevron-left"></i> nvidia-docker 配置GPU
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/davidstack" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#关键技术一：命名空间"><span class="nav-number">1.</span> <span class="nav-text">关键技术一：命名空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关键技术二：-cgroups"><span class="nav-number">2.</span> <span class="nav-text">关键技术二： cgroups</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关键技术三：-分层文件系统"><span class="nav-number">3.</span> <span class="nav-text">关键技术三： 分层文件系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#code"><span class="nav-number">4.</span> <span class="nav-text">code</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DavidStack</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
