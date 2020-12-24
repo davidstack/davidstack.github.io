@@ -89,7 +89,7 @@
 <meta property="og:description" content="Docker不太常用的命令 docker ps -s  #查看容器所占的磁盘大小 docker rm ${docker ps -q -a} # 删除全部非运行态的容器 docker system df  #查看docker存储的使用情况 docker system prun #清理无用的容器、网络、数据集 docker rmi $(docker images | awk ‘&#x2F;^&#x2F; { print">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-03T09:00:23.000Z">
-<meta property="article:modified_time" content="2020-09-11T11:16:06.056Z">
+<meta property="article:modified_time" content="2020-12-24T11:55:07.567Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -421,6 +421,7 @@
 <li>docker run -i -t fedora21-base  /bin/bash</li>
 </ol>
 <p>启动镜像。-i 代表打开标准输入 -t 虚拟一个窗口 /bin/bash启动镜像执行的命令</p>
+<h2 id="进入容器命名空间"><a href="#进入容器命名空间" class="headerlink" title="进入容器命名空间"></a>进入容器命名空间</h2><p>获取容器的init pid<br>cat /run/containerd/io.containerd.runtime.v1.linux/moby/7208ab53697925439605bca93718c6158db354909fedbe7a1f96ddcd5d5563db/init.pid<br>18399<br>进入mount 命名空间,可以直接查看容器的目录空间<br>nsenter -t 18399 -m<br>进入</p>
 
       
     </div>
@@ -589,7 +590,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker不太常用的命令"><span class="nav-number">1.</span> <span class="nav-text">Docker不太常用的命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker配置参数"><span class="nav-number">2.</span> <span class="nav-text">Docker配置参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迁移Docker存储方式一"><span class="nav-number">3.</span> <span class="nav-text">迁移Docker存储方式一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迁移Docker存储方式二"><span class="nav-number">4.</span> <span class="nav-text">迁移Docker存储方式二</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于操作系统制作Docker镜像"><span class="nav-number">5.</span> <span class="nav-text">基于操作系统制作Docker镜像</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker不太常用的命令"><span class="nav-number">1.</span> <span class="nav-text">Docker不太常用的命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker配置参数"><span class="nav-number">2.</span> <span class="nav-text">Docker配置参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迁移Docker存储方式一"><span class="nav-number">3.</span> <span class="nav-text">迁移Docker存储方式一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迁移Docker存储方式二"><span class="nav-number">4.</span> <span class="nav-text">迁移Docker存储方式二</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于操作系统制作Docker镜像"><span class="nav-number">5.</span> <span class="nav-text">基于操作系统制作Docker镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进入容器命名空间"><span class="nav-number">6.</span> <span class="nav-text">进入容器命名空间</span></a></li></ol></div>
             
 
           </div>

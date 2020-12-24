@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/</loc>
+    
+    <lastmod>2020-12-24</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://damonyi.cc/2020/09/03/Docker%E4%BD%BF%E7%94%A8%E8%BF%9B%E9%98%B6/</loc>
+    
+    <lastmod>2020-12-24</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://damonyi.cc/2020/12/21/nvidia-docker-%E9%85%8D%E7%BD%AEGPU/</loc>
     
     <lastmod>2020-12-23</lastmod>
@@ -26,13 +40,6 @@
     <loc>https://damonyi.cc/2020/12/10/GPU%E4%B8%AD%E7%9A%84Hyper-Q%E6%8A%80%E6%9C%AF/</loc>
     
     <lastmod>2020-12-12</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/</loc>
-    
-    <lastmod>2020-12-08</lastmod>
     
   </url>
   
@@ -401,13 +408,6 @@
   </url>
   
   <url>
-    <loc>https://damonyi.cc/2020/09/03/Docker%E4%BD%BF%E7%94%A8%E8%BF%9B%E9%98%B6/</loc>
-    
-    <lastmod>2020-09-11</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://damonyi.cc/2020/09/03/Docker%E4%B8%8E%E4%B8%BB%E6%9C%BA%E5%85%B3%E7%B3%BB/</loc>
     
     <lastmod>2020-09-11</lastmod>
@@ -417,7 +417,7 @@
 
   <url>
     <loc>https://damonyi.cc/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -425,126 +425,126 @@
   
   <url>
     <loc>https://damonyi.cc/tags/Docker/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/golang/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/Container/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/Linux/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/Kubernetes/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/Pod/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/OpenStack/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/%E5%AE%B9%E5%99%A8/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/Spring/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/k8s/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/tensorflow/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/kubernetes-%E7%BD%91%E7%BB%9C/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/%E4%BA%91%E8%AE%A1%E7%AE%97-%E4%BA%91%E5%8E%9F%E7%94%9F/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/Kuberentes/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/docker/</loc>
-    <lastmod>2020-12-23</lastmod>
+    <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>

@@ -91,10 +91,11 @@
 <meta property="og:image" content="https://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/cncf.png">
 <meta property="og:image" content="https://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/docker1.png">
 <meta property="og:image" content="https://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/docker.png">
+<meta property="og:image" content="https://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/docker2.png">
 <meta property="og:image" content="https://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/k8s1.png">
 <meta property="og:image" content="https://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/weifuwu.png">
 <meta property="article:published_time" content="2020-12-07T11:26:12.000Z">
-<meta property="article:modified_time" content="2020-12-08T06:44:59.983Z">
+<meta property="article:modified_time" content="2020-12-24T12:09:05.149Z">
 <meta property="article:tag" content="云计算">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://damonyi.cc/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/cncf.png">
@@ -381,6 +382,8 @@
 <p>2、容器的隔离特性，将虚拟化的隔离特性带给应用开发者，当然这里并没有多少新的技术，还是靠Linux底层的Cgroup、Namespace、Quota等等，对这些做了封装。刚看到这个类比：我们无论什么样的开发，其实都是对接口的封装，例如我们做IAAS、PAAS平台是对vmware、Kubernetes的接口的二次开发，我们比较陌生的docker，其实是对linux接口的开发，Linux其实是对底层软硬件驱动的接口开发。。。</p>
 <p>3、轻量级虚拟化，如果现在最火的docker 不是轻量级，估计也会沦为CloudFoundry 中DEA+warden的下场</p>
 <p>基于比较易用的镜像能力，Docker以“Build Once,Run Anywhere” 的宣传口语，一统容器江湖.<br><img src="/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/docker.png" alt="avatar"></p>
+<p>这里想说点别的,我们一直在用比喻去讲解Docker 和容器,但是，大家应该比较清楚，比喻在让你利杰这个事务的时候，也让你停止了思考，其实比喻更适合对门外汉讲，我们技术人员看到的应该是这样的Docker或者更详细点。</p>
+<p><img src="/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/docker2.png" alt="avatar"></p>
 <h2 id="容器编排"><a href="#容器编排" class="headerlink" title="容器编排"></a>容器编排</h2><p>按照云原生应用的十二要素原则，其实一个容器只能用于运行一个进程，那么对于分布式应用来说，必然需要一套编排管理工具，也就是用于容器的编排管理和运维，例如Kubernetes、Swarm、Mesos等，大部分还都是使用Kubernetes，由Google背书，并且具有丰富的网络、存储、计算扩展机制（好像容易扩展的开源项目才能活，例如IAAS领域的OpenStack），就下下图描述的宠物与家畜，电话接线员一样，Kubernetes 解决了容器管理/应用管理的问题，开发者把应用丢到K8s集群，然后访问应用即可。</p>
 <p><img src="/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/k8s1.png" alt="avatar"></p>
 <p>管理：Kubernetes的目标是让你可以像管理牲畜一样管理你的服务，而不是像宠物一样</p>
@@ -393,9 +396,11 @@
 <li>服务发现：在众多的微服务组件中，服务使用者如何找到准确的微服务组件  </li>
 <li>负载均衡：多实例微服务，如果实现负载均衡</li>
 </ul>
-<p>微服务带来的比较头大的问题，如下图，这也是云原生的下一个技术 ServiceMesh逐渐普及的原因</p>
+<p>微服务带来的比较头大的问题，如下图，这也是云原生的下一个技术 ServiceMesh逐渐普及的原因,总结来说就是，微服务是以提高运维复杂度的代价，来提高敏捷性。是好是坏还真不好说，对于开发人员来说 有好处有坏处，好处就是开发方便，选择自己喜欢的框架和开发语言，坏处就是各个微服务交互的时候就有些问题，需要考虑的点比较多。对于运维人员来说，感觉全是坏处，原来只需要运维一个tomcat，现在需要运维N个tomcat。。。</p>
 <p><img src="/2020/12/07/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%BB%E8%A6%81%E6%8A%80%E6%9C%AF/weifuwu.png" alt="avatar"></p>
-
+<h2 id="Service-Mesh"><a href="#Service-Mesh" class="headerlink" title="Service Mesh"></a>Service Mesh</h2><p>Service Mesh 服务网格是一个基础设施层，用于处理服务间通信。云原生应用有着复杂的服务拓扑，服务网格保证请求在这些拓扑中可靠地穿梭。在实际应用当中，服务网格通常是由一系列轻量级的网络代理组成的，它们与应用程序部署在一起，但对应用程序透明。</p>
+<p>对ServiceMesh描述最好的，应该是面向容器的SideCar设计模式，这个SideCar的设计模式在ServiceMesh 还没有普及起来的时候就有人提出来了，可以看下图：</p>
+<h2 id="DevOps"><a href="#DevOps" class="headerlink" title="DevOps"></a>DevOps</h2>
       
     </div>
     
@@ -569,7 +574,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#容器"><span class="nav-number">1.</span> <span class="nav-text">容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器编排"><span class="nav-number">2.</span> <span class="nav-text">容器编排</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微服务"><span class="nav-number">3.</span> <span class="nav-text">微服务</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#容器"><span class="nav-number">1.</span> <span class="nav-text">容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器编排"><span class="nav-number">2.</span> <span class="nav-text">容器编排</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微服务"><span class="nav-number">3.</span> <span class="nav-text">微服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Service-Mesh"><span class="nav-number">4.</span> <span class="nav-text">Service Mesh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DevOps"><span class="nav-number">5.</span> <span class="nav-text">DevOps</span></a></li></ol></div>
             
 
           </div>
