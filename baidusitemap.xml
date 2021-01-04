@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://damonyi.cc/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/</loc>
+    <lastmod>2021-01-04</lastmod>
+  </url>
+  <url>
     <loc>https://damonyi.cc/2020/12/10/GPU%E4%B8%AD%E7%9A%84Hyper-Q%E6%8A%80%E6%9C%AF/</loc>
     <lastmod>2020-12-29</lastmod>
   </url>
