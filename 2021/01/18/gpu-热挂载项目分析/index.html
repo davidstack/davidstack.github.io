@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="c5YHonM6Ek6i_dIKMceKoszIqEtrVddsax9qcaoQfR4" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="测试场景 NVIDIA-Driver 418.67nvidia-docker 版本 1234567[root~]# rpm -qa|grep nvidianvidia_peer_memory-1.0-8.x86_64libnvidia-container1-1.3.1-1.x86_64nvidia-docker2-2.5.0-1.noarchlibnvidia-container-tools-1.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gpu 热挂载项目分析">
+<meta property="og:url" content="https://damonyi.cc/2021/01/18/gpu-%E7%83%AD%E6%8C%82%E8%BD%BD%E9%A1%B9%E7%9B%AE%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="云里雾里">
+<meta property="og:description" content="测试场景 NVIDIA-Driver 418.67nvidia-docker 版本 1234567[root~]# rpm -qa|grep nvidianvidia_peer_memory-1.0-8.x86_64libnvidia-container1-1.3.1-1.x86_64nvidia-docker2-2.5.0-1.noarchlibnvidia-container-tools-1.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-18T07:28:15.000Z">
+<meta property="article:modified_time" content="2021-01-19T08:10:08.886Z">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://damonyi.cc/2021/01/18/gpu-热挂载项目分析/"/>
+
+
+
+
+
+  <title>gpu 热挂载项目分析 | 云里雾里</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">云里雾里</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://damonyi.cc/2021/01/18/gpu-%E7%83%AD%E6%8C%82%E8%BD%BD%E9%A1%B9%E7%9B%AE%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="云里雾里">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">gpu 热挂载项目分析</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-01-18T15:28:15+08:00">
+                2021-01-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>测试场景 NVIDIA-Driver 418.67<br>nvidia-docker 版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root~]# rpm -qa|grep nvidia</span><br><span class="line">nvidia_peer_memory-1.0-8.x86_64</span><br><span class="line">libnvidia-container1-1.3.1-1.x86_64</span><br><span class="line">nvidia-docker2-2.5.0-1.noarch</span><br><span class="line">libnvidia-container-tools-1.3.1-1.x86_64</span><br><span class="line">nvidia-container-runtime-3.4.0-1.x86_64</span><br><span class="line">nvidia-container-toolkit-1.4.0-2.x86_64</span><br></pre></td></tr></table></figure>
+<h2 id="Linux-设备的major-和minor-number"><a href="#Linux-设备的major-和minor-number" class="headerlink" title="Linux 设备的major 和minor number"></a>Linux 设备的major 和minor number</h2><p>Linux 系统的/dev 目录下面的设备文件是用来描述外设的，如/dev/sda1表示第一块硬盘的第一个分区，但是这个/dev/sda1紧紧是方便用户观察，Linux内核中表示不同的设备是通过major和minor number 实现，对多major和minor number 来加载相应的驱动程序。其中<br>major number：表示不同的设备类型</p>
+<p>minor number ：表示同一个设备的不同分区</p>
+<p>主设备号标识设备对应的驱动程序（或者多个相关的驱动程序共用相同的一个主设备号），次设备号表示驱动程序驱动的一个设备。</p>
+<p>例如Linux系统中的sda磁盘和sdb 磁盘major number 都是8，但是sda的minor number 是从0 开始，sdb的minor number 是16开始<br>使用以下命令查看major number 和minor number</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@node devices]# ls -l /dev/sda1</span><br><span class="line">brw-rw---- 1 root disk 8, 1 1月  29 16:55 /dev/sda1</span><br></pre></td></tr></table></figure>
+<p>上述命令中，brw的b表示块设备(block),主设备号是8,次设备号是1。也就是8,1表示major,minor。也可以stat –format=%t:%T显示</p>
+<p>查看GPU的信息major和minor 信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node ~]# ls -l /dev/nvidia0 </span><br><span class="line">crw-rw-rw- 1 root root 195, 0 Jan 18 16:48 /dev/nvidia0</span><br><span class="line">[root@node ~]# ls -l /dev/nvidia1</span><br><span class="line">crw-rw-rw- 1 root root 195, 1 Jan 18 16:48 /dev/nvidia1</span><br></pre></td></tr></table></figure>
+<p>也可以通过代码获取major number 和minor numer ，这里找到一段代码用于获取</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">getDiskMajorMinor</span><span class="params">(path <span class="keyword">string</span>)</span> <span class="params">(major, minor <span class="keyword">int</span>, err error)</span></span> &#123;</span><br><span class="line">	stat := syscall.Stat_t&#123;&#125;</span><br><span class="line">	err = syscall.Stat(path, &amp;stat)</span><br><span class="line">	<span class="keyword">if</span> <span class="literal">nil</span> != err &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>, <span class="number">0</span>, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//refer to "dev_t new_decode_dev(u32 dev)" defined in the kernel header file linux/kdev.h</span></span><br><span class="line">	major = <span class="keyword">int</span>(((<span class="keyword">uint32</span>(stat.Dev)) &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xfff</span>)</span><br><span class="line">	minor = <span class="keyword">int</span>((stat.Dev &amp; <span class="number">0xff</span>) | ((stat.Dev &gt;&gt; <span class="number">12</span>) &amp; <span class="number">0xfff00</span>))</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> major, minor, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Linux-mknod-命令"><a href="#Linux-mknod-命令" class="headerlink" title="Linux mknod 命令"></a>Linux mknod 命令</h2><p>linux操作系统跟外部设备（如磁盘、光盘等）的通信都是通过设备文件进行的，应用程序可以打开、关闭、读写这些设备文件，从而对设备进行读写，这种操作就像读写普通的文件一样easy。linux为不同种类的设备文件提供了相同的接口，比如read(),write(),open(),close()。</p>
+<p>在系统与设备通信之前，系统首先要建立一个设备文件，这个设备文件存放在/dev目录下。其实系统默认情况下就已经生成了很多设备文件，有时候需要自己手动新建一些设备文件，这个时候就会用到像mkdir, mknod这样的命令。</p>
+<p>我们也可以自己mknod /dev/sda1_myref b 8 1来创建设备文件。设备文件可以看成是对linux内核设备对象的一个索引。所以主设备号和次设备号均相同的两个设备文件，对其中一个设备的修改，在另一个设备文件访问时也会看到修改的结果。</p>
+<p> mknod 的标准形式为:       mknod DEVNAME {b | c}  MAJOR  MINOR</p>
+<p>1，DEVNAME是要创建的设备文件名，如果想将设备文件放在一个特定的文件夹下，就需要先用mkdir在dev目录下新建一个目录；</p>
+<p>2， b和c 分别表示块设备和字符设备：</p>
+<pre><code>b表示系统从块设备中读取数据的时候，直接从内存的buffer中读取数据，而不经过磁盘；
+
+c表示字符设备文件与设备传送数据的时候是以字符的形式传送，一次传送一个字符，比如打印机、终端都是以字符的形式传送数据；</code></pre>
+<p>3，MAJOR和MINOR分别表示主设备号和次设备号：为了管理设备，系统为每个设备分配一个编号，一个设备号由主设备号和次设备号组成。主设备号标示某一种类的设备，次设备号用来区分同一类型的设备。linux操作系统中为设备文件编号分配了32位无符号整数，其中前12位是主设备号，后20位为次设备号，所以在向系统申请设备文件时主设备号不好超过4095，次设备号不好超过2^20 -1。</p>
+<h2 id="cgroup-device子系统"><a href="#cgroup-device子系统" class="headerlink" title="cgroup device子系统"></a>cgroup device子系统</h2><p>使用devices 子系统可以允许或者拒绝cgroup中的进程访问设备。devices子系统有三个控制文件：devices.allow,devices.deny,devices.list。devices.allow用于指定cgroup中的进程可以访问的设备,devices.deny用于指定cgroup中的进程不能访问的设备，devices.list用于报告cgroup中的进程访问的设备。devices.allow文件中包含若干条目，每个条目有四个字段：type、major、minor 和 access。type、major 和 minor 字段中使用的值对应 Linux 分配的设备。</p>
+<p>type指定设备类型：</p>
+<pre><code>a - 应用所有设备，可以是字符设备，也可以是块设备
+
+b- 指定块设备
+
+c - 指定字符设备</code></pre>
+<p>major和minor指定设备的主次设备号。</p>
+<p>access 则指定相应的权限：</p>
+<pre><code>r - 允许任务从指定设备中读取
+
+w - 允许任务写入指定设备
+
+m - 允许任务生成还不存在的设备文件</code></pre>
+<p>具体可以参考<a href="https://www.cnblogs.com/lisperl/archive/2012/04/24/2468170.html" target="_blank" rel="noopener">这里</a></p>
+<h2 id="pokerfaceSad-CVE-2021-1056-项目"><a href="#pokerfaceSad-CVE-2021-1056-项目" class="headerlink" title="pokerfaceSad/CVE-2021-1056 项目"></a>pokerfaceSad/CVE-2021-1056 项目</h2><p>这个项目主要是一个main.sh, 脚本里主要是查询GPU的major number，然后使用mknod 命令新增容器，如下所示</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">root@container1:&#x2F;ttt# nvidia-smi </span><br><span class="line">+-----------------------------------------------------------------------------+</span><br><span class="line">| NVIDIA-SMI 450.80.02    Driver Version: 418.80.02    CUDA Version: 11.0     |</span><br><span class="line">|-------------------------------+----------------------+----------------------+</span><br><span class="line">| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |</span><br><span class="line">| Fan  Temp  Perf  Pwr:Usage&#x2F;Cap|         Memory-Usage | GPU-Util  Compute M. |</span><br><span class="line">|                               |                      |               MIG M. |</span><br><span class="line">|&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;+&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;+&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;|</span><br><span class="line">|   0  Tesla P100-PCIE...  Off  | 00000000:86:00.0 Off |                    0 |</span><br><span class="line">| N&#x2F;A   33C    P0    25W &#x2F; 250W |      0MiB &#x2F; 16280MiB |      0%      Default |</span><br><span class="line">|                               |                      |                  N&#x2F;A |</span><br><span class="line">+-------------------------------+----------------------+----------------------+</span><br><span class="line">                                                                               </span><br><span class="line">+-----------------------------------------------------------------------------+</span><br><span class="line">| Processes:                                                                  |</span><br><span class="line">|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |</span><br><span class="line">|        ID   ID                                                   Usage      |</span><br><span class="line">|&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;|</span><br><span class="line">|  No running processes found                                                 |</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@container1:&#x2F;ttt# ll -l &#x2F;dev&#x2F;nvidia0</span><br><span class="line">crw-rw-rw- 1 root root 195, 0 Jan 18 08:48 &#x2F;dev&#x2F;nvidia0</span><br><span class="line"></span><br><span class="line">root@container1:&#x2F;ttt# mknod -m 666 &#x2F;dev&#x2F;nvidia1 c 195 0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@container1:&#x2F;ttt# nvidia-smi       </span><br><span class="line">+-----------------------------------------------------------------------------+</span><br><span class="line">| NVIDIA-SMI 450.80.02    Driver Version: 450.80.02    CUDA Version: 11.0     |</span><br><span class="line">|-------------------------------+----------------------+----------------------+</span><br><span class="line">| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |</span><br><span class="line">| Fan  Temp  Perf  Pwr:Usage&#x2F;Cap|         Memory-Usage | GPU-Util  Compute M. |</span><br><span class="line">|                               |                      |               MIG M. |</span><br><span class="line">|&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;+&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;+&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;|</span><br><span class="line">|   0  Tesla P100-PCIE...  Off  | 00000000:86:00.0 Off |                    0 |</span><br><span class="line">| N&#x2F;A   32C    P0    25W &#x2F; 250W |      0MiB &#x2F; 16280MiB |      0%      Default |</span><br><span class="line">|                               |                      |                  N&#x2F;A |</span><br><span class="line">+-------------------------------+----------------------+----------------------+</span><br><span class="line">|   1  Tesla P100-PCIE...  Off  | 00000000:AF:00.0 Off |                    0 |</span><br><span class="line">| N&#x2F;A   28C    P0    25W &#x2F; 250W |      0MiB &#x2F; 16280MiB |      0%      Default |</span><br><span class="line">|                               |                      |                  N&#x2F;A |</span><br><span class="line">+-------------------------------+----------------------+----------------------+</span><br><span class="line">                                                                               </span><br><span class="line">+-----------------------------------------------------------------------------+</span><br><span class="line">| Processes:                                                                  |</span><br><span class="line">|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |</span><br><span class="line">|        ID   ID                                                   Usage      |</span><br><span class="line">|&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;|</span><br><span class="line">|  No running processes found                                                 |</span><br><span class="line">+-----------------------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="GPUmounter-项目"><a href="#GPUmounter-项目" class="headerlink" title="GPUmounter 项目"></a>GPUmounter 项目</h2><p>该项目主要设计了一个项目，用于Kubernetes 内的集群，用于增加删除容器内的GPU卡数，主要功能是在容器外部进行操作，将容器内的GPU卡数增加或者减少</p>
+<p>容器外部控制容器内GPU卡 数量的方法如下所示：</p>
+<p>获取Pod对应的容器的cgroup文件信息，例如容器ID为d80172f6ba5f9d4e82ce6f95c592f89dfa5f3ad637c9c38f7739c04b1f9c5d62<br>则该容器对应的cgroup 的device 目录如下所示：<br>执行命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd  &#x2F;sys&#x2F;fs&#x2F;cgroup&#x2F;devices&#x2F;system.slice&#x2F;docker-d80172f6ba5f9d4e82ce6f95c592f89dfa5f3ad637c9c38f7739c04b1f9c5d62.scope</span><br><span class="line"></span><br><span class="line">echo c &quot;195:0 rw&quot; &gt;devices.allow</span><br></pre></td></tr></table></figure>
+<p>从该目录的cgroup.procs 文件中获取容器对应的PID，该文件可能存在多个PId，获取该文件中第一个PID，如下所示为157136</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 docker-d80172f6ba5f9d4e82ce6f95c592f89dfa5f3ad637c9c38f7739c04b1f9c5d62.scope]# cat cgroup.procs </span><br><span class="line">157136</span><br><span class="line">157158</span><br><span class="line">157166</span><br><span class="line">157174</span><br></pre></td></tr></table></figure>
+
+<p>进入容器命名空间执行命令</p>
+<p> nsenter –target 157136 –mount<br> /bin/mknod -m  666   /dev/nvidia1  c 195 0</p>
+<p>再次登录容器查看GPU信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">root@28cam0e1oddj1-0:&#x2F;ttt# nvidia-smi   </span><br><span class="line">+-----------------------------------------------------------------------------+</span><br><span class="line">| NVIDIA-SMI 450.80.02    Driver Version: 450.80.02    CUDA Version: 11.0     |</span><br><span class="line">|-------------------------------+----------------------+----------------------+</span><br><span class="line">| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |</span><br><span class="line">| Fan  Temp  Perf  Pwr:Usage&#x2F;Cap|         Memory-Usage | GPU-Util  Compute M. |</span><br><span class="line">|                               |                      |               MIG M. |</span><br><span class="line">|&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;+&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;+&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;|</span><br><span class="line">|   0  Tesla P100-PCIE...  Off  | 00000000:86:00.0 Off |                    0 |</span><br><span class="line">| N&#x2F;A   33C    P0    26W &#x2F; 250W |      0MiB &#x2F; 16280MiB |      0%      Default |</span><br><span class="line">|                               |                      |                  N&#x2F;A |</span><br><span class="line">+-------------------------------+----------------------+----------------------+</span><br><span class="line">|   1  Tesla P100-PCIE...  Off  | 00000000:AF:00.0 Off |                    0 |</span><br><span class="line">| N&#x2F;A   29C    P0    25W &#x2F; 250W |      0MiB &#x2F; 16280MiB |      0%      Default |</span><br><span class="line">|                               |                      |                  N&#x2F;A |</span><br><span class="line">+-------------------------------+----------------------+----------------------+</span><br><span class="line">                                                                               </span><br><span class="line">+-----------------------------------------------------------------------------+</span><br><span class="line">| Processes:                                                                  |</span><br><span class="line">|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |</span><br><span class="line">|        ID   ID                                                   Usage      |</span><br><span class="line">|&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;|</span><br><span class="line">|  No running processes found                                                 |</span><br><span class="line">+-----------------------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+
+<p>核心代码如下所示</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MountGPU</span><span class="params">(pod *corev1.Pod, gpu *device.NvidiaGPU)</span> <span class="title">error</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	Logger.Info(<span class="string">"Start mount GPU: "</span> + gpu.String() + <span class="string">" to Pod: "</span> + pod.Name)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// change devices control group</span></span><br><span class="line">	containerID := pod.Status.ContainerStatuses[<span class="number">0</span>].ContainerID</span><br><span class="line">	containerID = strings.Replace(containerID, <span class="string">"docker://"</span>, <span class="string">""</span>, <span class="number">1</span>)</span><br><span class="line">    Logger.Info(<span class="string">"Pod :"</span> + pod.Name + <span class="string">" container ID: "</span> + containerID)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//拼接 该容器对应的cgroup 文件 例如：/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod1234_abcd_5678_efgh.slice</span></span><br><span class="line">	cgroupPath, err := cgroup.GetCgroupName(<span class="string">"cgroupfs"</span>, pod, containerID)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		Logger.Error(<span class="string">"Get cgroup path for Pod: "</span> + pod.Name + <span class="string">" failed"</span>)</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	Logger.Info(<span class="string">"Successfully get cgroup path: "</span> + cgroupPath + <span class="string">" for Pod: "</span> + pod.Name)</span><br><span class="line"></span><br><span class="line">  <span class="comment">//获得容器对应的真实的cgroup目录，如/sys/fs/cgroup/devices+cgroupPath，即/sys/fs/cgroup/devices/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod17edd3dd_e2ec_43c6_8c7d_83d4322f1b2c.slice</span></span><br><span class="line">   <span class="comment">//将GPU 的版本信息读写权限配置到device.allow</span></span><br><span class="line">  <span class="comment">// echo c  "&#123;device.DEFAULT_NVIDA_MAJOR_NUMBER&#125;:&#123;gpu.MinorNumber&#125;  rw" &gt;  /sys/fs/cgroup/devices/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod17edd3dd_e2ec_43c6_8c7d_83d4322f1b2c.slice/devices.allow"</span></span><br><span class="line">	<span class="keyword">if</span> err := cgroup.AddGPUDevicePermission(cgroupPath, gpu); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		Logger.Error(<span class="string">"Add GPU "</span> + gpu.String() + <span class="string">"failed"</span>)</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	Logger.Info(<span class="string">"Successfully add GPU: "</span> + gpu.String() + <span class="string">" permisssion for Pod: "</span> + pod.Name)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// get target PID of this group</span></span><br><span class="line">    <span class="comment">//从文件 /sys/fs/cgroup/devices/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod17edd3dd_e2ec_43c6_8c7d_83d4322f1b2c.slice/cgroup.procs中获取PID</span></span><br><span class="line">	pids, err := cgroup.GetCgroupPIDs(cgroupPath)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		Logger.Error(<span class="string">"Get PID of Pod: "</span> + pod.Name + <span class="string">" Container: "</span> + containerID + <span class="string">" failed"</span>)</span><br><span class="line">		Logger.Error(err)</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	PID, err := strconv.Atoi(pids[<span class="number">0</span>])</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		Logger.Error(<span class="string">"Invalid PID: "</span>, pids[<span class="number">0</span>])</span><br><span class="line">		Logger.Error(err)</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	Logger.Info(<span class="string">"Successfully get PID: "</span> + strconv.Itoa(PID) + <span class="string">" of Pod: "</span> + pod.Name + <span class="string">" Container: "</span> + containerID)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// enter container namespace to mknod</span></span><br><span class="line">    <span class="comment">//进入容器命名mount 命名空间，执行mknod</span></span><br><span class="line">    <span class="comment">// nsenter --target containerPid --cgroup --ipc --mount --net --pid --user --uts  </span></span><br><span class="line">    <span class="comment">// "mknod -m " + device.DEFAULT_DEVICE_FILE_PERMISSION + " " + gpu.DeviceFilePath + " c " + strconv.Itoa(device.DEFAULT_NVIDA_MAJOR_NUMBER) + " " + strconv.Itoa(gpu.MinorNumber)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	cfg := &amp;namespace.Config&#123;</span><br><span class="line">		Mount:  <span class="literal">true</span>, <span class="comment">// Execute into mount namespace</span></span><br><span class="line">		Target: PID,  <span class="comment">// Enter into Target namespace</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err := namespace.AddGPUDeviceFile(cfg, gpu); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		Logger.Error(<span class="string">"Failed to create device file in Target PID Namespace: "</span>, PID, <span class="string">" Pod: "</span>, pod.Name, <span class="string">" Namespace: "</span>, pod.Namespace)</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	Logger.Info(<span class="string">"Successfully create device file in Target PID Namespace: "</span>, PID, <span class="string">" Pod: "</span>, pod.Name, <span class="string">" Namespace: "</span>, pod.Namespace)</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/01/15/%E5%9B%A2%E9%98%9F%E7%AE%A1%E7%90%86/" rel="next" title="团队管理">
+                <i class="fa fa-chevron-left"></i> 团队管理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/01/19/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/" rel="prev" title="操作系统安装流程">
+                操作系统安装流程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">64</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:wangdk789@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux-设备的major-和minor-number"><span class="nav-number">1.</span> <span class="nav-text">Linux 设备的major 和minor number</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux-mknod-命令"><span class="nav-number">2.</span> <span class="nav-text">Linux mknod 命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cgroup-device子系统"><span class="nav-number">3.</span> <span class="nav-text">cgroup device子系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pokerfaceSad-CVE-2021-1056-项目"><span class="nav-number">4.</span> <span class="nav-text">pokerfaceSad&#x2F;CVE-2021-1056 项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GPUmounter-项目"><span class="nav-number">5.</span> <span class="nav-text">GPUmounter 项目</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DavidStack</span>
+
+  <!-- <div class="beian">
+  </div> -->
+ 
+  <div class="BbeiAn-info">
+    鲁ICP备 -
+    <a target="_blank"  href="https://beian.miit.gov.cn">16023683号-1</a>
+  </div>
+
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="c5YHonM6Ek6i_dIKMceKoszIqEtrVddsax9qcaoQfR4" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="新版本调度器框架用来解决的问题 当前版本的调度器，越来越多的特性被加入到调度器，让调度器的代码越来越多，逻辑越来越复杂，不容易维护，不容易发现问题 当前版本的调度器extender机制扩展点有限，对于”Filter”类型的扩展，只能在默认的预选函数之后执行，”Preempt”类型的扩展只能在默认的抢占函数之后调用，只能有一个Binding 的扩展，而且这个Bind 扩展会代替默认的扩展功能，ext">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kubernetes 新版调度器框架">
+<meta property="og:url" content="https://damonyi.cc/2021/01/19/kubernetes-%E6%96%B0%E7%89%88%E8%B0%83%E5%BA%A6%E5%99%A8%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="云里雾里">
+<meta property="og:description" content="新版本调度器框架用来解决的问题 当前版本的调度器，越来越多的特性被加入到调度器，让调度器的代码越来越多，逻辑越来越复杂，不容易维护，不容易发现问题 当前版本的调度器extender机制扩展点有限，对于”Filter”类型的扩展，只能在默认的预选函数之后执行，”Preempt”类型的扩展只能在默认的抢占函数之后调用，只能有一个Binding 的扩展，而且这个Bind 扩展会代替默认的扩展功能，ext">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://damonyi.cc/2021/01/19/kubernetes-%E6%96%B0%E7%89%88%E8%B0%83%E5%BA%A6%E5%99%A8%E6%A1%86%E6%9E%B6/1.png">
+<meta property="og:image" content="https://damonyi.cc/2021/01/19/kubernetes-%E6%96%B0%E7%89%88%E8%B0%83%E5%BA%A6%E5%99%A8%E6%A1%86%E6%9E%B6/2.png">
+<meta property="og:image" content="https://damonyi.cc/2021/01/19/kubernetes-%E6%96%B0%E7%89%88%E8%B0%83%E5%BA%A6%E5%99%A8%E6%A1%86%E6%9E%B6/3.png">
+<meta property="article:published_time" content="2021-01-19T08:19:11.000Z">
+<meta property="article:modified_time" content="2021-01-22T02:37:34.360Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://damonyi.cc/2021/01/19/kubernetes-%E6%96%B0%E7%89%88%E8%B0%83%E5%BA%A6%E5%99%A8%E6%A1%86%E6%9E%B6/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://damonyi.cc/2021/01/19/kubernetes-新版调度器框架/"/>
+
+
+
+
+
+  <title>kubernetes 新版调度器框架 | 云里雾里</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">云里雾里</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://damonyi.cc/2021/01/19/kubernetes-%E6%96%B0%E7%89%88%E8%B0%83%E5%BA%A6%E5%99%A8%E6%A1%86%E6%9E%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="云里雾里">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">kubernetes 新版调度器框架</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-01-19T16:19:11+08:00">
+                2021-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="新版本调度器框架用来解决的问题"><a href="#新版本调度器框架用来解决的问题" class="headerlink" title="新版本调度器框架用来解决的问题"></a>新版本调度器框架用来解决的问题</h2><ol>
+<li>当前版本的调度器，越来越多的特性被加入到调度器，让调度器的代码越来越多，逻辑越来越复杂，不容易维护，不容易发现问题</li>
+<li>当前版本的调度器extender机制扩展点有限，对于”Filter”类型的扩展，只能在默认的预选函数之后执行，”Preempt”类型的扩展只能在默认的抢占函数之后调用，只能有一个Binding 的扩展，而且这个Bind 扩展会代替默认的扩展功能，extender扩展机制不能在任意点调用，例如无法在默认的 预选函数之前进行调用</li>
+<li>每次调用Extender时，都需要对json数据进行解析，调用http 服务的速度慢与直接本地的api调用</li>
+<li>没有默认调度器与extender的交互机制，例如当extender 扩展出现异常时，无法通知默认的调度器</li>
+<li>extender的调度器是以一个单独的进程运行，不能共享默认调度器的cache，需要extender 构建自己的cache<h2 id="新版本调度器框架机制"><a href="#新版本调度器框架机制" class="headerlink" title="新版本调度器框架机制"></a>新版本调度器框架机制</h2>在调度一个Pod时，分为调度部分和绑定部分，其中调度部分用于为Pod选择一个节点，绑定部分将调度部分的决策作用于集群，一个调度Cycle和一个绑定Cycle 被称为一个调度上下文，其中多个调度Cycle是串行运行，绑定Cycle 是并行运行，对于一个Pod，当出现内部错误时或者该Pod无法被调度时，调度Cycle 和绑定Cycle就会终止，这个Pod 被重新放到调度队列</li>
+</ol>
+<p>插件扩展点：</p>
+<p><img src="/2021/01/19/kubernetes-%E6%96%B0%E7%89%88%E8%B0%83%E5%BA%A6%E5%99%A8%E6%A1%86%E6%9E%B6/1.png" alt="avatar"></p>
+<ol>
+<li><p>Queue Sort</p>
+<p>在这个插件点的插件 用于对调度队列中的Pod进行排序</p>
+</li>
+<li><p>PreFilter</p>
+<p>在这个插件点的插件，用于对Pod进行预处理、检查集群、Pod，当该插件出现错误是，该调度会结束，PreFilter在调度周期内只会调用一次</p>
+</li>
+<li><p>Filter</p>
+<p> 过滤出不能运行Pod的节点，对于每一个Node，调度器都会按照顺序调用filter插件，都某个一个Filter插件判断Node不符合要求时，不会再对该节点调用其他插件。多个Node会并行进行评估，在一个调度周期内，Filter可能会被调用多次</p>
+</li>
+<li><p>PostFilter</p>
+<p> 在Filter插件点后进行调用，只有当没有为Pod找到Node时，才会调用该PostFilter节点的插件，当其中一个PostFilter节点为Pod找到了一个节点，其他的PostFilter插件不会再调用</p>
+</li>
+<li><p>PreScore</p>
+<p>用于更新内部状态、产生日志、监控信息等</p>
+</li>
+<li><p>Scoring</p>
+<p>和原调度器的打分机制相同，包含打分和归一化两部分</p>
+</li>
+<li><p>Reserve</p>
+<p>包含Reserve和Unreserve两部分，用于通知为Pod在Node上预留节点或者不为Pod预留资源，该阶段会在Bind之前进行调用，这个地方在做gang scheduling 的时候比较有用</p>
+</li>
+<li><p>Permit</p>
+<p> 用于限制或者推迟Pod的绑定，有三种结果，Approve：当所有的Permit 插件都是Approve时，这个Pod将会被Bind。 Deny：如果任意一个Permit插件Deny，则这个Pod就会重新被放入到调度队列。Wait：如果一个Permit插件提示Wait，则需要在timeout时间内等待其他的Permit插件提示Approve，如果timeout时间内没有等到Approve，则该Pod会被重新放入到调度队列</p>
+</li>
+<li><p>PreBind</p>
+<p>做一些Pod bind之前的准备工作，例如创建网络存储的卷，将卷挂载到主机，如果任意一个PreBind 插件报错，该Pod就会重新被放到调度队列中，重新进行调度</p>
+</li>
+<li><p>Bind</p>
+<p>将Pod 绑定到Node，可能会存在多个Bind plugin，不同的Bind Plugin 可能会选择不同的Pod进行Bind</p>
+</li>
+<li><p>PostBind</p>
+<p>这里主要用于信息扩展，当一个Pod被成功Bind到一个节点时，意味着一个调度周期结束，可以用于清理一些相关的资源</p>
+</li>
+</ol>
+<h2 id="插件生命周期"><a href="#插件生命周期" class="headerlink" title="插件生命周期"></a>插件生命周期</h2><ol>
+<li>初始化<br>需要两步完成插件的初始化，首先，插件需要被注册，其次调度器会根据配置选择初始化的插件，如果一个插件在多个扩展点注册，该插件只会被初始化一次</li>
+</ol>
+<ol start="2">
+<li><p>并发</p>
+<p>在编写插件时，需要考虑两种类型的插件并发，当在并发评估每个节点时，一个插件可能会被调用多次，在多个调度的上下文，一个插件也可能能被并发调用，但是在一个调度的上下文内，插件是被顺序调用。</p>
+<p>如下图所示，调度器的Main thread。一次只处理一个调度周期，任意的在Permit扩展点之上的扩展点，包括Permit扩展点，会在下一个调度周期开始之前全部结束，Permit 之后，Bind Thread会并发执行，并发执行，就是扩展插件可能会被两个不同的上下文执行，其中Reserver插件的Unreserve函数可能会在main thread或者 bind thread中被调用</p>
+</li>
+</ol>
+<p><img src="/2021/01/19/kubernetes-%E6%96%B0%E7%89%88%E8%B0%83%E5%BA%A6%E5%99%A8%E6%A1%86%E6%9E%B6/2.png" alt="avatar"></p>
+<h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><ol>
+<li>定义插件的对象和构造函数</li>
+</ol>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// QoSSort is a plugin that implements QoS class based sorting.</span></span><br><span class="line"><span class="keyword">type</span> Sort <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"><span class="comment">// New initializes a new plugin and returns it.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(_ *runtime.Unknown, _ framework.FrameworkHandle)</span> <span class="params">(framework.Plugin, error)</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;Sort&#123;&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>根据插件对应的插件点，实现对应的接口函数</li>
+</ol>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// QueueSortPlugin is an interface that must be implemented by "QueueSort" plugins.</span></span><br><span class="line"><span class="comment">// These plugins are used to sort pods in the scheduling queue. Only one queue sort</span></span><br><span class="line"><span class="comment">// plugin may be enabled at a time.</span></span><br><span class="line"><span class="keyword">type</span> QueueSortPlugin <span class="keyword">interface</span> &#123;</span><br><span class="line">    Plugin</span><br><span class="line">    <span class="comment">// Less are used to sort pods in the scheduling queue.</span></span><br><span class="line">    Less(*PodInfo, *PodInfo) <span class="keyword">bool</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>插件注册</li>
+</ol>
+<p>在调度器的启动的main 函数添加自定义的调度插件</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// cmd/main.go</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    rand.Seed(time.Now().UnixNano())</span><br><span class="line">    command := app.NewSchedulerCommand(</span><br><span class="line">        app.WithPlugin(qos.Name, qos.New),</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">if</span> err := command.Execute(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">        os.Exit(<span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>编译启动</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ bin&#x2F;kube-scheduler --kubeconfig&#x3D;scheduler.conf --config&#x3D;.&#x2F;manifests&#x2F;qos&#x2F;scheduler-config.yaml</span><br></pre></td></tr></table></figure>
+
+<h2 id="Use-Case"><a href="#Use-Case" class="headerlink" title="Use Case"></a>Use Case</h2><h3 id="Coscheduling-批调度"><a href="#Coscheduling-批调度" class="headerlink" title="Coscheduling 批调度"></a>Coscheduling 批调度</h3><p>Coscheduling 和之前理解的gang scheduling 有些区别，引用<a href="https://blog.csdn.net/yunqiinsight/article/details/107350005" target="_blank" rel="noopener">这里</a>的一些描述</p>
+<blockquote>
+<p>Wikipedia对 Coscheduling的定义是“在并发系统中将多个相关联的进程调度到不同处理器上同时运行的策略”。在Coscheduling的场景中，最主要的原则是保证所有相关联的进程能够同时启动。防止部分进程的异常，导致整个关联进程组的阻塞。这种导致阻塞的部分异常进程，称之为“碎片（fragement）”。<br>在Coscheduling的具体实现过程中，根据是否允许“碎片”存在，可以细分为Explicit Coscheduling，Local Coscheduling和Implicit Coscheduling。 其中Explicit Coscheduling就是大家常听到的Gang Scheduling。Gang Scheduling要求完全不允许有“碎片”存在， 也就是“All or Nothing”。维基百科的具体解释</p>
+</blockquote>
+<blockquote>
+<p>Explicit coscheduling requires all processing to actually take place at the same time, and is typically implemented by global scheduling across all processors. A specific algorithm is known as gang scheduling.<br>Local coscheduling allows individual processors to schedule the processing independently.<br>Dynamic (or implicit) coscheduling is a form of coscheduling where individual processors can still schedule processing independently, but they make scheduling decisions in cooperation with other processors.</p>
+</blockquote>
+<blockquote>
+<p>我们将上述定义的概念对应到Kubernetes中，就可以理解Kubernetes调度系统支持批任务Coscheduling的含义了。 一个批任务（关联进程组）包括了N个Pod（进程），Kubernetes调度器负责将这N个Pod调度到M个节点（处理器）上同时运行。如果这个批任务需要部分Pod同时启动即可运行，我们称需启动Pod的最小数量为min-available。特别地，当min-available=N时，批任务要求满足Gang Scheduling。</p>
+</blockquote>
+<p>这里基于Kubernetes新版本的调度框架开发的Coscheduling 借鉴了kube-batch调度器的思想，也有PodGroup的概念，只是把kube-batch的一些功能拆为了多个调度器插件<br><a href="https://github.com/kubernetes-sigs/scheduler-plugins/tree/master/pkg/coscheduling" target="_blank" rel="noopener">项目地址</a><br><img src="/2021/01/19/kubernetes-%E6%96%B0%E7%89%88%E8%B0%83%E5%BA%A6%E5%99%A8%E6%A1%86%E6%9E%B6/3.png" alt="avatar"></p>
+<p>用到的几个插件扩展点</p>
+<p>QueueSort插件：这里主要是将调度队列中 属于同一Podgroup到的Pod 放在一起，并安装PodGroup的创建时间/优先级，对Pod进行排序，来决定Pod进入调度队列的先后顺序。</p>
+<p>Prefilter插件：判断该PodGroup中的已经运行的Pod是否已经满足最小的Pod 运行数量，如果已经满足，则不再对该PodGroup中Pennding的Pod进行调度</p>
+<p>Permit插件：该插件主要是延迟绑定，即Pod进入到Permit阶段时，用户可以自定义条件来允许Pod通过、拒绝Pod通过以及让Pod等待状态(可设置超时时间)。Permit的延迟绑定的功能，刚好可以让属于同一个PodGruop的Pod调度到这个节点时，进行等待，等待积累的Pod数目满足足够的数目时，再统一运行同一个PodGruop的所有Pod进行绑定并创建。</p>
+<p>UnReserve插件：当某个Pod Permit 的时间超时，则会进入UnReserve阶段，则会将该Pod所在的PodGroup中所有的Pod都UnReserve，重新进入Pennding队列</p>
+<h3 id="Dynamic-Resource-Binding"><a href="#Dynamic-Resource-Binding" class="headerlink" title="Dynamic Resource Binding"></a>Dynamic Resource Binding</h3><p>NA</p>
+<h3 id="Custom-Scheduler-Plugins"><a href="#Custom-Scheduler-Plugins" class="headerlink" title="Custom Scheduler Plugins"></a>Custom Scheduler Plugins</h3><p>编写自定义调度插件时，不需要fork k8s 原生的调度代码，只需要要引入这些代码就可以，如下所示</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    scheduler <span class="string">"k8s.io/kubernetes/cmd/kube-scheduler/app"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    command := scheduler.NewSchedulerCommand(</span><br><span class="line">            scheduler.WithPlugin(<span class="string">"example-plugin1"</span>, ExamplePlugin1),</span><br><span class="line">            scheduler.WithPlugin(<span class="string">"example-plugin2"</span>, ExamplePlugin2))</span><br><span class="line">    <span class="keyword">if</span> err := command.Execute(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Fprintf(os.Stderr, <span class="string">"%v\n"</span>, err)</span><br><span class="line">        os.Exit(<span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/01/19/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/" rel="next" title="操作系统安装流程">
+                <i class="fa fa-chevron-left"></i> 操作系统安装流程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">64</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:wangdk789@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#新版本调度器框架用来解决的问题"><span class="nav-number">1.</span> <span class="nav-text">新版本调度器框架用来解决的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新版本调度器框架机制"><span class="nav-number">2.</span> <span class="nav-text">新版本调度器框架机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插件生命周期"><span class="nav-number">3.</span> <span class="nav-text">插件生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用方式"><span class="nav-number">4.</span> <span class="nav-text">使用方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Use-Case"><span class="nav-number">5.</span> <span class="nav-text">Use Case</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Coscheduling-批调度"><span class="nav-number">5.1.</span> <span class="nav-text">Coscheduling 批调度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dynamic-Resource-Binding"><span class="nav-number">5.2.</span> <span class="nav-text">Dynamic Resource Binding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Custom-Scheduler-Plugins"><span class="nav-number">5.3.</span> <span class="nav-text">Custom Scheduler Plugins</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DavidStack</span>
+
+  <!-- <div class="beian">
+  </div> -->
+ 
+  <div class="BbeiAn-info">
+    鲁ICP备 -
+    <a target="_blank"  href="https://beian.miit.gov.cn">16023683号-1</a>
+  </div>
+
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
