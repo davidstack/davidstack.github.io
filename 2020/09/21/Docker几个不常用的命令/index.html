@@ -70,7 +70,7 @@
 
 
 
-  <meta name="keywords" content="Docker,云计算,Container," />
+  <meta name="keywords" content="docker,云计算,Container," />
 
 
 
@@ -81,16 +81,16 @@
 
 
 
-<meta name="description" content="Docker不太常用的命令 docker ps -s #查看容器所占的磁盘大小 docker rm ${docker ps -q -a} # 删除全部非运行态的容器 docker system df #查看docker存储的使用情况 docker system prun #清理无用的容器、网络、数据集 docker rmi $(docker images | awk ‘&#x2F;^&#x2F; { print $3">
+<meta name="description" content="docker不太常用的命令 docker ps -s #查看容器所占的磁盘大小 docker rm ${docker ps -q -a} # 删除全部非运行态的容器 docker system df #查看docker存储的使用情况 docker system prun #清理无用的容器、网络、数据集 docker rmi $(docker images | awk ‘&#x2F;^&#x2F; { print $3">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Docker几个不常用的命令">
+<meta property="og:title" content="docker几个不常用的命令">
 <meta property="og:url" content="https://damonyi.cc/2020/09/21/Docker%E5%87%A0%E4%B8%AA%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4/index.html">
 <meta property="og:site_name" content="云里雾里">
-<meta property="og:description" content="Docker不太常用的命令 docker ps -s #查看容器所占的磁盘大小 docker rm ${docker ps -q -a} # 删除全部非运行态的容器 docker system df #查看docker存储的使用情况 docker system prun #清理无用的容器、网络、数据集 docker rmi $(docker images | awk ‘&#x2F;^&#x2F; { print $3">
+<meta property="og:description" content="docker不太常用的命令 docker ps -s #查看容器所占的磁盘大小 docker rm ${docker ps -q -a} # 删除全部非运行态的容器 docker system df #查看docker存储的使用情况 docker system prun #清理无用的容器、网络、数据集 docker rmi $(docker images | awk ‘&#x2F;^&#x2F; { print $3">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-21T11:44:34.000Z">
-<meta property="article:modified_time" content="2020-09-21T11:59:12.490Z">
-<meta property="article:tag" content="Docker">
+<meta property="article:modified_time" content="2021-01-29T00:15:59.638Z">
+<meta property="article:tag" content="docker">
 <meta property="article:tag" content="云计算">
 <meta property="article:tag" content="Container">
 <meta name="twitter:card" content="summary">
@@ -130,7 +130,7 @@
 
 
 
-  <title>Docker几个不常用的命令 | 云里雾里</title>
+  <title>docker几个不常用的命令 | 云里雾里</title>
   
 
 
@@ -274,7 +274,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Docker几个不常用的命令</h2>
+          <h2 class="post-title" itemprop="name headline">docker几个不常用的命令</h2>
         
 
         <div class="post-meta">
@@ -360,14 +360,14 @@
       
 
       
-        <h2 id="Docker不太常用的命令"><a href="#Docker不太常用的命令" class="headerlink" title="Docker不太常用的命令"></a>Docker不太常用的命令</h2><ul>
+        <h2 id="docker不太常用的命令"><a href="#docker不太常用的命令" class="headerlink" title="docker不太常用的命令"></a>docker不太常用的命令</h2><ul>
 <li>docker ps -s #查看容器所占的磁盘大小</li>
 <li>docker rm ${docker ps -q -a} # 删除全部非运行态的容器</li>
 <li>docker system df #查看docker存储的使用情况</li>
 <li>docker system prun #清理无用的容器、网络、数据集</li>
 <li>docker rmi $(docker images | awk ‘/^<none>/ { print $3 }’) #删除的镜像repositry为none的镜像</none></li>
 </ul>
-<h2 id="Docker配置参数"><a href="#Docker配置参数" class="headerlink" title="Docker配置参数"></a>Docker配置参数</h2><ol>
+<h2 id="docker配置参数"><a href="#docker配置参数" class="headerlink" title="docker配置参数"></a>docker配置参数</h2><ol>
 <li>--iptables ,该参数用于控制是否允许docker去管理iptables，当设置为true时，允许docker去管理iptbales表<ul>
 <li>通常在docker单独使用时，需要这样配置，如果配置为false，iptables被清空后，是无法自动创建的</li>
 <li>在基于Kubernetes等管理docker时，可以配置iptables=false</li>
@@ -378,7 +378,7 @@
 </ul>
 </li>
 </ol>
-<h2 id="迁移Docker存储方式一"><a href="#迁移Docker存储方式一" class="headerlink" title="迁移Docker存储方式一"></a>迁移Docker存储方式一</h2><p>若Docker已经运行一段时间，并存在运行的容器，可以采用以下方法进行容器存储的迁移</p>
+<h2 id="迁移docker存储方式一"><a href="#迁移docker存储方式一" class="headerlink" title="迁移docker存储方式一"></a>迁移docker存储方式一</h2><p>若docker已经运行一段时间，并存在运行的容器，可以采用以下方法进行容器存储的迁移</p>
 <ol>
 <li>停止全部容器</li>
 <li>停止docker：systemctl stop docker</li>
@@ -388,7 +388,7 @@
 <li>systemctl start docker</li>
 </ol>
 <p>注意删除软连接是 rm /var/lib/docker 后面不能有斜杠，否则是删除整个目录)</p>
-<h2 id="迁移Docker存储方式二"><a href="#迁移Docker存储方式二" class="headerlink" title="迁移Docker存储方式二"></a>迁移Docker存储方式二</h2><ol>
+<h2 id="迁移docker存储方式二"><a href="#迁移docker存储方式二" class="headerlink" title="迁移docker存储方式二"></a>迁移docker存储方式二</h2><ol>
 <li>停止全部容器</li>
 <li>停止docker：systemctl stop docker</li>
 <li>cd /sl</li>
@@ -418,7 +418,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Docker/" rel="tag"># Docker</a>
+            <a href="/tags/docker/" rel="tag"># docker</a>
           
             <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" rel="tag"># 云计算</a>
           
@@ -435,8 +435,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/09/21/Docker%E5%AE%B9%E5%99%A8%E5%86%85%E7%9A%84%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/" rel="next" title="Docker容器内的信号处理">
-                <i class="fa fa-chevron-left"></i> Docker容器内的信号处理
+              <a href="/2020/09/21/Docker%E5%AE%B9%E5%99%A8%E5%86%85%E7%9A%84%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/" rel="next" title="docker容器内的信号处理">
+                <i class="fa fa-chevron-left"></i> docker容器内的信号处理
               </a>
             
           </div>
@@ -445,8 +445,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/09/21/Docker%E4%BB%A5%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0Pipework/" rel="prev" title="Docker以网络插件方式实现Pipework">
-                Docker以网络插件方式实现Pipework <i class="fa fa-chevron-right"></i>
+              <a href="/2020/09/21/Docker%E4%BB%A5%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0Pipework/" rel="prev" title="docker以网络插件方式实现Pipework">
+                docker以网络插件方式实现Pipework <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -537,7 +537,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -579,7 +579,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker不太常用的命令"><span class="nav-number">1.</span> <span class="nav-text">Docker不太常用的命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker配置参数"><span class="nav-number">2.</span> <span class="nav-text">Docker配置参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迁移Docker存储方式一"><span class="nav-number">3.</span> <span class="nav-text">迁移Docker存储方式一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迁移Docker存储方式二"><span class="nav-number">4.</span> <span class="nav-text">迁移Docker存储方式二</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker不太常用的命令"><span class="nav-number">1.</span> <span class="nav-text">docker不太常用的命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker配置参数"><span class="nav-number">2.</span> <span class="nav-text">docker配置参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迁移docker存储方式一"><span class="nav-number">3.</span> <span class="nav-text">迁移docker存储方式一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迁移docker存储方式二"><span class="nav-number">4.</span> <span class="nav-text">迁移docker存储方式二</span></a></li></ol></div>
             
 
           </div>

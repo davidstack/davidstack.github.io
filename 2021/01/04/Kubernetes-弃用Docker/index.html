@@ -81,12 +81,12 @@
 
 
 
-<meta name="description" content="Kubernetes 在其最新的 Changelog 中宣布，自 Kubernetes 1.20 之后将弃用 Docker 作为容器运行时。那么这到底是怎么回事？开发者和企业会受到什么样到影响？ 近几年，Kubernetes 已经成为自有机房、云上广泛使用的容器编排方案，最广泛的使用方式是 Kubernetes+Docker。从 DevOps 人员的角度，一面用 kubctl 命令、k8s API">
+<meta name="description" content="Kubernetes 在其最新的 Changelog 中宣布，自 Kubernetes 1.20 之后将弃用 docker 作为容器运行时。那么这到底是怎么回事？开发者和企业会受到什么样到影响？ 近几年，Kubernetes 已经成为自有机房、云上广泛使用的容器编排方案，最广泛的使用方式是 Kubernetes+docker。从 DevOps 人员的角度，一面用 kubctl 命令、k8s API">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kubernetes 弃用Docker">
+<meta property="og:title" content="Kubernetes 弃用docker">
 <meta property="og:url" content="https://damonyi.cc/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/index.html">
 <meta property="og:site_name" content="云里雾里">
-<meta property="og:description" content="Kubernetes 在其最新的 Changelog 中宣布，自 Kubernetes 1.20 之后将弃用 Docker 作为容器运行时。那么这到底是怎么回事？开发者和企业会受到什么样到影响？ 近几年，Kubernetes 已经成为自有机房、云上广泛使用的容器编排方案，最广泛的使用方式是 Kubernetes+Docker。从 DevOps 人员的角度，一面用 kubctl 命令、k8s API">
+<meta property="og:description" content="Kubernetes 在其最新的 Changelog 中宣布，自 Kubernetes 1.20 之后将弃用 docker 作为容器运行时。那么这到底是怎么回事？开发者和企业会受到什么样到影响？ 近几年，Kubernetes 已经成为自有机房、云上广泛使用的容器编排方案，最广泛的使用方式是 Kubernetes+docker。从 DevOps 人员的角度，一面用 kubctl 命令、k8s API">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://damonyi.cc/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/1.png">
 <meta property="og:image" content="https://damonyi.cc/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/2.png">
@@ -98,7 +98,7 @@
 <meta property="og:image" content="https://damonyi.cc/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/8.jpg">
 <meta property="og:image" content="https://damonyi.cc/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/9.jpg">
 <meta property="article:published_time" content="2021-01-04T09:56:01.000Z">
-<meta property="article:modified_time" content="2021-01-04T11:06:27.314Z">
+<meta property="article:modified_time" content="2021-01-29T00:16:00.038Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://damonyi.cc/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/1.png">
 
@@ -137,7 +137,7 @@
 
 
 
-  <title>Kubernetes 弃用Docker | 云里雾里</title>
+  <title>Kubernetes 弃用docker | 云里雾里</title>
   
 
 
@@ -281,7 +281,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Kubernetes 弃用Docker</h2>
+          <h2 class="post-title" itemprop="name headline">Kubernetes 弃用docker</h2>
         
 
         <div class="post-meta">
@@ -367,30 +367,30 @@
       
 
       
-        <p>Kubernetes 在其最新的 Changelog 中宣布，自 Kubernetes 1.20 之后将弃用 Docker 作为容器运行时。那么这到底是怎么回事？开发者和企业会受到什么样到影响？</p>
-<p>近几年，Kubernetes 已经成为自有机房、云上广泛使用的容器编排方案，最广泛的使用方式是 Kubernetes+Docker。从 DevOps 人员的角度，一面用 kubctl 命令、k8s API 来操作集群，一面在单机用 Docker 命令来管理镜像、运行镜像。</p>
-<p>单独用 Docker 的情况，在一些公司的场景里面也是有的。一种场景是“只分不合”，把一台机器用 Docker 做资源隔离，但是不需要将多容器“编排”。单独用 Kubernetes，下层不是 Docker 的情况，并不算很多。</p>
-<p>Kubernetes 和 Docker 的关系，简单来说，有互补，也有竞争。在一般的认知中，Kubernetes 和 Docker 是互补关系：</p>
-<pre><code>        Dockers 属于下层——容器引擎
+        <p>Kubernetes 在其最新的 Changelog 中宣布，自 Kubernetes 1.20 之后将弃用 docker 作为容器运行时。那么这到底是怎么回事？开发者和企业会受到什么样到影响？</p>
+<p>近几年，Kubernetes 已经成为自有机房、云上广泛使用的容器编排方案，最广泛的使用方式是 Kubernetes+docker。从 DevOps 人员的角度，一面用 kubctl 命令、k8s API 来操作集群，一面在单机用 docker 命令来管理镜像、运行镜像。</p>
+<p>单独用 docker 的情况，在一些公司的场景里面也是有的。一种场景是“只分不合”，把一台机器用 docker 做资源隔离，但是不需要将多容器“编排”。单独用 Kubernetes，下层不是 docker 的情况，并不算很多。</p>
+<p>Kubernetes 和 docker 的关系，简单来说，有互补，也有竞争。在一般的认知中，Kubernetes 和 docker 是互补关系：</p>
+<pre><code>        dockers 属于下层——容器引擎
         Kubernetes 属于上层——编排调度层。</code></pre>
 <p>​</p>
-<p>Docker 源于 Linux Container，可以将一台机器的资源分成 N 份容器，做到资源的隔离，并将可运行的程序定义为标准的 docker image；Kubernetes 则可以把不同机器的每份容器进行编排、调度，组成分布式系统。<br>Kubernetes 和 Docker 并不完全是“泾渭分明”的互补关系，它之间有重叠部分，也可以说成是竞争，主要在于几个点：</p>
+<p>docker 源于 Linux Container，可以将一台机器的资源分成 N 份容器，做到资源的隔离，并将可运行的程序定义为标准的 docker image；Kubernetes 则可以把不同机器的每份容器进行编排、调度，组成分布式系统。<br>Kubernetes 和 docker 并不完全是“泾渭分明”的互补关系，它之间有重叠部分，也可以说成是竞争，主要在于几个点：</p>
 <ul>
-<li><p>系统三大移植资源是计算、存储、网络，从 Kubernetes 角度 Docker 属于“Runtime（运行时）”，也就是计算资源；但是 Docker 技术体系里面，本身也包括存储层、网络层。上下层职责的重叠，也可以看作竞争。</p>
+<li><p>系统三大移植资源是计算、存储、网络，从 Kubernetes 角度 docker 属于“Runtime（运行时）”，也就是计算资源；但是 docker 技术体系里面，本身也包括存储层、网络层。上下层职责的重叠，也可以看作竞争。</p>
 </li>
-<li><p>Docker 原本有个原生的调度引擎——Swarm，几年前在调度编排领域，还是 Kubernetes、Mesos、Swarm 三者并存，Kubernetes 最终胜出，但 Docker 仍有“继续向上做一层的意愿”。</p>
+<li><p>docker 原本有个原生的调度引擎——Swarm，几年前在调度编排领域，还是 Kubernetes、Mesos、Swarm 三者并存，Kubernetes 最终胜出，但 docker 仍有“继续向上做一层的意愿”。</p>
 </li>
 </ul>
 <p><img src="/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/1.png" alt="avatar"></p>
-<p>Kubernetes 在如何使用 Docker 方面，存在争议和变数。kubernetes 1.20 ChangeLog 中所谓要废弃 Docker 的传言，也是无风不起浪。换句话说，即便 Kubernetes 一直用 Docker，也不是用 Docker 的全部，多少是不一样的。</p>
+<p>Kubernetes 在如何使用 docker 方面，存在争议和变数。kubernetes 1.20 ChangeLog 中所谓要废弃 docker 的传言，也是无风不起浪。换句话说，即便 Kubernetes 一直用 docker，也不是用 docker 的全部，多少是不一样的。</p>
 <p><img src="/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/2.png" alt="avatar"></p>
-<p>而且，“弃用 Docker”这个词本身有多重的含义，Docker 并非一个单层软件，Kubernetes 1.20 弃用 dockershim 并不代表弃用了 Docker 的全部，仍有 containerd 可以对接 docker。</p>
+<p>而且，“弃用 docker”这个词本身有多重的含义，docker 并非一个单层软件，Kubernetes 1.20 弃用 dockershim 并不代表弃用了 docker 的全部，仍有 containerd 可以对接 docker。</p>
 <h2 id="Kubernetes-有-CRI、OCI-两个容器标准"><a href="#Kubernetes-有-CRI、OCI-两个容器标准" class="headerlink" title="Kubernetes 有 CRI、OCI 两个容器标准"></a>Kubernetes 有 CRI、OCI 两个容器标准</h2><p>在目前广泛使用 kubernetes 与 Runtime 的桥接方案，CRI（Container Runtime Interface）与 OCI（Open Container Initiative）是“套娃“关系。Kubernetes 的 kubelet 调用 CRI，OCI 的实现者然后再调用 OCI。</p>
 <p>下图也说明了 CRI 与 OCI 的关系：</p>
 <p><img src="/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/3.jpg" alt="avatar"></p>
 <p>从 Kubernetes 的角度，CRI 是与 CNI（网络）、CSI（存储）相同层级的接口。</p>
 <ul>
-<li>OCI 是个自下而上的标准，也就是从实现抽象出接口，它是 Linux Foundation 主导的。Docker 实现的核心 RunC，也就是 OCI 的典型实现、标准实现。</li>
+<li>OCI 是个自下而上的标准，也就是从实现抽象出接口，它是 Linux Foundation 主导的。docker 实现的核心 RunC，也就是 OCI 的典型实现、标准实现。</li>
 <li>CRI 是个自上而下的标准，源于 Kubernetes 对移植层（运行时）的要求。</li>
 </ul>
 <p>容器引擎层自下而上定义 OCI，容器编排层自上而下定义 CRI，这也让它们出现了“套娃“运行情况。</p>
@@ -398,15 +398,15 @@
 <p><img src="/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/4.jpg" alt="avatar"></p>
 <p>下面是从 kubernetes 集群运行的全景图看 cri-o 的位置：</p>
 <p><img src="/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/5.jpg" alt="avatar"></p>
-<h2 id="Docker-本源于-Linux-Container"><a href="#Docker-本源于-Linux-Container" class="headerlink" title="Docker 本源于 Linux Container"></a>Docker 本源于 Linux Container</h2><p>Docker 作为容器引擎，其实现的基础是 Linux Container——从内核到用户空间的机制。Linux Container 可以分成两个部分，内核里面的 cgroup，用户空间的 lxc。Docker 最初实现的时候，也是完全基于 Linux Container 的，基于 lxc 做更上层的东西。这张很多人认为“与事实不符“的图，其实代表了过去：</p>
+<h2 id="docker-本源于-Linux-Container"><a href="#docker-本源于-Linux-Container" class="headerlink" title="docker 本源于 Linux Container"></a>docker 本源于 Linux Container</h2><p>docker 作为容器引擎，其实现的基础是 Linux Container——从内核到用户空间的机制。Linux Container 可以分成两个部分，内核里面的 cgroup，用户空间的 lxc。docker 最初实现的时候，也是完全基于 Linux Container 的，基于 lxc 做更上层的东西。这张很多人认为“与事实不符“的图，其实代表了过去：</p>
 <p><img src="/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/6.jpg" alt="avatar"></p>
-<p>在 Docker 的发展过程中，最终弃用了 C 语言写成 lxc，换成了 go 语言写成的 libcontainer。下面的图也不是很新，但它更能表示 Docker 后续典型的架构，这里面已经没有了 lxc。</p>
+<p>在 docker 的发展过程中，最终弃用了 C 语言写成 lxc，换成了 go 语言写成的 libcontainer。下面的图也不是很新，但它更能表示 docker 后续典型的架构，这里面已经没有了 lxc。</p>
 <p><img src="/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/7.jpg" alt="avatar"></p>
-<p>然而，万变不离其宗，Docker 实现的本源，还是 Linux Container。即便不用 lxc，当仍要用内核的 cgroup，并且模式也是类似的。</p>
-<h2 id="Kubernetes-最终如何桥接容器"><a href="#Kubernetes-最终如何桥接容器" class="headerlink" title="Kubernetes 最终如何桥接容器"></a>Kubernetes 最终如何桥接容器</h2><p>从纯技术的角度，与其讨 Kubernetes 与 Docker 关系，不如讨论 Kubernetes 与最终容器实现层的关系。因为 Docker 这个名词，在不同的时候，有着不同的内涵、外延。</p>
-<p>下面是 Docker 的简图：</p>
+<p>然而，万变不离其宗，docker 实现的本源，还是 Linux Container。即便不用 lxc，当仍要用内核的 cgroup，并且模式也是类似的。</p>
+<h2 id="Kubernetes-最终如何桥接容器"><a href="#Kubernetes-最终如何桥接容器" class="headerlink" title="Kubernetes 最终如何桥接容器"></a>Kubernetes 最终如何桥接容器</h2><p>从纯技术的角度，与其讨 Kubernetes 与 docker 关系，不如讨论 Kubernetes 与最终容器实现层的关系。因为 docker 这个名词，在不同的时候，有着不同的内涵、外延。</p>
+<p>下面是 docker 的简图：</p>
 <p><img src="/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/8.jpg" alt="avatar"></p>
-<p>从软件模块的角度，图中的 docker Engine、cri-containd、containd-shim、runC 都属于 Docker 体系的软件。</p>
+<p>从软件模块的角度，图中的 docker Engine、cri-containd、containd-shim、runC 都属于 docker 体系的软件。</p>
 <p>下图中的紫、橙、红三种颜色，代表了 dockershim、cri-containerd、cri-o 三种 CRI 的典型方式——流程在逐渐缩短，这也是 CRI 实现的一个演进过程。</p>
 <p><img src="/2021/01/04/Kubernetes-%E5%BC%83%E7%94%A8Docker/9.jpg" alt="avatar"></p>
 <p>1、 如果是 kubelet 的 dockershim 模式（紫色），流程是这样的：</p>
@@ -434,9 +434,9 @@
 <li>cri-containerd 模式：cri-containerd(*)-&gt; containerd-&gt;containerd-shim</li>
 <li>cri-o 模式：cri-o<br>​<br>dockershim 模式有 3 个可执行程序，dockershim 一般与 kubelet 同进程；cri-containerd 模式有 2-3 个可执行程序，cri-containerd 可与 containerd 同进程；cri-o 模式只有 1 个可执行程序。</li>
 </ul>
-<p>显然在这种 Red Hat 推崇的 cri-o 模式下，Docker 体系的 containerd 也用不着了，只剩 runC 这个命令行的程序。runC 也是用 go 写成的，里面有调用 libcontainer。</p>
-<p>当 Docker 萎缩到这个地步，其实也只剩 Linux 内核里面 cgroup、namespace 功能的封装了。</p>
-<p>总结来说，由于老技术实现的惯性，在生产环境大量使用的经典 Kubernetes+ Docker 方案依然运行，且运维已经成熟，不会很快升级。对于开发人员、企业，对于 K8S API 的使用频率、变数，远远大于 Docker API，至于 Kubernetes 和 Docker 的桥接，更不用关心。因此，即便“彻底弃用 Docker”，对开发者与企业的影响也非常有限。</p>
+<p>显然在这种 Red Hat 推崇的 cri-o 模式下，docker 体系的 containerd 也用不着了，只剩 runC 这个命令行的程序。runC 也是用 go 写成的，里面有调用 libcontainer。</p>
+<p>当 docker 萎缩到这个地步，其实也只剩 Linux 内核里面 cgroup、namespace 功能的封装了。</p>
+<p>总结来说，由于老技术实现的惯性，在生产环境大量使用的经典 Kubernetes+ docker 方案依然运行，且运维已经成熟，不会很快升级。对于开发人员、企业，对于 K8S API 的使用频率、变数，远远大于 docker API，至于 Kubernetes 和 docker 的桥接，更不用关心。因此，即便“彻底弃用 docker”，对开发者与企业的影响也非常有限。</p>
 
       
     </div>
@@ -563,7 +563,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -605,7 +605,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Kubernetes-有-CRI、OCI-两个容器标准"><span class="nav-number">1.</span> <span class="nav-text">Kubernetes 有 CRI、OCI 两个容器标准</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-本源于-Linux-Container"><span class="nav-number">2.</span> <span class="nav-text">Docker 本源于 Linux Container</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kubernetes-最终如何桥接容器"><span class="nav-number">3.</span> <span class="nav-text">Kubernetes 最终如何桥接容器</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Kubernetes-有-CRI、OCI-两个容器标准"><span class="nav-number">1.</span> <span class="nav-text">Kubernetes 有 CRI、OCI 两个容器标准</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-本源于-Linux-Container"><span class="nav-number">2.</span> <span class="nav-text">docker 本源于 Linux Container</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kubernetes-最终如何桥接容器"><span class="nav-number">3.</span> <span class="nav-text">Kubernetes 最终如何桥接容器</span></a></li></ol></div>
             
 
           </div>

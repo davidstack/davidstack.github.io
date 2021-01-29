@@ -81,15 +81,15 @@
 
 
 
-<meta name="description" content="问题   在使用dockerhub中的镜像时，我通常会去查看一下该镜像的Dockerfile是如何编写的，看看有没有什么好的借鉴思路,经常会发现在Dockerfile里面定义Volume，如下面的Dockerfile 12345678910111213141516171819202122232425FROM davidcaste&#x2F;alpine-java-unlimited-jce:jdk">
+<meta name="description" content="问题   在使用dockerhub中的镜像时，我通常会去查看一下该镜像的dockerfile是如何编写的，看看有没有什么好的借鉴思路,经常会发现在dockerfile里面定义Volume，如下面的dockerfile 12345678910111213141516171819202122232425FROM davidcaste&#x2F;alpine-java-unlimited-jce:jdk">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Docker匿名卷">
+<meta property="og:title" content="docker匿名卷">
 <meta property="og:url" content="https://damonyi.cc/2020/09/04/Docker%E5%8C%BF%E5%90%8D%E5%8D%B7/index.html">
 <meta property="og:site_name" content="云里雾里">
-<meta property="og:description" content="问题   在使用dockerhub中的镜像时，我通常会去查看一下该镜像的Dockerfile是如何编写的，看看有没有什么好的借鉴思路,经常会发现在Dockerfile里面定义Volume，如下面的Dockerfile 12345678910111213141516171819202122232425FROM davidcaste&#x2F;alpine-java-unlimited-jce:jdk">
+<meta property="og:description" content="问题   在使用dockerhub中的镜像时，我通常会去查看一下该镜像的dockerfile是如何编写的，看看有没有什么好的借鉴思路,经常会发现在dockerfile里面定义Volume，如下面的dockerfile 12345678910111213141516171819202122232425FROM davidcaste&#x2F;alpine-java-unlimited-jce:jdk">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-04T01:21:36.000Z">
-<meta property="article:modified_time" content="2020-09-11T11:16:06.058Z">
+<meta property="article:modified_time" content="2021-01-29T00:15:59.522Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -127,7 +127,7 @@
 
 
 
-  <title>Docker匿名卷 | 云里雾里</title>
+  <title>docker匿名卷 | 云里雾里</title>
   
 
 
@@ -271,7 +271,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Docker匿名卷</h2>
+          <h2 class="post-title" itemprop="name headline">docker匿名卷</h2>
         
 
         <div class="post-meta">
@@ -358,19 +358,19 @@
 
       
         <p>问题</p>
-<p>  在使用dockerhub中的镜像时，我通常会去查看一下该镜像的Dockerfile是如何编写的，看看有没有什么好的借鉴思路,经常会发现在Dockerfile里面定义Volume，如下面的Dockerfile</p>
+<p>  在使用dockerhub中的镜像时，我通常会去查看一下该镜像的dockerfile是如何编写的，看看有没有什么好的借鉴思路,经常会发现在dockerfile里面定义Volume，如下面的dockerfile</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">FROM davidcaste&#x2F;alpine-java-unlimited-jce:jdk8</span><br><span class="line"></span><br><span class="line">MAINTAINER David Castellanos &lt;davidcaste@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">ENV TOMCAT_MAJOR&#x3D;8 \</span><br><span class="line">    TOMCAT_VERSION&#x3D;8.5.3 \</span><br><span class="line">    TOMCAT_HOME&#x3D;&#x2F;opt&#x2F;tomcat \</span><br><span class="line">    CATALINA_HOME&#x3D;&#x2F;opt&#x2F;tomcat \</span><br><span class="line">    CATALINA_OUT&#x3D;&#x2F;dev&#x2F;null</span><br><span class="line"></span><br><span class="line">RUN apk upgrade --update &amp;&amp; \</span><br><span class="line">    apk add --update curl &amp;&amp; \</span><br><span class="line">    curl -jksSL -o &#x2F;tmp&#x2F;apache-tomcat.tar.gz http:&#x2F;&#x2F;archive.apache.org&#x2F;dist&#x2F;tomcat&#x2F;tomcat-$&#123;TOMCAT_MAJOR&#125;&#x2F;v$&#123;TOMCAT_VERSION&#125;&#x2F;bin&#x2F;apache-tomcat-$&#123;TOMCAT_VERSION&#125;.tar.gz &amp;&amp; \</span><br><span class="line">    gunzip &#x2F;tmp&#x2F;apache-tomcat.tar.gz &amp;&amp; \</span><br><span class="line">    tar -C &#x2F;opt -xf &#x2F;tmp&#x2F;apache-tomcat.tar &amp;&amp; \</span><br><span class="line">    ln -s &#x2F;opt&#x2F;apache-tomcat-$&#123;TOMCAT_VERSION&#125; $&#123;TOMCAT_HOME&#125; &amp;&amp; \</span><br><span class="line">    rm -rf $&#123;TOMCAT_HOME&#125;&#x2F;webapps&#x2F;* &amp;&amp; \</span><br><span class="line">    apk del curl &amp;&amp; \</span><br><span class="line">    rm -rf &#x2F;tmp&#x2F;* &#x2F;var&#x2F;cache&#x2F;apk&#x2F;*</span><br><span class="line"></span><br><span class="line">COPY logging.properties $&#123;TOMCAT_HOME&#125;&#x2F;conf&#x2F;logging.properties</span><br><span class="line">COPY server.xml $&#123;TOMCAT_HOME&#125;&#x2F;conf&#x2F;server.xml</span><br><span class="line"></span><br><span class="line">VOLUME [&quot;&#x2F;logs&quot;]</span><br><span class="line">EXPOSE 8080</span><br></pre></td></tr></table></figure>
-<p>   在上面的Dockerfile中就定义了 VOLUME [“/logs”],刚开始的时候并没有注意这个，以为就是提示作用而已，直到在自己的环境中出现了存储不足的问题，在环境中我将全部的镜像、容器 都删除了，但是只是释放了一点点的空间，使用下面的命令，进行查看，发现还是占用了很多空间,</p>
+<p>   在上面的dockerfile中就定义了 VOLUME [“/logs”],刚开始的时候并没有注意这个，以为就是提示作用而已，直到在自己的环境中出现了存储不足的问题，在环境中我将全部的镜像、容器 都删除了，但是只是释放了一点点的空间，使用下面的命令，进行查看，发现还是占用了很多空间,</p>
 <p>du -h –max-depth=1 /var/lib/docker<br>在服务器上执行了</p>
-<p>docker volume ls<br>发现存在大量的卷类型为local的卷，进入到这些目录，发现全是原容器内的/logs 目录的内容，虽然容器被删除了，但是/logs 目录以容器卷的方式被持久化下来了，这显示并不是我想要的现象。解释这个现象的就是Docker匿名卷了。</p>
-<p>Docker匿名卷</p>
-<p>Docker匿名卷的解释可以参考这里Docker匿名卷</p>
-<p>  匿名卷的目的是为了防止用户忘记将关键数据挂载到宿主机目录，为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在 Dockerfile中，我们可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据。</p>
+<p>docker volume ls<br>发现存在大量的卷类型为local的卷，进入到这些目录，发现全是原容器内的/logs 目录的内容，虽然容器被删除了，但是/logs 目录以容器卷的方式被持久化下来了，这显示并不是我想要的现象。解释这个现象的就是docker匿名卷了。</p>
+<p>docker匿名卷</p>
+<p>docker匿名卷的解释可以参考这里docker匿名卷</p>
+<p>  匿名卷的目的是为了防止用户忘记将关键数据挂载到宿主机目录，为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在 dockerfile中，我们可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据。</p>
 <p>VOLUME /data<br>  这里的 /data 目录就会在运行时自动挂载为匿名卷，任何向 /data 中写入的信息都不会记录进容器存储层，从而保证了容器存储层的无状态化。当然，运行时可以覆盖这个挂载设置。比如：</p>
 <p>docker run -d -v mydata:/data xxxx</p>
-<p>  在这行命令中，就使用了 mydata 这个命名卷挂载到了 /data 这个位置，替代了 Dockerfile 中定义的匿名卷的挂载配置。</p>
+<p>  在这行命令中，就使用了 mydata 这个命名卷挂载到了 /data 这个位置，替代了 dockerfile 中定义的匿名卷的挂载配置。</p>
 <p>Summary</p>
-<p>Docker匿名卷使用还是的慎重，而且需要通知到使用者，不然存储莫名其妙的用光了</p>
+<p>docker匿名卷使用还是的慎重，而且需要通知到使用者，不然存储莫名其妙的用光了</p>
 
       
     </div>
@@ -488,7 +488,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

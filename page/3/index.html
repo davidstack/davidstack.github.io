@@ -1542,7 +1542,7 @@ DevOps
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/09/21/Docker%E4%BB%A5%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0Pipework/" itemprop="url">Docker以网络插件方式实现Pipework</a></h2>
+                <a class="post-title-link" href="/2020/09/21/Docker%E4%BB%A5%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0Pipework/" itemprop="url">docker以网络插件方式实现Pipework</a></h2>
         
 
         <div class="post-meta">
@@ -1625,8 +1625,8 @@ DevOps
       
         
           
-            Docker目前提供了多种网络模式，但是相信大部分运维人员还是比较相信物理网络，所以就想着将容器的网络配置成物理网络。可以看到开源项目Pipework，当然 Pipework的功能比较强大，这里我只关注容器使用物理网络的实现，如果你手动去配置容器的IP，可以只需要以下几个步骤：
-1、创建网桥并配置，将eth0绑定到网桥br0，Docker Daemon 监听br0
+            docker目前提供了多种网络模式，但是相信大部分运维人员还是比较相信物理网络，所以就想着将容器的网络配置成物理网络。可以看到开源项目Pipework，当然 Pipework的功能比较强大，这里我只关注容器使用物理网络的实现，如果你手动去配置容器的IP，可以只需要以下几个步骤：
+1、创建网桥并配置，将eth0绑定到网桥br0，docker Daemon 监听br0
 2、启动容器
 1docker run -d --net&#x3D;none --name web  10.110.17.138:
           ...
@@ -1702,7 +1702,7 @@ DevOps
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/09/21/Docker%E5%87%A0%E4%B8%AA%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4/" itemprop="url">Docker几个不常用的命令</a></h2>
+                <a class="post-title-link" href="/2020/09/21/Docker%E5%87%A0%E4%B8%AA%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4/" itemprop="url">docker几个不常用的命令</a></h2>
         
 
         <div class="post-meta">
@@ -1785,14 +1785,14 @@ DevOps
       
         
           
-          Docker不太常用的命令
+          docker不太常用的命令
 docker ps -s #查看容器所占的磁盘大小
 docker rm ${docker ps -q -a} # 删除全部非运行态的容器
 docker system df #查看docker存储的使用情况
 docker system prun #清理无用的容器、网络、数据集
 docker rmi $(docker images | awk ‘/^/ { print $3 }’) #删除的镜像repositry为none的镜像
 
-Docker配置参数
+docker配置参数
 --iptable
           ...
           <!--noindex-->
@@ -1898,7 +1898,7 @@ Docker配置参数
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

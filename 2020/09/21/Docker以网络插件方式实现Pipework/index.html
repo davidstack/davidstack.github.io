@@ -81,15 +81,15 @@
 
 
 
-<meta name="description" content="Docker目前提供了多种网络模式，但是相信大部分运维人员还是比较相信物理网络，所以就想着将容器的网络配置成物理网络。可以看到开源项目Pipework，当然 Pipework的功能比较强大，这里我只关注容器使用物理网络的实现，如果你手动去配置容器的IP，可以只需要以下几个步骤： 1、创建网桥并配置，将eth0绑定到网桥br0，Docker Daemon 监听br0 2、启动容器 1docker">
+<meta name="description" content="docker目前提供了多种网络模式，但是相信大部分运维人员还是比较相信物理网络，所以就想着将容器的网络配置成物理网络。可以看到开源项目Pipework，当然 Pipework的功能比较强大，这里我只关注容器使用物理网络的实现，如果你手动去配置容器的IP，可以只需要以下几个步骤： 1、创建网桥并配置，将eth0绑定到网桥br0，docker Daemon 监听br0 2、启动容器 1docker">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Docker以网络插件方式实现Pipework">
+<meta property="og:title" content="docker以网络插件方式实现Pipework">
 <meta property="og:url" content="https://damonyi.cc/2020/09/21/Docker%E4%BB%A5%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0Pipework/index.html">
 <meta property="og:site_name" content="云里雾里">
-<meta property="og:description" content="Docker目前提供了多种网络模式，但是相信大部分运维人员还是比较相信物理网络，所以就想着将容器的网络配置成物理网络。可以看到开源项目Pipework，当然 Pipework的功能比较强大，这里我只关注容器使用物理网络的实现，如果你手动去配置容器的IP，可以只需要以下几个步骤： 1、创建网桥并配置，将eth0绑定到网桥br0，Docker Daemon 监听br0 2、启动容器 1docker">
+<meta property="og:description" content="docker目前提供了多种网络模式，但是相信大部分运维人员还是比较相信物理网络，所以就想着将容器的网络配置成物理网络。可以看到开源项目Pipework，当然 Pipework的功能比较强大，这里我只关注容器使用物理网络的实现，如果你手动去配置容器的IP，可以只需要以下几个步骤： 1、创建网桥并配置，将eth0绑定到网桥br0，docker Daemon 监听br0 2、启动容器 1docker">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-21T11:48:54.000Z">
-<meta property="article:modified_time" content="2020-09-21T11:59:12.487Z">
+<meta property="article:modified_time" content="2021-01-29T00:15:59.681Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -127,7 +127,7 @@
 
 
 
-  <title>Docker以网络插件方式实现Pipework | 云里雾里</title>
+  <title>docker以网络插件方式实现Pipework | 云里雾里</title>
   
 
 
@@ -271,7 +271,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Docker以网络插件方式实现Pipework</h2>
+          <h2 class="post-title" itemprop="name headline">docker以网络插件方式实现Pipework</h2>
         
 
         <div class="post-meta">
@@ -357,15 +357,15 @@
       
 
       
-        <p>  Docker目前提供了多种网络模式，但是相信大部分运维人员还是比较相信物理网络，所以就想着将容器的网络配置成物理网络。可以看到开源项目<a href="https://github.com/jpetazzo/pipework" target="_blank" rel="noopener">Pipework</a>，当然 Pipework的功能比较强大，这里我只关注容器使用物理网络的实现，如果你手动去配置容器的IP，可以只需要以下几个步骤：</p>
-<p>1、创建网桥并配置，将eth0绑定到网桥br0，Docker Daemon 监听br0</p>
+        <p>  docker目前提供了多种网络模式，但是相信大部分运维人员还是比较相信物理网络，所以就想着将容器的网络配置成物理网络。可以看到开源项目<a href="https://github.com/jpetazzo/pipework" target="_blank" rel="noopener">Pipework</a>，当然 Pipework的功能比较强大，这里我只关注容器使用物理网络的实现，如果你手动去配置容器的IP，可以只需要以下几个步骤：</p>
+<p>1、创建网桥并配置，将eth0绑定到网桥br0，docker Daemon 监听br0</p>
 <p>2、启动容器</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --net&#x3D;none --name web  10.110.17.138:5000&#x2F;library&#x2F;tomcat:7.0.67-jre7</span><br></pre></td></tr></table></figure>
 <p>3、创建Container对应的网络命名空间</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p &#x2F;var&#x2F;run&#x2F;netns</span><br><span class="line">ln -s &#x2F;proc&#x2F;1381&#x2F;ns&#x2F;net &#x2F;var&#x2F;run&#x2F;netns&#x2F;1381</span><br></pre></td></tr></table></figure>
 <p>4、容器配置网卡</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ip link add veth-a type veth peer name veth-b</span><br><span class="line">brctl addif br0 veth-a</span><br><span class="line">ip link set veth-a up</span><br><span class="line">ip link set veth-b netns 1381</span><br><span class="line">ip netns exec 1381 ip link set dev veth-b name eth0 </span><br><span class="line">ip netns exec 1381 ip link set eth0 up</span><br><span class="line">ip netns exec 1381 ip addr add 10.110.17.94&#x2F;24 dev eth0 </span><br><span class="line">ip netns exec 1381 ip route del default</span><br><span class="line">ip netns exec 1381 ip route add default via 10.110.17.254</span><br></pre></td></tr></table></figure>
-<p>    不是很复杂，业务系统可以定义一个脚本执行就OK，但是我们再开发使用过程中发现，当我们想着将这种网络模式运用到Compose时，却发现用不了，但是Compose支持Docker 的网络插件机制，所以就需要考虑使用<a href="https://github.com/docker/libnetwork/blob/master/docs/remote.md" target="_blank" rel="noopener">Docker的网络插件机制</a>实现。参考了<a href="https://github.com/weaveworks/weave" target="_blank" rel="noopener">Weave</a>和<a href="https://github.com/gopher-net/docker-ovs-plugin" target="_blank" rel="noopener">ovs-plugin</a>的实现方式，整理出了Docker使用物理网络的插件<a href="https://github.com/davidstack/docker-network-plugin-local.git" target="_blank" rel="noopener">docker-network-plugin-local</a>，当然github上开源的仅仅是网络配置OK，和我们生产环境上的肯定有所区别，不过大家可以参考，在这里说一下几处关键代码。</p>
+<p>    不是很复杂，业务系统可以定义一个脚本执行就OK，但是我们再开发使用过程中发现，当我们想着将这种网络模式运用到Compose时，却发现用不了，但是Compose支持docker 的网络插件机制，所以就需要考虑使用<a href="https://github.com/docker/libnetwork/blob/master/docs/remote.md" target="_blank" rel="noopener">docker的网络插件机制</a>实现。参考了<a href="https://github.com/weaveworks/weave" target="_blank" rel="noopener">Weave</a>和<a href="https://github.com/gopher-net/docker-ovs-plugin" target="_blank" rel="noopener">ovs-plugin</a>的实现方式，整理出了docker使用物理网络的插件<a href="https://github.com/davidstack/docker-network-plugin-local.git" target="_blank" rel="noopener">docker-network-plugin-local</a>，当然github上开源的仅仅是网络配置OK，和我们生产环境上的肯定有所区别，不过大家可以参考，在这里说一下几处关键代码。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">func (driver \*PipeNetworkDriver) CreateNetwork(createNetworkRequest \*network.CreateNetworkRequest) error &#123;</span><br><span class="line">	GlobalEndPointCache.Mutex.Lock()</span><br><span class="line">	defer func() &#123;</span><br><span class="line">		GlobalEndPointCache.Mutex.Unlock()</span><br><span class="line">	&#125;()</span><br><span class="line">	gateway, mask, \_ :&#x3D; getGatewayIP(createNetworkRequest)</span><br><span class="line">	networkInfo :&#x3D; NetworkInfo&#123;BridgeName: &quot;br0&quot;,</span><br><span class="line">		Gateway:            gateway,</span><br><span class="line">		GatewayMask:        mask,</span><br><span class="line">		ContainerInterface: &quot;eth1&quot;,</span><br><span class="line">		MTU:                1500,</span><br><span class="line">		NetWorkId:          createNetworkRequest.NetworkID,</span><br><span class="line">	&#125;</span><br><span class="line">	GlobalEndPointCache.EndPoints &#x3D; make(map\[string\]\*EndPoint)</span><br><span class="line">	GlobalEndPointCache.Network &#x3D; &amp;networkInfo</span><br><span class="line">	driver.UpdateCacheFile()</span><br><span class="line">	return nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
@@ -377,7 +377,7 @@
 
 <p>此处是在创建容器时，指定driver时调用的API，该插件只是定义了需要创建的link 对（veth pair），然后缓存起来</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">func (driver \*PipeNetworkDriver) Join(joinRequest \*network.JoinRequest) (\*network.JoinResponse, error) &#123;</span><br><span class="line">	fmt.Println(&quot;joing....&quot;)</span><br><span class="line">	fmt.Println(&quot;NetworkID is &quot;, joinRequest.NetworkID)</span><br><span class="line">	fmt.Println(&quot;SandboxKey is &quot;, joinRequest.SandboxKey)</span><br><span class="line"></span><br><span class="line">	GlobalEndPointCache.Mutex.Lock()</span><br><span class="line">	defer func() &#123;</span><br><span class="line">		GlobalEndPointCache.Mutex.Unlock()</span><br><span class="line">	&#125;()</span><br><span class="line">	&#x2F;&#x2F;query from cache</span><br><span class="line">	endPointInfo :&#x3D; GlobalEndPointCache.EndPoints\[joinRequest.EndpointID\]</span><br><span class="line">	fmt.Println(&quot;vethPairA is &quot;, endPointInfo.VethName)</span><br><span class="line">	fmt.Println(&quot;vethPairB is &quot;, endPointInfo.VethPeerName)</span><br><span class="line"></span><br><span class="line">	localVethPair :&#x3D; vethPair(endPointInfo.VethName, endPointInfo.VethPeerName)</span><br><span class="line">	if err :&#x3D; netlink.LinkAdd(localVethPair); err !&#x3D; nil &#123;</span><br><span class="line">		fmt.Println(&quot;failed to create the veth pair named: \[ %v \] error: \[ %s \] &quot;, localVethPair, err)</span><br><span class="line">		return nil, err</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(&quot;localVethPair.Name is &quot;, localVethPair.Name)</span><br><span class="line">	&#x2F;&#x2F; 2. add vethPariA to bridge and set up</span><br><span class="line">	createdLink, linkErr :&#x3D; netlink.LinkByName(localVethPair.Name)</span><br><span class="line">	if linkErr !&#x3D; nil &#123;</span><br><span class="line">		fmt.Println(&quot;find link failed&quot;, linkErr)</span><br><span class="line">		return nil, linkErr</span><br><span class="line">	&#125;</span><br><span class="line">	netinterface :&#x3D; net.Interface&#123;Index: createdLink.Attrs().Index,</span><br><span class="line">		Name:         createdLink.Attrs().Name,</span><br><span class="line">		MTU:          createdLink.Attrs().MTU,</span><br><span class="line">		Flags:        createdLink.Attrs().Flags,</span><br><span class="line">		HardwareAddr: createdLink.Attrs().HardwareAddr&#125;</span><br><span class="line"></span><br><span class="line">	br, err :&#x3D; tenus.BridgeFromName(GlobalEndPointCache.Network.BridgeName)</span><br><span class="line">	if err !&#x3D; nil &#123;</span><br><span class="line">		fmt.Println(&quot;use exist bridge failed&quot;, err)</span><br><span class="line">		return nil, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	if err &#x3D; br.AddSlaveIfc(&amp;netinterface); err !&#x3D; nil &#123;</span><br><span class="line">		fmt.Println(&quot;add interface to bridge failed&quot;, err)</span><br><span class="line">	&#125;</span><br><span class="line">	err &#x3D; netlink.LinkSetUp(createdLink)</span><br><span class="line">	if err !&#x3D; nil &#123;</span><br><span class="line">		fmt.Println(&quot;Error enabling  Veth local iface: \[ %v \]&quot;, localVethPair)</span><br><span class="line">		return nil, err</span><br><span class="line">	&#125;</span><br><span class="line">	response :&#x3D; network.JoinResponse&#123;InterfaceName: network.InterfaceName&#123;SrcName: endPointInfo.VethPeerName,</span><br><span class="line">		DstPrefix: &quot;eth&quot;&#125;,</span><br><span class="line">		Gateway: GlobalEndPointCache.Network.Gateway,</span><br><span class="line">	&#125;</span><br><span class="line">	GlobalEndPointCache.EndPoints\[joinRequest.EndpointID\].SandboxKey &#x3D; joinRequest.SandboxKey</span><br><span class="line">	driver.UpdateCacheFile()</span><br><span class="line">	return &amp;response, nil</span><br><span class="line">&#125;</span><br><span class="line">&#96;</span><br></pre></td></tr></table></figure>
-<p>        <br>此处代码也是在docker 创建/启动容器时调用的API，该API完成link对的创建，并未改link（在容器内部的部分）配置IP，定义网卡名称，此处最重要的是返回值中将正确的vethpari那么返回，docker daemon会将veth pair加入到容器的网络空间 （PS：开始验证的时候，一直尝试自己将这个veth pair加入到命名空间，总是不成功，后来才发现，Docker Daemon 已经把这件事干了）</p>
+<p>        <br>此处代码也是在docker 创建/启动容器时调用的API，该API完成link对的创建，并未改link（在容器内部的部分）配置IP，定义网卡名称，此处最重要的是返回值中将正确的vethpari那么返回，docker daemon会将veth pair加入到容器的网络空间 （PS：开始验证的时候，一直尝试自己将这个veth pair加入到命名空间，总是不成功，后来才发现，docker Daemon 已经把这件事干了）</p>
 
       
     </div>
@@ -402,8 +402,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/09/21/Docker%E5%87%A0%E4%B8%AA%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4/" rel="next" title="Docker几个不常用的命令">
-                <i class="fa fa-chevron-left"></i> Docker几个不常用的命令
+              <a href="/2020/09/21/Docker%E5%87%A0%E4%B8%AA%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4/" rel="next" title="docker几个不常用的命令">
+                <i class="fa fa-chevron-left"></i> docker几个不常用的命令
               </a>
             
           </div>
@@ -495,7 +495,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
