@@ -2630,4 +2630,34 @@ sysdig -s 2000 -A -c echo_fds fd.sip=192.168.30.5 and proc.name=apache2 and evt.
 
 <h2 id="转载的阅读摘要"><a href="#转载的阅读摘要" class="headerlink" title="转载的阅读摘要"></a>转载的阅读摘要</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install cachefilesd; </span><br><span class="line"></span><br><span class="line">挂载命令：直接mount服务端共享的目录到本地的&#x2F;mnt目录，必须使用-o fsc参数选项;</span><br><span class="line"></span><br><span class="line">All access to files under &#x2F;mount&#x2F;point will go through the cache, unless the file is opened for direct I&#x2F;O or writing; </span><br><span class="line"></span><br><span class="line">Opening a file from a shared file system for direct I&#x2F;O automatically bypasses the cache. This is because this type of access must be direct to the server.</span><br><span class="line"></span><br><span class="line">To avoid coherency management problems between superblocks, all NFS superblocks that wish to cache data have unique Level 2 keys. Normally, two NFS mounts with same source volume and options share a superblock, and thus share the caching, even if they mount different directories within that volume.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Opening a file from a shared file system for writing will not work on NFS version 2 and 3.  因为没有足够的维持并发写的一致性信息；</span><br><span class="line"></span><br><span class="line">Furthermore, this release of FS-Cache only caches regular NFS files. FS-Cache will not cache directories, symlinks, device files, FIFOs and sockets. 其只对文件数据进行cache的操作。</span><br></pre></td></tr></table></figure>]]></content>
   </entry>
+  <entry>
+    <title>GPUDirect Technologies</title>
+    <url>/2021/03/01/GPUDirect-Technologies/</url>
+    <content><![CDATA[<p>基于GPUDirect 技术，可以使网卡驱动，存储驱动直接从GPU 内存中读取和写入数据，不再需要经过主机CPU、主机内存，减少数据拷贝，GPUDirect技术包括</p>
+<ul>
+<li>GPUDirect Storage</li>
+<li>GPUDirect Remote Direct Memory Access (RDMA)</li>
+<li>GPUDirect Peer to Peer (P2P)</li>
+<li>GPUDirect Video</li>
+</ul>
+<h2 id="GPUDirect-Storage"><a href="#GPUDirect-Storage" class="headerlink" title="GPUDirect Storage"></a>GPUDirect Storage</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">NVIDIA® GPUDirect® Storage (GDS) is the newest addition to the GPUDirect family. GDS enables a direct data path for direct memory access (DMA) transfers between GPU memory and storage, which avoids a bounce buffer through the CPU. This direct path increases system bandwidth and decreases the latency and utilization load on the CPU.</span><br></pre></td></tr></table></figure>
+<p>在本地存储和远端存储搭建一条直接的数据通道，(Nvme,NVME over Fabric, GPU memory),避免基于CPU 内存的拷贝，可以在网卡或者存储 开启 DMA(Direct Memory Access),如下图所示：</p>
+<p><img src="/2021/03/01/GPUDirect-Technologies/1.png" alt="avatar"></p>
+<p>使用GPUDirect Storage 需要安装单独的软件，查看Nvidia 官网，目前支持Ubuntu 操作系统，目前GPUDirect Storage 还是一个比较新的技术</p>
+<p><img src="/2021/03/01/GPUDirect-Technologies/3.png" alt="avatar"></p>
+<h2 id="GPUDirect-RDMA"><a href="#GPUDirect-RDMA" class="headerlink" title="GPUDirect RDMA"></a>GPUDirect RDMA</h2><p>更多详细的内容参考<a href="https://docs.nvidia.com/cuda/gpudirect-rdma/index.html" target="_blank" rel="noopener">这里</a></p>
+<p>用于节点间的GPU 之间直接通信，避免了依赖CPU和主机内存的复制，可以提高10倍的性能，GPUDirect RDMA 属于CUDA的一部分，需要下载第三方的Network 驱动来支持 GPUDirect RDMA<br><img src="/2021/03/01/GPUDirect-Technologies/4.png" alt="avatar"></p>
+<p>GPU Direct leverages PeerDirect RDMA and PeerDirect ASYNC™ capabilities of the Mellanox network adapters. 对于HCA卡，需要安装nvidia-peer-memory服务<br><img src="/2021/03/01/GPUDirect-Technologies/5.png" alt="avatar"></p>
+<p>在单个节点上，如果需要启用GPUDirect RDMA功能，需要保证GPU与第三设备属于同一个PCI Express，我们在外部看来就是必须属于一个NUMA 组<br><img src="/2021/03/01/GPUDirect-Technologies/6.png" alt="avatar"></p>
+<h3 id="GPUDirect-RDMA-如何工作？"><a href="#GPUDirect-RDMA-如何工作？" class="headerlink" title="GPUDirect RDMA 如何工作？"></a>GPUDirect RDMA 如何工作？</h3><p>当设置两个Peer（不通节点的两个GPU）间使用 GPU Direct时，在PCI Express设备的角度看，所有的物理地址相同。在此物理地址空间内是称为PCI BAR的线性窗口。 每个设备最多具有六个BAR寄存器，因此它最多可以具有六个活动的32位BAR区域。 64位BAR占用两个BAR寄存器。 PCI Express设备以对等设备的BAR地址发布到系统内存的相同方式来进行读写操作。传统上，使用CPU的MMU作为内存映射的I / O（MMIO）地址，将BAR窗口之类的资源映射到用户或内核地址空间。 但是，由于当前的操作系统没有足够的机制来在驱动程序之间交换MMIO区域，因此NVIDIA内核驱动程序会导出功能以执行必要的地址转换和映射。</p>
+<p><font size="9">通常的 DMA 转换（Standard DMA Transfer)</font></p>
+<p><img src="/2021/03/01/GPUDirect-Technologies/7.png" alt="avatar"></p>
+<p><font size="9"> GPUDirect RDMA Transfers</font></p>
+<p><img src="/2021/03/01/GPUDirect-Technologies/8.png" alt="avatar"></p>
+<p><font size="9"> 支持的系统 </font><br><img src="/2021/03/01/GPUDirect-Technologies/10.png" alt="avatar"></p>
+<p>对服务器配置有一定的要求才能达到最优性能，(终于明白为啥最新的A100服务器都需要有多个IB卡了，如果一台GPU服务器上有8张GPU卡，可能会存在8张Infiniband卡)</p>
+<p><img src="/2021/03/01/GPUDirect-Technologies/9.png" alt="avatar"></p>
+<p>什么是PCI BAR Size<br><img src="/2021/03/01/GPUDirect-Technologies/11.png" alt="avatar"></p>
+]]></content>
+  </entry>
 </search>
