@@ -2648,7 +2648,8 @@ sysdig -s 2000 -A -c echo_fds fd.sip=192.168.30.5 and proc.name=apache2 and evt.
 <h2 id="GPUDirect-RDMA"><a href="#GPUDirect-RDMA" class="headerlink" title="GPUDirect RDMA"></a>GPUDirect RDMA</h2><p>更多详细的内容参考<a href="https://docs.nvidia.com/cuda/gpudirect-rdma/index.html" target="_blank" rel="noopener">这里</a></p>
 <p>用于节点间的GPU 之间直接通信，避免了依赖CPU和主机内存的复制，可以提高10倍的性能，GPUDirect RDMA 属于CUDA的一部分，需要下载第三方的Network 驱动来支持 GPUDirect RDMA<br><img src="/2021/03/01/GPUDirect-Technologies/4.png" alt="avatar"></p>
 <p>GPU Direct leverages PeerDirect RDMA and PeerDirect ASYNC™ capabilities of the Mellanox network adapters. 对于HCA卡，需要安装nvidia-peer-memory服务<br><img src="/2021/03/01/GPUDirect-Technologies/5.png" alt="avatar"></p>
-<p>在单个节点上，如果需要启用GPUDirect RDMA功能，需要保证GPU与第三设备属于同一个PCI Express，我们在外部看来就是必须属于一个NUMA 组<br><img src="/2021/03/01/GPUDirect-Technologies/6.png" alt="avatar"></p>
+<p>在单个节点上，如果需要启用GPUDirect RDMA功能，需要保证GPU与第三设备属于同一个PCI Express，我们在外部看来就是必须属于一个NUMA 组</p>
+<p><img src="/2021/03/01/GPUDirect-Technologies/6.png" alt="avatar"></p>
 <h3 id="GPUDirect-RDMA-如何工作？"><a href="#GPUDirect-RDMA-如何工作？" class="headerlink" title="GPUDirect RDMA 如何工作？"></a>GPUDirect RDMA 如何工作？</h3><p>当设置两个Peer（不通节点的两个GPU）间使用 GPU Direct时，在PCI Express设备的角度看，所有的物理地址相同。在此物理地址空间内是称为PCI BAR的线性窗口。 每个设备最多具有六个BAR寄存器，因此它最多可以具有六个活动的32位BAR区域。 64位BAR占用两个BAR寄存器。 PCI Express设备以对等设备的BAR地址发布到系统内存的相同方式来进行读写操作。传统上，使用CPU的MMU作为内存映射的I / O（MMIO）地址，将BAR窗口之类的资源映射到用户或内核地址空间。 但是，由于当前的操作系统没有足够的机制来在驱动程序之间交换MMIO区域，因此NVIDIA内核驱动程序会导出功能以执行必要的地址转换和映射。</p>
 <p><font size="9">通常的 DMA 转换（Standard DMA Transfer)</font></p>
 <p><img src="/2021/03/01/GPUDirect-Technologies/7.png" alt="avatar"></p>
@@ -2658,6 +2659,135 @@ sysdig -s 2000 -A -c echo_fds fd.sip=192.168.30.5 and proc.name=apache2 and evt.
 <p>对服务器配置有一定的要求才能达到最优性能，(终于明白为啥最新的A100服务器都需要有多个IB卡了，如果一台GPU服务器上有8张GPU卡，可能会存在8张Infiniband卡)</p>
 <p><img src="/2021/03/01/GPUDirect-Technologies/9.png" alt="avatar"></p>
 <p>什么是PCI BAR Size<br><img src="/2021/03/01/GPUDirect-Technologies/11.png" alt="avatar"></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>cgroup blkio-controller</title>
+    <url>/2021/03/22/cgroup-blkio-controller/</url>
+    <content><![CDATA[<p><a href="https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v1/blkio-controller.html" target="_blank" rel="noopener">https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v1/blkio-controller.html</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>k8s证书管理</title>
+    <url>/2021/03/23/k8s%E8%AF%81%E4%B9%A6%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[<h2 id="1-K8s集群内置的证书在一年后会到期，导致集群不能正常使用"><a href="#1-K8s集群内置的证书在一年后会到期，导致集群不能正常使用" class="headerlink" title="1.K8s集群内置的证书在一年后会到期，导致集群不能正常使用"></a>1.K8s集群内置的证书在一年后会到期，导致集群不能正常使用</h2><p>证书到期后会提示:Unable to connect to the server: x509: certificate has expired or is not yet valid</p>
+<h2 id="2-master-节点"><a href="#2-master-节点" class="headerlink" title="2. master 节点"></a>2. master 节点</h2><p>在默认情况下，可以使用如下命令查看证书过期时间：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">openssl x509 -noout -dates -in &#x2F;etc&#x2F;kubernetes&#x2F;pki&#x2F;apiserver.crt</span><br></pre></td></tr></table></figure>
+
+<p>证书主要存放在/etc/kubernetes/pki 目录</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@node1 ssl]# ll</span><br><span class="line">total 52</span><br><span class="line">-rw-r--r-- 1 root root 1407 Mar 24 10:07 apiserver.crt</span><br><span class="line">-rw------- 1 root root 1675 Mar 24 10:07 apiserver.key</span><br><span class="line">-rw-r--r-- 1 root root 1099 Mar 24 10:07 apiserver-kubelet-client.crt</span><br><span class="line">-rw------- 1 root root 1679 Mar 24 10:07 apiserver-kubelet-client.key</span><br><span class="line">-rw-r--r-- 1 root root 1025 Jan 18 21:00 ca.crt</span><br><span class="line">-rw------- 1 root root 1679 Jan 18 21:00 ca.key</span><br><span class="line">-rw-r--r-- 1 root root 2401 Mar 24 09:53 cluster.yaml</span><br><span class="line">-rw-r--r-- 1 root root 1038 Jan 18 21:00 front-proxy-ca.crt</span><br><span class="line">-rw------- 1 root root 1679 Jan 18 21:00 front-proxy-ca.key</span><br><span class="line">-rw-r--r-- 1 root root 1058 Mar 24 10:07 front-proxy-client.crt</span><br><span class="line">-rw------- 1 root root 1675 Mar 24 10:07 front-proxy-client.key</span><br><span class="line">-rw------- 1 root root 1679 Jan 18 21:00 sa.key</span><br><span class="line">-rw------- 1 root root  451 Jan 18 21:00 sa.pub</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-集群在有效期内是进行证书续期"><a href="#3-集群在有效期内是进行证书续期" class="headerlink" title="3. 集群在有效期内是进行证书续期"></a>3. 集群在有效期内是进行证书续期</h2><h3 id="3-1-在某个master节点证书续期"><a href="#3-1-在某个master节点证书续期" class="headerlink" title="3.1 在某个master节点证书续期"></a>3.1 在某个master节点证书续期</h3><ol start="0">
+<li><p>如果使用已经修改后的kubeadm，可以先将/usr/local/bin 目录下的kubeadm进行备份和替换</p>
+</li>
+<li><p>备份配置文件和etcd</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cp -rp &#x2F;etc&#x2F;kubernetes &#x2F;etc&#x2F;kubernetes.bak</span><br><span class="line">cp -r &#x2F;var&#x2F;lib&#x2F;etcd &#x2F;var&#x2F;lib&#x2F;etcd.bak</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>生成集群配置文件,如果证书已经超期了，执行此命令会失败，可以尝试修改节点时间或者使用8080 端口连接api-server获取这些信息</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;etc&#x2F;kubernetes</span><br><span class="line">kubeadm config view &gt; .&#x2F;cluster.yaml</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>使用kubeadm命令进行 证书续期</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kubeadm alpha certs renew  apiserver --config&#x3D;.&#x2F;cluster.yaml</span><br><span class="line">kubeadm alpha certs renew  apiserver-kubelet-client --config&#x3D;.&#x2F;cluster.yaml</span><br><span class="line">kubeadm alpha certs renew  front-proxy-client --config&#x3D;.&#x2F;cluster.yaml</span><br></pre></td></tr></table></figure>
+<p>执行完毕后，会在目录/etc/kubernetes/pki 生成新的证书，此时再查看证书有效期，会发现证书的有效期已经延长</p>
+<ol start="4">
+<li>重新生成配置文件</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">rm -f &#x2F;etc&#x2F;kubernetes&#x2F;*.conf</span><br><span class="line">kubeadm init phase kubeconfig all --config&#x3D;.&#x2F;cluster.yaml</span><br></pre></td></tr></table></figure>
+
+<p>5.重启kubelet、apiserver、controller-manager、scheduler、etcd</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker ps |grep -E &#39;k8s_kube-apiserver|k8s_kube-controller-manager|k8s_kube-scheduler|k8s_etcd_etcd&#39; | awk -F &#39; &#39; &#39;&#123;print $1&#125;&#39; |xargs docker restart</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>复制新的认证文件 用于命令行使用kubectl</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">rm -fr ~&#x2F;.kube&#x2F;</span><br><span class="line">mkdir -p &#x2F;root&#x2F;.kube</span><br><span class="line">cp &#x2F;etc&#x2F;kubernetes&#x2F;admin.conf ~&#x2F;.kube&#x2F;config</span><br></pre></td></tr></table></figure>
+<h3 id="3-3-高可用环境其他master节点证书续期"><a href="#3-3-高可用环境其他master节点证书续期" class="headerlink" title="3.3 高可用环境其他master节点证书续期"></a>3.3 高可用环境其他master节点证书续期</h3><ol>
+<li>备份配置文件和etcd</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cp -rp &#x2F;etc&#x2F;kubernetes &#x2F;etc&#x2F;kubernetes.bak</span><br><span class="line">cp -r &#x2F;var&#x2F;lib&#x2F;etcd &#x2F;var&#x2F;lib&#x2F;etcd.bak</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>删除无用的文件<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">rm &#x2F;etc&#x2F;kubernetes&#x2F;*.conf -rf</span><br><span class="line">rm &#x2F;etc&#x2F;kubernetes&#x2F;ssl -rf</span><br></pre></td></tr></table></figure></li>
+<li>将master节点的以下信息复制到到计算节点 node53<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">scp -r &#x2F;etc&#x2F;kubernetes&#x2F;ssl&#x2F; node53:&#x2F;etc&#x2F;kubernetes</span><br><span class="line">scp  &#x2F;etc&#x2F;kubernetes&#x2F;cluster.yaml node53:&#x2F;etc&#x2F;kubernetes</span><br><span class="line">&#96;&#96;&#96;&#96; </span><br><span class="line">4. 执行命令生成各组件启动需要的配置文件</span><br><span class="line">&#96;&#96;&#96;&#96; </span><br><span class="line"> kubeadm init phase kubeconfig all --config&#x3D;.&#x2F;cluster.yaml</span><br><span class="line">&#96;&#96;&#96;&#96; </span><br><span class="line">5.重启kubelet、apiserver、controller-manager、scheduler、etcd</span><br></pre></td></tr></table></figure>
+docker ps |grep -E ‘k8s_kube-apiserver|k8s_kube-controller-manager|k8s_kube-scheduler|k8s_etcd_etcd’ | awk -F ‘ ‘ ‘{print $1}’ |xargs docker restart<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">6. 复制新的认证文件 用于命令行使用kubectl</span><br></pre></td></tr></table></figure>
+rm -fr ~/.kube/<br>mkdir -p /root/.kube<br>cp /etc/kubernetes/admin.conf ~/.kube/config<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 3.2 计算节点证书续期</span><br><span class="line">1. 备份配置文件</span><br></pre></td></tr></table></figure>
+ cp -rp /etc/kubernetes /etc/kubernetes.bak<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2. 删除无用的文件</span><br><span class="line">&#96;&#96;&#96;&#96;   </span><br><span class="line">  rm &#x2F;etc&#x2F;kubernetes&#x2F;*.conf -rf</span><br><span class="line">  rm &#x2F;etc&#x2F;kubernetes&#x2F;ssl -rf</span><br></pre></td></tr></table></figure></li>
+<li>将master节点的以下信息复制到到计算节点 node53<pre><code>scp -r /etc/kubernetes/ssl/ node53:/etc/kubernetes
+scp  /etc/kubernetes/cluster.yaml node53:/etc/kubernetes
+</code></pre>
+</li>
+</ol>
+<pre><code>4. 执行命令生成kubelet启动需要的配置文件</code></pre>
+<p> kubeadm init phase kubeconfig all –config=./cluster.yaml</p>
+<p>````<br> 可以在/etc/kubernetes 目录看到新的配置文件<br>5. 删除 /var/lib/kubelet/pki/kubelet-client-current.pem 文件或者自定义的kubelet存放目录</p>
+<ol start="6">
+<li>此时执行命令systemctl restart kubelet 重启kubelet就可以</li>
+</ol>
+<h2 id="4-修改kubeadm源码支持更长的证书有效期"><a href="#4-修改kubeadm源码支持更长的证书有效期" class="headerlink" title="4. 修改kubeadm源码支持更长的证书有效期"></a>4. 修改kubeadm源码支持更长的证书有效期</h2><p>主要修改两块代码，如下所示</p>
+<ol>
+<li><p>修改一<br>vi staging/src/k8s.io/client-go/util/cert/cert.go,将时间修改为20年，具体的修改位置如下所示：</p>
+<p><img src="/2021/03/23/k8s%E8%AF%81%E4%B9%A6%E7%AE%A1%E7%90%86/1.png" alt="avatar"></p>
+</li>
+</ol>
+<ol start="2">
+<li><p>修改二<br>vim ./cmd/kubeadm/app/util/pkiutil/pki_helpers.go，将时间修改为20年，具体的修改位置如下所示：</p>
+<p><img src="/2021/03/23/k8s%E8%AF%81%E4%B9%A6%E7%AE%A1%E7%90%86/2.png" alt="avatar"></p>
+</li>
+</ol>
+<p>执行命令make WHAT=cmd/kubeadm 重新编译生成kubeadm 可执行文件</p>
+]]></content>
+      <tags>
+        <tag>kubernetes</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>物理机中的多种内存</title>
+    <url>/2021/03/22/%E7%89%A9%E7%90%86%E6%9C%BA%E4%B8%AD%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%86%85%E5%AD%98/</url>
+    <content><![CDATA[<ol>
+<li><p>ROM和RAM指的都是半导体存储器，ROM是Read Only Memory的缩写，RAM是Random Access Memory的缩写。ROM在系统停止供电的时候仍然可以保持数据，而RAM通常都是在掉电之后就丢失数据，典型的RAM就是计算机的内存。</p>
+</li>
+<li><p>RAM 有两大类，一种称为静态RAM（Static RAM/SRAM），SRAM速度非常快，是目前读写最快的存储设备了，但是它也非常昂贵，所以只在要求很苛刻的地方使用，譬如CPU的一级缓冲，二级缓冲。另一种称为动态RAM（Dynamic RAM/DRAM），DRAM保留数据的时间很短，速度也比SRAM慢，不过它还是比任何的ROM都要快，但从价格上来说DRAM相比SRAM要便宜很多，计算机内存就是DRAM的。</p>
+</li>
+</ol>
+<ul>
+<li><p>2.1 DRAM，动态随机存取存储器，需要不断的刷新，才能保存数据.而且是行列地址复用的，许多都有页模式。DRAM分为很多种，常见的主要有FPRAM/FastPage、EDORAM、SDRAM、DDR RAM、RDRAM、SGRAM以及WRAM等，这里介绍其中的一种DDR RAM。DDR RAM（Date-Rate RAM）也称作DDR SDRAM，这种改进型的RAM和SDRAM是基本一样的，不同之处在于它可以在一个时钟读写两次数据，这样就使得数据传输速度加倍了。这是目前电脑中用得最多的内存，而且它有着成本优势，事实上击败了Intel的另外一种内存标准－Rambus DRAM。在很多高端的显卡上，也配备了高速DDR RAM来提高带宽，这可以大幅度提高3D加速卡的像素渲染能力。</p>
+</li>
+<li><p>2.2  SRAM，静态的随机存取存储器，加电情况下，不需要刷新，数据不会丢失，而且，一般不是行列地址复用的。</p>
+</li>
+<li><p>2.3 SDRAM，同步的DRAM，即数据的读写需要时钟来同步。 DRAM和SDRAM由于实现工艺问题，容量较SRAM大。但是读写速度不如SRAM，但是现在，SDRAM的速度也已经很快了，时钟好像已经有 150兆的了。那么就是读写周期小于10ns了。</p>
+<ul>
+<li><p>2.4 每单位容量的DRAM使用较少的晶体管而且占用面积小，而SRAM则是用较多晶体管占用的面也要相对大不少；DRAM需要不断刷新来维持所存储的数据，SRAM则不需要；DRAM的存取时钟间隔长，而SRAM的速度快，时间短；DRAM的耗电低，SRAM耗电大。</p>
+</li>
+<li><p>2.5 目前，相同容量的SRAM价格是SDRAM的8倍左右，面积则将近大4倍，所以SRAM常用于快速存储的较低容量的RAM需求，比如Cache(缓存），比如CPU内部的L1 Cache和主板上的L2 Cache，一般只有几百K。</p>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li><p>ROM也有很多种，PROM是可编程的ROM，PROM和 EPROM（可擦除可编程ROM）两者区别是，PROM是一次性的，也就是软件灌入后，就无法修改了，这种是早期的产品，现在已经不可能使用了，而 EPROM是通过紫外光的照射擦出原先的程序，是一种通用的存储器。另外一种EEPROM是通过电子擦出，价格很高，写入时间很长，写入很慢。举个例子，手机软件一般放在EEPROM中，我们打电话，有些最后拨打的号码，暂时是存在SRAM中的，不是马上写入通过记录（通话记录保存在EEPROM中），因为当时有很重要工作（通话）要做，如果写入，漫长的等待是让用户忍无可忍的。</p>
+</li>
+<li><p>FLASH存储器又称闪存，它结合了ROM和RAM的长处，不仅具备电子可擦出可编程（EEPROM）的性能，还不会断电丢失数据同时可以快速读取数据（NVRAM的优势），U盘和MP3里用的就是这种存储器。在过去的20年里，嵌入式系统一直使用ROM（EPROM）作为它们的存储设备，然而近年来 Flash全面代替了ROM（EPROM）在嵌入式系统中的地位，用作存储 Bootloader以及操作系统或者程序代码或者直接当硬盘使用（U盘）。目前Flash主要有两种NOR Flash和NADN Flash。NOR Flash的读取和我们常见的SDRAM的读取是一样，用户可以直接运行装载在NOR FLASH里面的代码，这样可以减少SRAM的容量从而节约了成本。NAND Flash没有采取内存的随机读取技术，它的读取是以一次读取一快的形式来进行的，通常是一次读取512个字节，采用这种技术的Flash比较廉价。用户不能直接运行NAND Flash上的代码，因此好多使用NAND Flash的开发板除了使用NAND Flah以外，还作上了一块小的NOR Flash来运行启动代码。一般小容量的用NOR Flash，因为其读取速度快，多用来存储操作系统等重要信息，而大容量的用NAND FLASH，最常见的NAND FLASH应用是嵌入式系统采用的DOC（Disk On Chip）和我们通常用的“闪盘”，可以在线擦除。目前市面上的FLASH 主要来自Intel，AMD，Fujitsu和Toshiba，而生产NAND Flash的主要厂家有Samsung和Toshiba。</p>
+</li>
+</ol>
+<h2 id="PMEM"><a href="#PMEM" class="headerlink" title="PMEM"></a>PMEM</h2><p>AEP是Intel推出的一种新型的非易失Optane Memory设备，又被称作Apache Pass，所以一般习惯称作AEP。在这之前也有类似的设备称作NVDIMM或PMEM，目前Linux创建的AEP设备节点也是叫做pmem（如/dev/pmem0），所以本文中NVDIMM或PMEM都指AEP。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>物理服务器中的CPU die</title>
+    <url>/2021/03/19/%E7%89%A9%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%AD%E7%9A%84CPU-die/</url>
+    <content><![CDATA[<p>最近在看一个开源项目，里面提到建立单服务器的资源拓扑，包括NUMA node、Dies、Socket这三个概念，这个Dies是第一次听说，搜集整理了一些关于 Dies的资料。</p>
+<p>Dies是处理器在生产过程中引入的概念，总的来说，Die或者CPU Die指的是处理器在生产过程中，从晶圆（Silicon Wafer）上切割下来的一个个小方块（这也是为啥消费者看到的CPU芯片为什么都是方的的原因），在切割下来之前，每个小方块（Die）都需要经过各种加工，将电路逻辑刻到该Die上面。对于主流的CPU厂商Intel和AMD而言，他们会将1个或者N个CPU Die封装起来形成一个CPU Package，有时候也叫作CPU Socket，如下图所示：</p>
+<p>   <img src="/2021/03/19/%E7%89%A9%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%AD%E7%9A%84CPU-die/1.jpg" alt="avatar"></p>
+<p>由于CPU Die的制作工艺及其复杂，导致CPU Die的大小会很大地影响到CPU Die的良品率，即CPU Die的大小越大，则CPU Die出错的概率越高，良品率也越低，相应的成本也越高。</p>
+<p>在服务器领域，Intel Xeon系列的高端处理器会尽量地将整个CPU Socket做到一个CPU Die上，导致其相应的CPU Die的大小都比较大，这也是其价格昂贵的一个原因。将整个CPU Socket上的东西都做到一个CPU Die上的好处是CPU内部之间各个组件的连接是通过片内总线互联，有更多的资源可以相互共享，这样整体的性能能够更高。</p>
+<p>而对于AMD的EYPC CPU而言，它的每个CPU Socket由4个CPU Die组成，每个CPU Die中包含有4个CPU内核，如下图所示：</p>
+<p>   <img src="/2021/03/19/%E7%89%A9%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%AD%E7%9A%84CPU-die/2.jpg" alt="avatar"></p>
+<p>CPU Die之间通过片外总线（Infinity Fabric）互联，并且不同CPU Die上的CPU内核不能共享CPU缓存，而单个Die的Xeon处理器内和所有CPU内核其实是可以共享CPU的第三级缓存（L3 Cache）的。</p>
 ]]></content>
   </entry>
 </search>

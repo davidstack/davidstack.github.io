@@ -101,7 +101,7 @@
 <meta property="og:image" content="https://damonyi.cc/2021/03/01/GPUDirect-Technologies/9.png">
 <meta property="og:image" content="https://damonyi.cc/2021/03/01/GPUDirect-Technologies/11.png">
 <meta property="article:published_time" content="2021-03-01T06:44:25.000Z">
-<meta property="article:modified_time" content="2021-03-02T00:50:00.140Z">
+<meta property="article:modified_time" content="2021-03-04T00:58:52.863Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://damonyi.cc/2021/03/01/GPUDirect-Technologies/1.png">
 
@@ -419,7 +419,8 @@
 <h2 id="GPUDirect-RDMA"><a href="#GPUDirect-RDMA" class="headerlink" title="GPUDirect RDMA"></a>GPUDirect RDMA</h2><p>更多详细的内容参考<a href="https://docs.nvidia.com/cuda/gpudirect-rdma/index.html" target="_blank" rel="noopener">这里</a></p>
 <p>用于节点间的GPU 之间直接通信，避免了依赖CPU和主机内存的复制，可以提高10倍的性能，GPUDirect RDMA 属于CUDA的一部分，需要下载第三方的Network 驱动来支持 GPUDirect RDMA<br><img src="/2021/03/01/GPUDirect-Technologies/4.png" alt="avatar"></p>
 <p>GPU Direct leverages PeerDirect RDMA and PeerDirect ASYNC™ capabilities of the Mellanox network adapters. 对于HCA卡，需要安装nvidia-peer-memory服务<br><img src="/2021/03/01/GPUDirect-Technologies/5.png" alt="avatar"></p>
-<p>在单个节点上，如果需要启用GPUDirect RDMA功能，需要保证GPU与第三设备属于同一个PCI Express，我们在外部看来就是必须属于一个NUMA 组<br><img src="/2021/03/01/GPUDirect-Technologies/6.png" alt="avatar"></p>
+<p>在单个节点上，如果需要启用GPUDirect RDMA功能，需要保证GPU与第三设备属于同一个PCI Express，我们在外部看来就是必须属于一个NUMA 组</p>
+<p><img src="/2021/03/01/GPUDirect-Technologies/6.png" alt="avatar"></p>
 <h3 id="GPUDirect-RDMA-如何工作？"><a href="#GPUDirect-RDMA-如何工作？" class="headerlink" title="GPUDirect RDMA 如何工作？"></a>GPUDirect RDMA 如何工作？</h3><p>当设置两个Peer（不通节点的两个GPU）间使用 GPU Direct时，在PCI Express设备的角度看，所有的物理地址相同。在此物理地址空间内是称为PCI BAR的线性窗口。 每个设备最多具有六个BAR寄存器，因此它最多可以具有六个活动的32位BAR区域。 64位BAR占用两个BAR寄存器。 PCI Express设备以对等设备的BAR地址发布到系统内存的相同方式来进行读写操作。传统上，使用CPU的MMU作为内存映射的I / O（MMIO）地址，将BAR窗口之类的资源映射到用户或内核地址空间。 但是，由于当前的操作系统没有足够的机制来在驱动程序之间交换MMIO区域，因此NVIDIA内核驱动程序会导出功能以执行必要的地址转换和映射。</p>
 <p><font size="9">通常的 DMA 转换（Standard DMA Transfer)</font></p>
 <p><img src="/2021/03/01/GPUDirect-Technologies/7.png" alt="avatar"></p>
@@ -462,6 +463,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/03/19/%E7%89%A9%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%AD%E7%9A%84CPU-die/" rel="prev" title="物理服务器中的CPU die">
+                物理服务器中的CPU die <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -538,7 +543,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">72</span>
+                  <span class="site-state-item-count">76</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -551,7 +556,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
