@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://damonyi.cc/2021/03/31/k8s-pod-%E9%85%8D%E7%BD%AEshareMemory/</loc>
+    
+    <lastmod>2021-03-31</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://damonyi.cc/2021/03/30/http1-0-http1-1%E4%B8%8Ehttp2-0%E7%9A%84%E5%8C%BA%E5%88%AB/</loc>
+    
+    <lastmod>2021-03-31</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://damonyi.cc/2021/03/19/%E7%89%A9%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%AD%E7%9A%84CPU-die/</loc>
     
     <lastmod>2021-03-24</lastmod>
@@ -79,13 +93,6 @@
   </url>
   
   <url>
-    <loc>https://damonyi.cc/2020/09/03/Docker%E4%BD%BF%E7%94%A8%E8%BF%9B%E9%98%B6/</loc>
-    
-    <lastmod>2021-01-29</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://damonyi.cc/2020/09/21/Docker-Volume-Plugin-%E5%BC%80%E5%8F%91%E5%8F%8AGolang%E5%AE%9E%E7%8E%B0/</loc>
     
     <lastmod>2021-01-29</lastmod>
@@ -94,6 +101,13 @@
   
   <url>
     <loc>https://damonyi.cc/2020/09/21/Docker%E5%AE%B9%E5%99%A8%E5%86%85%E7%9A%84%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/</loc>
+    
+    <lastmod>2021-01-29</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://damonyi.cc/2020/09/03/Docker%E4%BD%BF%E7%94%A8%E8%BF%9B%E9%98%B6/</loc>
     
     <lastmod>2021-01-29</lastmod>
     
@@ -149,14 +163,14 @@
   </url>
   
   <url>
-    <loc>https://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/</loc>
+    <loc>https://damonyi.cc/2020/12/21/nvidia-docker-%E9%85%8D%E7%BD%AEGPU/</loc>
     
     <lastmod>2021-01-29</lastmod>
     
   </url>
   
   <url>
-    <loc>https://damonyi.cc/2020/12/21/nvidia-docker-%E9%85%8D%E7%BD%AEGPU/</loc>
+    <loc>https://damonyi.cc/2020/12/05/%E8%B0%88%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%8E%E4%BA%91%E5%8E%9F%E7%94%9F/</loc>
     
     <lastmod>2021-01-29</lastmod>
     
@@ -184,14 +198,14 @@
   </url>
   
   <url>
-    <loc>https://damonyi.cc/2020/09/21/Docker%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%88%A0%E9%99%A4%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/</loc>
+    <loc>https://damonyi.cc/2020/09/03/Docker%E4%B8%8E%E4%B8%BB%E6%9C%BA%E5%85%B3%E7%B3%BB/</loc>
     
     <lastmod>2021-01-29</lastmod>
     
   </url>
   
   <url>
-    <loc>https://damonyi.cc/2020/09/03/Docker%E4%B8%8E%E4%B8%BB%E6%9C%BA%E5%85%B3%E7%B3%BB/</loc>
+    <loc>https://damonyi.cc/2020/09/21/Docker%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%88%A0%E9%99%A4%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/</loc>
     
     <lastmod>2021-01-29</lastmod>
     
@@ -564,7 +578,7 @@
 
   <url>
     <loc>https://damonyi.cc/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -572,133 +586,140 @@
   
   <url>
     <loc>https://damonyi.cc/tags/docker/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/golang/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/Container/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/Linux/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/Kubernetes/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/Pod/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/OpenStack/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/%E5%AE%B9%E5%99%A8/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/Spring/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/tensorflow/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/k8s/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/kubernetes-%E7%BD%91%E7%BB%9C/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/%E4%BA%91%E8%AE%A1%E7%AE%97-%E4%BA%91%E5%8E%9F%E7%94%9F/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/Kuberentes/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/Web/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://damonyi.cc/tags/kubernetes/</loc>
-    <lastmod>2021-03-25</lastmod>
+    <lastmod>2021-03-31</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://damonyi.cc/tags/%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2021-03-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
