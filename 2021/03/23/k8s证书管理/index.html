@@ -93,7 +93,7 @@
 <meta property="og:image" content="https://damonyi.cc/2021/03/23/k8s%E8%AF%81%E4%B9%A6%E7%AE%A1%E7%90%86/1.png">
 <meta property="og:image" content="https://damonyi.cc/2021/03/23/k8s%E8%AF%81%E4%B9%A6%E7%AE%A1%E7%90%86/2.png">
 <meta property="article:published_time" content="2021-03-23T07:32:54.000Z">
-<meta property="article:modified_time" content="2021-03-24T10:10:32.765Z">
+<meta property="article:modified_time" content="2021-03-31T12:49:40.016Z">
 <meta property="article:tag" content="kubernetes">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://damonyi.cc/2021/03/23/k8s%E8%AF%81%E4%B9%A6%E7%AE%A1%E7%90%86/1.png">
@@ -362,7 +362,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.1k字
+                  1.2k字
                 </span>
               
 
@@ -469,6 +469,8 @@ scp  /etc/kubernetes/cluster.yaml node53:/etc/kubernetes
 </li>
 </ol>
 <p>执行命令make WHAT=cmd/kubeadm 重新编译生成kubeadm 可执行文件</p>
+<h2 id="5-kubelet-自动续期与controller-manager的证书签发时间"><a href="#5-kubelet-自动续期与controller-manager的证书签发时间" class="headerlink" title="5. kubelet 自动续期与controller-manager的证书签发时间"></a>5. kubelet 自动续期与controller-manager的证书签发时间</h2><p>这里主要有两个参数<br>kubelet 进程接收 –rotate-certificates 参数，该参数决定 kubelet 在当前使用的 证书即将到期时，是否会自动申请新的证书。</p>
+<p>kube-controller-manager 进程接收 –cluster-signing-duration 参数 （在 1.19 版本之前为 –experimental-cluster-signing-duration），用来 控制签发证书的有效期限。</p>
 
       
     </div>
@@ -652,7 +654,7 @@ scp  /etc/kubernetes/cluster.yaml node53:/etc/kubernetes
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-K8s集群内置的证书在一年后会到期，导致集群不能正常使用"><span class="nav-number">1.</span> <span class="nav-text">1.K8s集群内置的证书在一年后会到期，导致集群不能正常使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-master-节点"><span class="nav-number">2.</span> <span class="nav-text">2. master 节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-集群在有效期内是进行证书续期"><span class="nav-number">3.</span> <span class="nav-text">3. 集群在有效期内是进行证书续期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-在某个master节点证书续期"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 在某个master节点证书续期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-高可用环境其他master节点证书续期"><span class="nav-number">3.2.</span> <span class="nav-text">3.3 高可用环境其他master节点证书续期</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-修改kubeadm源码支持更长的证书有效期"><span class="nav-number">4.</span> <span class="nav-text">4. 修改kubeadm源码支持更长的证书有效期</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-K8s集群内置的证书在一年后会到期，导致集群不能正常使用"><span class="nav-number">1.</span> <span class="nav-text">1.K8s集群内置的证书在一年后会到期，导致集群不能正常使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-master-节点"><span class="nav-number">2.</span> <span class="nav-text">2. master 节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-集群在有效期内是进行证书续期"><span class="nav-number">3.</span> <span class="nav-text">3. 集群在有效期内是进行证书续期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-在某个master节点证书续期"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 在某个master节点证书续期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-高可用环境其他master节点证书续期"><span class="nav-number">3.2.</span> <span class="nav-text">3.3 高可用环境其他master节点证书续期</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-修改kubeadm源码支持更长的证书有效期"><span class="nav-number">4.</span> <span class="nav-text">4. 修改kubeadm源码支持更长的证书有效期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-kubelet-自动续期与controller-manager的证书签发时间"><span class="nav-number">5.</span> <span class="nav-text">5. kubelet 自动续期与controller-manager的证书签发时间</span></a></li></ol></div>
             
 
           </div>

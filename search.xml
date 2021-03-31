@@ -2740,6 +2740,8 @@ scp  /etc/kubernetes/cluster.yaml node53:/etc/kubernetes
 </li>
 </ol>
 <p>执行命令make WHAT=cmd/kubeadm 重新编译生成kubeadm 可执行文件</p>
+<h2 id="5-kubelet-自动续期与controller-manager的证书签发时间"><a href="#5-kubelet-自动续期与controller-manager的证书签发时间" class="headerlink" title="5. kubelet 自动续期与controller-manager的证书签发时间"></a>5. kubelet 自动续期与controller-manager的证书签发时间</h2><p>这里主要有两个参数<br>kubelet 进程接收 –rotate-certificates 参数，该参数决定 kubelet 在当前使用的 证书即将到期时，是否会自动申请新的证书。</p>
+<p>kube-controller-manager 进程接收 –cluster-signing-duration 参数 （在 1.19 版本之前为 –experimental-cluster-signing-duration），用来 控制签发证书的有效期限。</p>
 ]]></content>
       <tags>
         <tag>kubernetes</tag>
