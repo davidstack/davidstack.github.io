@@ -2890,4 +2890,106 @@ scp  /etc/kubernetes/cluster.yaml node53:/etc/kubernetes
         <tag>网络</tag>
       </tags>
   </entry>
+  <entry>
+    <title>DPDK相关介绍</title>
+    <url>/2021/05/06/DPDK%E7%9B%B8%E5%85%B3%E4%BB%8B%E7%BB%8D/</url>
+    <content><![CDATA[<p>docker run -itd –name wangdekui –privileged -v /sys/bus/pci/drivers:/sys/bus/pci/drivers -v /sys/kernel/mm/hugepages:/sys/kernel/mm/hugepages -v /sys/devices/system/node:/sys/devices/system/node -v /dev:/dev  -v /etc/yum.repos.d/:/etc/yum.repos.d/ centos:7.8.2003  bash</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>intel的cri-resource-manager项目</title>
+    <url>/2021/04/12/intel%E7%9A%84cri-resource-manager%E9%A1%B9%E7%9B%AE/</url>
+    <content><![CDATA[<p>为每个容器创建了一个resource.sh,该文件主要定义了容器的 CPU 内存参数</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ALL_MEMS&#x3D;&quot;1&quot;</span><br><span class="line">DRAM_MEMS&#x3D;&quot;1&quot;</span><br><span class="line">EXCLUSIVE_CPUS&#x3D;&quot;14-15,42&quot;</span><br><span class="line">SHARED_CPUS&#x3D;&quot;16-27,43-55&quot;</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+  <entry>
+    <title>PMEM介绍</title>
+    <url>/2021/05/07/PMEM%E4%BB%8B%E7%BB%8D/</url>
+    <content><![CDATA[<p><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/storage_administration_guide/ch-persistent-memory-nvdimms" target="_blank" rel="noopener">https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/storage_administration_guide/ch-persistent-memory-nvdimms</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>容器资源隔离CPU与内存</title>
+    <url>/2021/07/05/%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%9A%94%E7%A6%BBCPU%E4%B8%8E%E5%86%85%E5%AD%98/</url>
+    <content><![CDATA[<p>容器技术提供了不同于传统虚拟机技术的资源隔离方式，容器的打包和启动速度得到提高，但是却降低了容器的隔离强度，这里就有一个资源视图的隔离问题，容器可以通过cgroup的方式对资源的使用情况进行限制，包括内存、cpu等，但是如果一些进程使用一些常用的监控命令，例如free top等命令，其实看到的还是物理机的数据，而非容器的数据，这是由于容器并没有做到对/proc,/sys等文件的资源视图隔离，我们知道容器中看到的/proc伪文件系统的信息是宿主的/proc，没有隔离/proc 意味着获取不到容器中进程相关的proc信息。另外，一些需要读取proc信息的应用，会获取到错误的数据。 常用的proc伪文件系统包括：/proc/meminfo,/proc/cpuinfo, /proc/stat, /proc/uptime, /proc/loadavg等，举一个Java开发者常遇到的问题，当我们在启动JVM时，通常需要给容器设置JVM的内存参数，才能正确使用容器内存。</p>
+<p>解决资源视图隔离问题的必要性</p>
+<ol>
+<li>从容器的视角来看，通常一些业务开发者已经习惯了传统的物理机、虚拟机，在这些强隔离的宿主机上可以使用top、free等命令查看系统的资源使用情况，但是在容器内无法做到这一点，“越界”查看到了宿主机的信息</li>
+<li>从应用程序的角度，在容器内运行进程和在物理机运行进程，其实运行环境是不同的，并且可能存在一些安全隐患<br>2.1  例如java的JVM会使用free 查看内存，并尝试使用这个值用于设置JVM内存大小，这里很容易出现OOM<br>2.2 例如golang程序中，使用runtime.NumCPU获得CPU数量，并用这个值启动相应数量的进程 </li>
+</ol>
+<h2 id="FUSE文件系统"><a href="#FUSE文件系统" class="headerlink" title="FUSE文件系统"></a>FUSE文件系统</h2><p>FUSE（用户态文件系统）是一个实现在用户空间的文件系统框架，通过FUSE内核模块的支持，使用者只需要根据fuse提供的接口实现具体的文件操作就可以实现一个文件系统。在fuse出现以前，Linux中的文件系统都是完全实现在内核态，编写一个特定功能的文件系统，不管是代码编写还是调试都不太方便，就算是仅仅在现有传统文件系统上添加一个小小的功能，因为是在内核中实现仍需要做很大的工作量。在用户态文件系统FUSE出现后(2.6内核以后都支持fuse)，就会大大的减少工作量，也会很方便的进行调试。编写FUSE文件系统时，只需要内核加载了fuse内核模块即可，不需要重新编译内核。</p>
+<p>完整的fuse功能包括a）用户态customize文件系统b）用户态fuse库（libfuse）c）内核支持（fs/fuse/*），共3层结构协作完成。</p>
+<p> <img src="/2021/07/05/%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%9A%94%E7%A6%BBCPU%E4%B8%8E%E5%86%85%E5%AD%98/6.jpg" alt="avatar"></p>
+<h3 id="以用户态内核态看FUSE"><a href="#以用户态内核态看FUSE" class="headerlink" title="以用户态内核态看FUSE"></a>以用户态内核态看FUSE</h3><p><img src="/2021/07/05/%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%9A%94%E7%A6%BBCPU%E4%B8%8E%E5%86%85%E5%AD%98/13.jpg" alt="avatar"></p>
+<p>FUSE的工作原理如上图所示。假设基于FUSE的用户态文件系统hello挂载在/tmp/fuse目录下。当应用层程序要访问/tmp/fuse下的文件时，通过glibc中的函数进行系统调用，处理这些系统调用的VFS中的函数会调用FUSE在内核中的文件系统；内核中的FUSE文件系统将用户的请求，发送给用户态文件系统hello；用户态文件系统收到请求后，进行处理，将结果返回给内核中的FUSE文件系统；最后，内核中的FUSE文件系统将数据返回给用户态程序。</p>
+<h3 id="fuse举例"><a href="#fuse举例" class="headerlink" title="fuse举例"></a>fuse举例</h3><p>这里引用知乎上的一个<a href="https://zhuanlan.zhihu.com/p/106719192?utm_source=wechat_session" target="_blank" rel="noopener">文章</a>,如果已经使用fuse开发了一套文件系统，例如叫zfuse，这里首先将zfuse挂载到了/mnt/fuse 目录，如果我们要创建/mnt/fuse/my.log文件，会发生什么呢？</p>
+<p> <img src="/2021/07/05/%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%9A%94%E7%A6%BBCPU%E4%B8%8E%E5%86%85%E5%AD%98/7.jpg" alt="avatar"></p>
+<ol>
+<li>此时 open系统调用进入kernel space，vfs层根据挂载点文件的操作函数对应到fuse_create_open，此时已经工作在内核态，但是在fuse_create_open内会创建一个包含FUSE_CREATE操作数的消息</li>
+<li>将FUSE_CREATE的消息通过管道文件发送给管道另一端的用户态接收进程，即我们自定义的zfuse文件系统进行处理，处理这个消息的进程在ZFUSE挂载时由libfuse库代码中创建，作用是读取管道文件消息并根据消息的操作数来执行对应操作，在这里解析到的是FUSE_CREATE操作数，对应libfuse库中的fuse_lib_create函数。</li>
+<li>zfuse的作用，libfuse只是将操作接口与内核VFS做到一一对接，而真正完成操作的还是ZFUSE，在fuse_lib_create中会调用ZFUSE内定义的create函数</li>
+<li>libfuse接口的作用，解耦合，简化ZFUSE开发。假设ZFUSE不需要lseek操作，那么就不需要实现lseek操作，而我们无法控制用户的行为，这里用户是指ZFUSE文件系统的使用者。假设用户在使用ZFUSE时进行了lseek操作，那么会先由libfuse提供的fuse_lib_lseek接口处理，libfuse发现ZFUSE没有实现lseek，就直接返回不支持此操作。</li>
+</ol>
+<h3 id="具体的实现流程"><a href="#具体的实现流程" class="headerlink" title="具体的实现流程"></a>具体的实现流程</h3><p> <img src="/2021/07/05/%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%9A%94%E7%A6%BBCPU%E4%B8%8E%E5%86%85%E5%AD%98/8.jpg" alt="avatar"></p>
+<ol>
+<li>ZFUSE挂载到/mnt/fuse，libfuse会fork出后台进程，用于读取管道文件消息。</li>
+<li>用户使用ZFUSE文件系统，创建文件my.log</li>
+<li>调用系统调用</li>
+<li>经VFS交由fuse处理</li>
+<li>fuse下的create处理，向管道发送带创建操作（FUSE_CREATE）的消息，当前进程A加入等待队列</li>
+<li>libfuse下创建的后台进程读取到消息，解析操作数为FUSE_CREATE，对应到fuse_lib_create，即low level层接口。</li>
+<li>fuse_lib_create中调用ZFUSE的上层接口zfuse.create，由ZFUSE来实现创建操作</li>
+<li>完成创建后，通过libfuse中的fuse_reply_create向管道发送完成消息从而唤醒之前加入等待队列的进程A</li>
+<li>进程A得到创建成功的消息，系统调用结束，/mnt/fuse/my.log文件创建成功</li>
+</ol>
+<h3 id="用libfuse创建FUSE文件系统"><a href="#用libfuse创建FUSE文件系统" class="headerlink" title="用libfuse创建FUSE文件系统"></a>用libfuse创建FUSE文件系统</h3><p><a href="https://www.lijiaocn.com/%E6%8A%80%E5%B7%A7/2019/01/21/linux-fuse-filesystem-in-userspace-usage.html" target="_blank" rel="noopener">比较详细的讲解libfuse使用</a></p>
+<h2 id="LXCFS"><a href="#LXCFS" class="headerlink" title="LXCFS"></a>LXCFS</h2><p>LXCFS是一个简单的用户文件系统，用于解决当前linux kernel的一些局限性，让容器更能感觉为是一个独立的系统，使用libfuse库基于C开发完成，主要提供两个方面</p>
+<ol>
+<li>提供一系列可以绑定的文件，从而使cgroup能够感知</li>
+<li>一个容器可以感知的cgroupfs-like tree</li>
+</ol>
+<p>lxcfs 是一个开源的fuse文件系统,<a href="https://github.com/lxc/lxcfs" target="_blank" rel="noopener">项目地址</a>，用于让linux 容器更像虚拟机，让容器内的应用在读取内存和 CPU 信息的时候通过 lxcfs 的映射，转到自己的通过对 cgroup 中容器相关定义信息读取的虚拟数据上。<font size="6">将lxcfs的文件挂载到容器内后，容器内的进程在基于/proc 获取容器的CPU和内存时，即读取这些文件时，lxcfs文件系统会获取该容器的1号进程的宿主机ID，将这个读取操作转换为读取宿主机对应容器cgrroup配置文件的信息，从而实现获取正确的容器CPU和内存。</font></p>
+<p>原来lxcfs是LXC容器的一个辅助项目，但是现在可以被任意的runtim使用，lxcfs通过用户态文件系统，在容器内提供以下文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;proc&#x2F;cpuinfo</span><br><span class="line">&#x2F;proc&#x2F;diskstats</span><br><span class="line">&#x2F;proc&#x2F;meminfo</span><br><span class="line">&#x2F;proc&#x2F;stat</span><br><span class="line">&#x2F;proc&#x2F;swaps</span><br><span class="line">&#x2F;proc&#x2F;uptime</span><br></pre></td></tr></table></figure>
+
+<p>如下图所示，把宿主机的 /var/lib/lxcfs/proc/memoinfo 文件挂载到Docker容器的/proc/meminfo位置后。容器中进程读取相应文件内容时，LXCFS的FUSE实现会从容器对应的Cgroup文件中读取正确的内存限制。从而使得应用获得正确的资源约束设定。</p>
+<p><img src="/2021/07/05/%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%9A%94%E7%A6%BBCPU%E4%B8%8E%E5%86%85%E5%AD%98/11.png" alt="avatar"></p>
+<p>详细讲解lxcfs，<a href="https://www.lijiaocn.com/%E6%8A%80%E5%B7%A7/2019/02/11/lxcfs-support-cpu-share-and-cpu-quota-1.html" target="_blank" rel="noopener">源码分析</a></p>
+<h2 id="LXCFS-for-Kubernetes"><a href="#LXCFS-for-Kubernetes" class="headerlink" title="LXCFS for Kubernetes"></a>LXCFS for Kubernetes</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install fuse fuse-lib fuse-devel</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;denverdino&#x2F;lxcfs-admission-webhook.git</span><br><span class="line">cd lxcfs-admission-webhook</span><br><span class="line">bash deployment&#x2F;install.sh</span><br><span class="line">kubectl apply -f deployment&#x2F;lxcfs-daemonset.yaml</span><br><span class="line"></span><br><span class="line">设置namespace内开启lxcfs注解的设置，这里一定不要为lxcfs-daemonset所在的命名空间开启，否则导致启动失败</span><br><span class="line">也可以不在namespace设置，只需要在创建的Pod中设置就可以</span><br><span class="line">kubectl label namespace default lxcfs-admission-webhook&#x3D;enabled</span><br></pre></td></tr></table></figure>
+
+<p>测试效果如下所示</p>
+<p>Pod的limit参数配置了8个CPU，24G 内存</p>
+<p> <img src="/2021/07/05/%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%9A%94%E7%A6%BBCPU%E4%B8%8E%E5%86%85%E5%AD%98/18.png" alt="avatar"></p>
+<p>在容器内只能查看到25G内存</p>
+<p><img src="/2021/07/05/%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%9A%94%E7%A6%BBCPU%E4%B8%8E%E5%86%85%E5%AD%98/19.png" alt="avatar"></p>
+<p>在容器内只能查看到6个CPU</p>
+<p><img src="/2021/07/05/%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%9A%94%E7%A6%BBCPU%E4%B8%8E%E5%86%85%E5%AD%98/20.png" alt="avatar"></p>
+<p>这种交由k8s进行管理，估计会有些风险，将这个服务交由systemd 进行管理，运行在宿主机上，可能更安全一些。</p>
+<h2 id="lxcfs服务重启"><a href="#lxcfs服务重启" class="headerlink" title="lxcfs服务重启"></a>lxcfs服务重启</h2><p>lxcfs服务重启，会导致原正常使用的容器无法查看cpu、内存，这是因为 lxcfs重启后，/var/lib/lxcfs会删除再重建，inode变了，会出现如下错误</p>
+<p><img src="/2021/07/05/%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%9A%94%E7%A6%BBCPU%E4%B8%8E%E5%86%85%E5%AD%98/4.png" alt="avatar"></p>
+<p><img src="/2021/07/05/%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%9A%94%E7%A6%BBCPU%E4%B8%8E%E5%86%85%E5%AD%98/5.png" alt="avatar"></p>
+<p>当lxcfs服务重启后，需要对容器挂载的响应目录进行重新挂载，lxcfs issue 列表中对这个问题进行了讨论，<a href="https://github.com/lxc/lxcfs/issues/193" target="_blank" rel="noopener">issue 193</a>github上有人整理的remount的脚本代码</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">! /bin/bash</span></span><br><span class="line"></span><br><span class="line">PATH=$PATH:/bin</span><br><span class="line">LXCFS="/var/lib/lxc/lxcfs"</span><br><span class="line">LXCFS_ROOT_PATH="/var/lib/lxc"</span><br><span class="line"></span><br><span class="line">containers=$(docker ps | grep -v pause  | grep -v calico | awk '&#123;print $1&#125;' | grep -v CONTAINE)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">-v /var/lib/lxc/lxcfs/proc/cpuinfo:/proc/cpuinfo:rw</span></span><br><span class="line"><span class="meta">#</span><span class="bash">-v /var/lib/lxc/lxcfs/proc/diskstats:/proc/diskstats:rw</span></span><br><span class="line"><span class="meta">#</span><span class="bash">-v /var/lib/lxc/lxcfs/proc/meminfo:/proc/meminfo:rw</span></span><br><span class="line"><span class="meta">#</span><span class="bash">-v /var/lib/lxc/lxcfs/proc/<span class="built_in">stat</span>:/proc/<span class="built_in">stat</span>:rw</span></span><br><span class="line"><span class="meta">#</span><span class="bash">-v /var/lib/lxc/lxcfs/proc/swaps:/proc/swaps:rw</span></span><br><span class="line"><span class="meta">#</span><span class="bash">-v /var/lib/lxc/lxcfs/proc/uptime:/proc/uptime:rw</span></span><br><span class="line"><span class="meta">#</span><span class="bash">-v /var/lib/lxc/lxcfs/proc/loadavg:/proc/loadavg:rw</span></span><br><span class="line"><span class="meta">#</span><span class="bash">-v /var/lib/lxc/lxcfs/sys/devices/system/cpu/online:/sys/devices/system/cpu/online:rw</span></span><br><span class="line">for container in $containers;do</span><br><span class="line">	mountpoint=$(docker inspect --format '&#123;&#123; range .Mounts &#125;&#125;&#123;&#123; if eq .Destination "/var/lib/lxc" &#125;&#125;&#123;&#123; .Source &#125;&#125;&#123;&#123; end &#125;&#125;&#123;&#123; end &#125;&#125;' $container)</span><br><span class="line">	if [ "$mountpoint" = "$LXCFS_ROOT_PATH" ];then</span><br><span class="line">		echo "remount $container"</span><br><span class="line">		PID=$(docker inspect --format '&#123;&#123;.State.Pid&#125;&#125;' $container)</span><br><span class="line"><span class="meta">		#</span><span class="bash"> mount /proc</span></span><br><span class="line">		for file in meminfo cpuinfo loadavg stat diskstats swaps uptime;do</span><br><span class="line">			echo nsenter --target $PID --mount --  mount -B "$LXCFS/proc/$file" "/proc/$file"</span><br><span class="line">			nsenter --target $PID --mount --  mount -B "$LXCFS/proc/$file" "/proc/$file"</span><br><span class="line">		done</span><br><span class="line"><span class="meta">		#</span><span class="bash"> mount /sys</span></span><br><span class="line">		for file in online;do</span><br><span class="line">			echo nsenter --target $PID --mount --  mount -B "$LXCFS/sys/devices/system/cpu/$file" "/sys/devices/system/cpu/$file"</span><br><span class="line">			nsenter --target $PID --mount --  mount -B "$LXCFS/sys/devices/system/cpu/$file" "/sys/devices/system/cpu/$file"</span><br><span class="line">		done </span><br><span class="line">	fi </span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+
+<p>但是仍然存在一个问题，如何感知到lxcfs什么时候重启，因为只有知道了lxcfs进行了重启，我们才能对容器进行remount操作，这里有提供一个(方案)[<a href="https://github.com/alibaba/pouch/issues/140]" target="_blank" rel="noopener">https://github.com/alibaba/pouch/issues/140]</a></p>
+<ol>
+<li>将以下卷挂载到容器,除了挂载proc相关的卷，这里增加了/var/lib/lxc/:/var/lib/lxc/:shared</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-v &#x2F;var&#x2F;lib&#x2F;lxc&#x2F;:&#x2F;var&#x2F;lib&#x2F;lxc&#x2F;:shared  \</span><br><span class="line">-v &#x2F;var&#x2F;lib&#x2F;lxc&#x2F;lxcfs&#x2F;proc&#x2F;uptime:&#x2F;proc&#x2F;uptime \</span><br><span class="line">-v &#x2F;var&#x2F;lib&#x2F;lxc&#x2F;lxcfs&#x2F;proc&#x2F;swaps:&#x2F;proc&#x2F;swaps  \</span><br><span class="line">-v &#x2F;var&#x2F;lib&#x2F;lxc&#x2F;lxcfs&#x2F;proc&#x2F;stat:&#x2F;proc&#x2F;stat  \</span><br><span class="line">-v &#x2F;var&#x2F;lib&#x2F;lxc&#x2F;lxcfs&#x2F;proc&#x2F;diskstats:&#x2F;proc&#x2F;diskstats \</span><br><span class="line">-v &#x2F;var&#x2F;lib&#x2F;lxc&#x2F;lxcfs&#x2F;proc&#x2F;meminfo:&#x2F;proc&#x2F;meminfo \</span><br><span class="line">-v &#x2F;var&#x2F;lib&#x2F;lxc&#x2F;lxcfs&#x2F;proc&#x2F;cpuinfo:&#x2F;proc&#x2F;cpuinfo</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>使用systemd 管理lxcfs服务，在service 文件中增加重启或者服务恢复时的重新remount操作</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">首先下载lxcfs的源码，编译安装</span><br><span class="line">yum install fuse fuse-lib fuse-devel</span><br><span class="line">git clone git:&#x2F;&#x2F;github.com&#x2F;lxc&#x2F;lxcfs</span><br><span class="line">cd lxcfs</span><br><span class="line">.&#x2F;bootstrap.sh</span><br><span class="line">.&#x2F;configure</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"></span><br><span class="line">cat &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;multi-user.target.wants&#x2F;lxcfs.service</span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description&#x3D;FUSE filesystem for LXC</span><br><span class="line">ConditionVirtualization&#x3D;!container</span><br><span class="line">Before&#x3D;lxc.service</span><br><span class="line">Documentation&#x3D;man:lxcfs(1)</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart&#x3D;&#x2F;usr&#x2F;bin&#x2F;lxcfs &#x2F;var&#x2F;lib&#x2F;lxc&#x2F;lxcfs&#x2F;</span><br><span class="line">KillMode&#x3D;process</span><br><span class="line">Restart&#x3D; always</span><br><span class="line">ExecStopPost&#x3D;-&#x2F;bin&#x2F;fusermount -u &#x2F;var&#x2F;lib&#x2F;lxc&#x2F;lxcfs</span><br><span class="line">Delegate&#x3D;yes</span><br><span class="line"></span><br><span class="line"># add remount script</span><br><span class="line">ExecStartPost&#x3D;&#x2F;usr&#x2F;local&#x2F;bin&#x2F;container_remount_lxcfs.sh</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy&#x3D;multi-user.target</span><br><span class="line">&#96;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>当lxcfs服务重启时，会调用/usr/local/bin/container_remount_lxcfs.sh 脚本对全部容器进行重新remount</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>docker</tag>
+      </tags>
+  </entry>
 </search>

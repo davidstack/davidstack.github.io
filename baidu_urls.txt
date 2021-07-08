@@ -1,1 +1,1 @@
-https://damonyi.cc/2021/03/31/k8s-pod-%E9%85%8D%E7%BD%AEshareMemory/
+https://damonyi.cc/2021/07/05/%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%9A%94%E7%A6%BBCPU%E4%B8%8E%E5%86%85%E5%AD%98/
