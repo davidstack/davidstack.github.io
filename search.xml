@@ -2993,4 +2993,20 @@ scp  /etc/kubernetes/cluster.yaml node53:/etc/kubernetes
         <tag>docker</tag>
       </tags>
   </entry>
+  <entry>
+    <title>服务器宕机启动后硬盘恢复</title>
+    <url>/2021/07/12/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%95%E6%9C%BA%E5%90%AF%E5%8A%A8%E5%90%8E%E7%A1%AC%E7%9B%98%E6%81%A2%E5%A4%8D/</url>
+    <content><![CDATA[<p>服务器机房异常断电，服务器开机后，出现这个错误： Failed to open pack file: input/output error  。。。  （很多的failed、卡死在进度条界面），这个服务器基本不可以使用了。。</p>
+<p>解决思路：</p>
+<ol>
+<li><p>先进入拯救模式看启动界面按e 进入界面把ro改成 “rw init=/sysroot/bin/sh”. 完成之后按 ctrl+x  进入系统。查看/etc/fatab 挂载情况如有nfs挂载项或者其他挂在项就注释重启</p>
+</li>
+<li><p>.如果以没处理掉，就进入自启拯救模式输入 xfs_repair -v -L /dev/dm-0 强制清理脏数据在重启。或者运行xfs_repair /dev//dev/mapper/centos-home   xfs_repair/dev/mapper/centos-root   xfs_repair/dev/mapper/centos-swap 等命令尝试启动（这里的目录都是操作系统的根分区，lvm分区）。如果提示文件系统在用，则需要执行umount 操作</p>
+</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>Server</tag>
+      </tags>
+  </entry>
 </search>
