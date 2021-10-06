@@ -2662,12 +2662,6 @@ sysdig -s 2000 -A -c echo_fds fd.sip=192.168.30.5 and proc.name=apache2 and evt.
 ]]></content>
   </entry>
   <entry>
-    <title>cgroup blkio-controller</title>
-    <url>/2021/03/22/cgroup-blkio-controller/</url>
-    <content><![CDATA[<p><a href="https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v1/blkio-controller.html" target="_blank" rel="noopener">https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v1/blkio-controller.html</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>k8s证书管理</title>
     <url>/2021/03/23/k8s%E8%AF%81%E4%B9%A6%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<h2 id="1-K8s集群内置的证书在一年后会到期，导致集群不能正常使用"><a href="#1-K8s集群内置的证书在一年后会到期，导致集群不能正常使用" class="headerlink" title="1.K8s集群内置的证书在一年后会到期，导致集群不能正常使用"></a>1.K8s集群内置的证书在一年后会到期，导致集群不能正常使用</h2><p>证书到期后会提示:Unable to connect to the server: x509: certificate has expired or is not yet valid</p>
@@ -2891,25 +2885,6 @@ scp  /etc/kubernetes/cluster.yaml node53:/etc/kubernetes
       </tags>
   </entry>
   <entry>
-    <title>DPDK相关介绍</title>
-    <url>/2021/05/06/DPDK%E7%9B%B8%E5%85%B3%E4%BB%8B%E7%BB%8D/</url>
-    <content><![CDATA[<p>docker run -itd –name wangdekui –privileged -v /sys/bus/pci/drivers:/sys/bus/pci/drivers -v /sys/kernel/mm/hugepages:/sys/kernel/mm/hugepages -v /sys/devices/system/node:/sys/devices/system/node -v /dev:/dev  -v /etc/yum.repos.d/:/etc/yum.repos.d/ centos:7.8.2003  bash</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>intel的cri-resource-manager项目</title>
-    <url>/2021/04/12/intel%E7%9A%84cri-resource-manager%E9%A1%B9%E7%9B%AE/</url>
-    <content><![CDATA[<p>为每个容器创建了一个resource.sh,该文件主要定义了容器的 CPU 内存参数</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ALL_MEMS&#x3D;&quot;1&quot;</span><br><span class="line">DRAM_MEMS&#x3D;&quot;1&quot;</span><br><span class="line">EXCLUSIVE_CPUS&#x3D;&quot;14-15,42&quot;</span><br><span class="line">SHARED_CPUS&#x3D;&quot;16-27,43-55&quot;</span><br></pre></td></tr></table></figure>
-]]></content>
-  </entry>
-  <entry>
-    <title>PMEM介绍</title>
-    <url>/2021/05/07/PMEM%E4%BB%8B%E7%BB%8D/</url>
-    <content><![CDATA[<p><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/storage_administration_guide/ch-persistent-memory-nvdimms" target="_blank" rel="noopener">https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/storage_administration_guide/ch-persistent-memory-nvdimms</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>容器资源隔离CPU与内存</title>
     <url>/2021/07/05/%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%9A%94%E7%A6%BBCPU%E4%B8%8E%E5%86%85%E5%AD%98/</url>
     <content><![CDATA[<p>容器技术提供了不同于传统虚拟机技术的资源隔离方式，容器的打包和启动速度得到提高，但是却降低了容器的隔离强度，这里就有一个资源视图的隔离问题，容器可以通过cgroup的方式对资源的使用情况进行限制，包括内存、cpu等，但是如果一些进程使用一些常用的监控命令，例如free top等命令，其实看到的还是物理机的数据，而非容器的数据，这是由于容器并没有做到对/proc,/sys等文件的资源视图隔离，我们知道容器中看到的/proc伪文件系统的信息是宿主的/proc，没有隔离/proc 意味着获取不到容器中进程相关的proc信息。另外，一些需要读取proc信息的应用，会获取到错误的数据。 常用的proc伪文件系统包括：/proc/meminfo,/proc/cpuinfo, /proc/stat, /proc/uptime, /proc/loadavg等，举一个Java开发者常遇到的问题，当我们在启动JVM时，通常需要给容器设置JVM的内存参数，才能正确使用容器内存。</p>
@@ -3007,6 +2982,103 @@ scp  /etc/kubernetes/cluster.yaml node53:/etc/kubernetes
 ]]></content>
       <tags>
         <tag>Server</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>零缺陷学习</title>
+    <url>/2021/10/06/%E9%9B%B6%E7%BC%BA%E9%99%B7%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<p>参加学习了零缺陷的培训，对零缺陷思想有了更深入的理解，即要求我们能够第一次就把事情考虑好、把事情做好。经过了产品的多个版本的需求分析、开发、测试、发版，我觉得有两个方面可以基于零缺陷的思想进行工作。一方面是脚踏实地的编码测试，在最基本的操作上减少bug数量；另一方面是前瞻性的架构设计，将可能出现的需求、问题提前考虑，从而降低返工以及反复开发。零缺陷也就是禁止小错误来避免大错误，零缺陷和成语防微杜渐、防患未然类似，都是要求我们避免不必要的错误。</p>
+<p>做了很多软件开发以及产品架构设计，踩过无数个坑，越来越意识到零缺陷的重要性。在软件开发过程中，有时可能觉得一个while循环的终止判断、一个空指针判断肯定没有问题，就没有去增加判断、增加日志记录， 然而当实际测试时，异常数据流导致出现各种问题，引起系统的不稳定，导致需要大量的时间进行问题定位。也有的时候，实现一个功能，为了尽快完成工作，不进行编码设计模式的考虑，只使用简单的函数调用、if判断进行堆积代码，造成大量代码冗余、无法扩展更多新的功能，多个版本后就需要进行代码重构。对于架构师、Team Leader，需要考虑到产品的全部点，避免遗漏导致的返工，对于需求开发人员需要由点及面，将个人研发的全部内容基于该点进行全面考虑。有时候测试人员在测试的时候只关注到了一个问题并分析到该问题的原因，需要开发人员只会针对这个问题进行修改，并不去主动考虑该问题原因导致的其他问题，从而导致针对该问题原因会出现多个问题单。</p>
+<p>如果我们基于零缺陷的思想，基于零缺陷的要求去工作，就可以降低大量的工作量。可以将这些工作量投入到更有价值的工作中去。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>vrrp 协议讲解</title>
+    <url>/2021/09/02/vrrp-%E5%8D%8F%E8%AE%AE%E8%AE%B2%E8%A7%A3/</url>
+    <content><![CDATA[<h2 id="主要解决的问题"><a href="#主要解决的问题" class="headerlink" title="主要解决的问题"></a>主要解决的问题</h2><p>主机将发送给外部网络的报文发送给网关，由网关传递给外部网络，从而实现主机与外部网络的通信。正常的情况下，主机可以完全信赖网关的工作，但是当网关坏掉时，主机与外部的通信就会中断。要解决网络中断的问题，可以依靠再添加网关的方式解决，不过由于大多数主机只允许配置一个默认网关，此时需要网络管理员进行手工干预网络配置，才能使得主机使用新的网关进行通信；有时，人们运用动态路由协议的方法来解决网络出现故障这一问题，如运行RIP、OSPF等，或者使用IRDP。然而，这些协议由于配置过于复杂，或者安全性能不好等原因都不能满足用户的需求。</p>
+<p>为了更好地解决网络中断的问题，网络开发者提出了VRRP，它既不需要改变组网情况，也不需要在主机上做任何配置，只需要在相关路由器上配置极少的几条命令，就能实现下一跳网关的备份，并且不会给主机带来任何负担。VRRP将局域网内的一组路由器划分在一起，形成一个VRRP备份组，它在功能上相当于一台虚拟路由器，使用虚拟路由器号进行标识。以下使用虚拟路由器代替VRRP备份组进行描述。</p>
+<h2 id="VRRP-的技术优点"><a href="#VRRP-的技术优点" class="headerlink" title="VRRP 的技术优点"></a>VRRP 的技术优点</h2><p>VRRP是一种容错协议，它保证当主机的下一跳路由器出现故障时，由另一台路由器来代替出现故障的路由器进行工作，从而保持网络通信的连续性和可靠性。</p>
+<p>VRRP具有如下优点：</p>
+<ol>
+<li><p>简化网络管理。在具有多播或广播能力的局域网（如以太网）中，借助VRRP能在某台设备出现故障时仍然提供高可靠的缺省链路，有效避免单一链路发生故障后网络中断的问题，而无需修改动态路由协议、路由发现协议等配置信息，也无需修改主机的默认网关配置。</p>
+</li>
+<li><p>适应性强。VRRP报文封装在IP报文中，支持各种上层协议。</p>
+</li>
+<li><p>网络开销小。VRRP只定义了一种报文——VRRP通告报文，并且只有处于Master状态的路由器可以发送VRRP报文。</p>
+</li>
+</ol>
+<h2 id="相关术语"><a href="#相关术语" class="headerlink" title="相关术语"></a>相关术语</h2><ol>
+<li><p>虚拟路由器：由一个Master路由器和多个Backup路由器组成。主机将虚拟路由器当作默认网关。</p>
+</li>
+<li><p>VRID：虚拟路由器的标识。有相同VRID的一组路由器构成一个虚拟路由器。</p>
+</li>
+<li><p>Master路由器：虚拟路由器中承担报文转发任务的路由器。</p>
+</li>
+<li><p>Backup路由器：Master路由器出现故障时，能够代替Master路由器工作的路由器。</p>
+</li>
+<li><p>虚拟IP地址：虚拟路由器的IP地址。一个虚拟路由器可以拥有一个或多个IP地址。</p>
+</li>
+<li><p>IP地址拥有者：接口IP地址与虚拟IP地址相同的路由器被称为IP地址拥有者。</p>
+</li>
+<li><p>虚拟MAC地址：一个虚拟路由器拥有一个虚拟MAC地址。虚拟MAC地址的格式为00-00-5E-00-01-{VRID}。通常情况下，虚拟路由器回应ARP请求使用的是虚拟MAC地址，只有虚拟路由器做特殊配置的时候，才回应接口的真实MAC地址。</p>
+</li>
+<li><p>优先级：VRRP根据优先级来确定虚拟路由器中每台路由器的地位。</p>
+</li>
+<li><p>非抢占方式：如果Backup路由器工作在非抢占方式下，则只要Master路由器没有出现故障，Backup路由器即使随后被配置了更高的优先级也不会成为Master路由器。</p>
+</li>
+<li><p>抢占方式：如果Backup路由器工作在抢占方式下，当它收到VRRP报文后，会将自己的优先级与通告报文中的优先级进行比较。如果自己的优先级比当前的Master路由器的优先级高，就会主动抢占成为Master路由器；否则，将保持Backup状态。</p>
+</li>
+</ol>
+<h2 id="VRRP-工作过程"><a href="#VRRP-工作过程" class="headerlink" title="VRRP 工作过程"></a>VRRP 工作过程</h2><ol>
+<li><p>虚拟路由器中的路由器根据优先级选举出Master。Master路由器通过发送免费ARP报文，将自己的虚拟MAC地址通知给与它连接的设备或者主机，从而承担报文转发任务；</p>
+</li>
+<li><p>Master路由器周期性发送VRRP报文，以公布其配置信息（优先级等）和工作状况；</p>
+</li>
+<li><p>如果Master路由器出现故障，虚拟路由器中的Backup路由器将根据优先级重新选举新的Master；</p>
+</li>
+<li><p>虚拟路由器状态切换时，Master路由器由一台设备切换为另外一台设备，新的Master路由器只是简单地发送一个携带虚拟路由器的MAC地址和虚拟IP地址信息的免费ARP报文，这样就可以更新与它连接的主机或设备中的ARP相关信息。网络中的主机感知不到Master路由器已经切换为另外一台设备。</p>
+</li>
+<li><p>Backup路由器的优先级高于Master路由器时，由Backup路由器的工作方式（抢占方式和非抢占方式）决定是否重新选举Master。</p>
+</li>
+</ol>
+<h2 id="master选举"><a href="#master选举" class="headerlink" title="master选举"></a>master选举</h2><p>VRRP根据优先级来确定虚拟路由器中每台路由器的角色（Master路由器或Backup路由器）。优先级越高，则越有可能成为Master路由器。</p>
+<p>初始创建的路由器工作在Backup状态，通过VRRP报文的交互获知虚拟路由器中其他成员的优先级：</p>
+<ol>
+<li><p>如果VRRP报文中Master路由器的优先级高于自己的优先级，则路由器保持在Backup状态；</p>
+</li>
+<li><p>如果VRRP报文中Master路由器的优先级低于自己的优先级，采用抢占工作方式的路由器将抢占成为Master状态，周期性地发送VRRP报文，采用非抢占工作方式的路由器仍保持Backup状态；</p>
+</li>
+<li><p>如果在一定时间内没有收到VRRP报文，则路由器切换为Master状态。</p>
+<p>VRRP优先级的取值范围为0到255（数值越大表明优先级越高），可配置的范围是1到254，优先级0为系统保留给路由器放弃Master位置时候使用，255则是系统保留给IP地址拥有者使用。当路由器为IP地址拥有者时，其优先级始终为255。因此，当虚拟路由器内存在IP地址拥有者时，只要其工作正常，则为Master路由器。</p>
+</li>
+</ol>
+<h2 id="master-状态通告"><a href="#master-状态通告" class="headerlink" title="master 状态通告"></a>master 状态通告</h2><p>Master路由器周期性地发送VRRP报文，在虚拟路由器中公布其配置信息（优先级等）和工作状况。Backup路由器通过接收到VRRP报文的情况来判断Master路由器是否工作正常。</p>
+<p>Master路由器主动放弃Master地位（如Master路由器退出虚拟路由器）时，会发送优先级为0的VRRP报文，致使Backup路由器快速切换变成Master路由器。这个切换的时间称为Skew time，计算方式为：（256－Backup路由器的优先级）/256，单位为秒。</p>
+<p>当Master路由器发生网络故障而不能发送VRRP报文的时候，Backup路由器并不能立即知道其工作状况。Backup路由器等待一段时间之后，如果还没有接收到VRRP报文，那么会认为Master路由器无法正常工作，而把自己升级为Master路由器，周期性发送VRRP报文。如果此时多个Backup路由器竞争Master路由器的位置，将通过优先级来选举Master路由器。Backup路由器默认等待的时间称为Master_Down_Interval，取值为：（3×VRRP报文的发送时间间隔）＋Skew time，单位为秒。</p>
+<p>在性能不够稳定的网络中，Backup路由器可能因为网络堵塞而在Master_Down_Interval期间没有收到Master路由器的报文，而主动抢占为Master位置，如果此时原Master路由器的报文又到达了，就会出现虚拟路由器的成员频繁的进行Master抢占现象。为了缓解这种现象的发生，特制定了延迟等待定时器。它可以使得Backup路由器在等待了Master_Down_Interval后，再等待延迟等待时间。如在此期间仍然没有收到VRRP报文，则此Backup路由器才会切换为Master路由器，对外发送VRRP报文。</p>
+<h2 id="协议相关"><a href="#协议相关" class="headerlink" title="协议相关"></a>协议相关</h2><p><a href="https://www.cnblogs.com/jony413/articles/2697404.html" target="_blank" rel="noopener">https://www.cnblogs.com/jony413/articles/2697404.html</a></p>
+<h3 id="状态机："><a href="#状态机：" class="headerlink" title="状态机："></a>状态机：</h3><pre><code>                            +---------------+
+                +---------&gt;|               |&lt;-------------+
+                |          |  Initialize   |              |
+                |   +------|               |----------+   |
+                |   |      +---------------+          |   |
+                |   |                                 |   |
+                |   V                                 V   |
+        +---------------+                       +---------------+
+        |               |----------------------&gt;|               |
+        |    Master     |                       |    Backup     |
+        |               |&lt;----------------------|               |
+        +---------------+                       +---------------+</code></pre>
+<p>状态1， 初始化：<br>路由器启动时，如果路由器的优先级是255(最高优先级，路由器拥有路由器地址)，要发送VRRP通告信息，并发送广播ARP信息通告路由器IP地址对应的MAC地址为路由虚拟MAC，设置通告信息定时器准备定时发送VRRP通告信息，转为MASTER状态；<br>否则进入BACKUP状态，设置定时器检查定时检查是否收到MASTER的通告信息。</p>
+<p>状态2， 主机：<br>主机状态下的路由器要完成如下功能：<br>设置定时通告定时器；<br>用VRRP虚拟MAC地址响应路由器IP地址的ARP请求；<br>转发目的MAC是VRRP虚拟MAC的数据包；<br>如果是虚拟路由器IP的拥有者，将接受目的地址是虚拟路由器IP的数据包，否则丢弃；<br>当收到shutdown的事件时删除定时通告定时器，发送优先权级为0的通告包，转初始化状态；<br>如果定时通告定时器超时时，发送VRRP通告信息；<br>收到VRRP通告信息时，如果优先权为0，发送VRRP通告信息；否则判断数据的优先级是否高于本机，或相等而且实际IP地址大于本地实际IP，设置定时通告定时器，复位主机超时定时器，转BACKUP状态；否则的话，丢弃该通告包；</p>
+<p>状态3，备机：<br>备机状态下的路由器要实现以下功能：<br>设置主机超时定时器；<br>不能响应针对虚拟路由器IP的ARP请求信息；<br>丢弃所有目的MAC地址是虚拟路由器MAC地址的数据包；<br>不接受目的是虚拟路由器IP的所有数据包；<br>当收到shutdown的事件时删除主机超时定时器，转初始化状态；<br>主机超时定时器超时的时候，发送VRRP通告信息，广播ARP地址信息，转MASTER状态；<br>收到VRRP通告信息时，如果优先权为0，表示进入MASTER选举；否则判断数据的优先级是否高于本机，如果高的话承认MASTER有效，复位主机超时定时器；否则的话，丢弃该通告包；</p>
+<h2 id="典型使用场景"><a href="#典型使用场景" class="headerlink" title="典型使用场景"></a>典型使用场景</h2><h3 id="主备备份VRRP"><a href="#主备备份VRRP" class="headerlink" title="主备备份VRRP"></a>主备备份VRRP</h3><p><img src="/2021/09/02/vrrp-%E5%8D%8F%E8%AE%AE%E8%AE%B2%E8%A7%A3/4.png" alt="avatar"><br>初始情况下，Device A是Master路由器并承担转发任务，Device B和Device C是Backup路由器且都处于就绪监听状态。如果Device A发生故障，则虚拟路由器内处于Backup状态的Device B和Device C路由器将根据优先级选出一个新的Master路由器，这个新Master路由器继续为网络内的主机转发数据</p>
+<h3 id="Master使用BFD-NQA监视上行链路"><a href="#Master使用BFD-NQA监视上行链路" class="headerlink" title="Master使用BFD/NQA监视上行链路"></a>Master使用BFD/NQA监视上行链路</h3><p><img src="/2021/09/02/vrrp-%E5%8D%8F%E8%AE%AE%E8%AE%B2%E8%A7%A3/3.png" alt="avatar"></p>
+<p>初始情况下，Device A作为Master路由器，承担转发任务；Device B为Backup路由器，处于就绪监听状态。Device A使用BFD监视上行到达Internet的链路状态。如果Device A的上行链路发生故障，Device A可以在毫秒级感知到网络变化，立即发送低优先级的VRRP报文给Device B。如果此时Device B的优先级高于报文中的优先级，那么它将在Skew Time时间之后切换为新的Master路由器，之后由这个新的Master路由器为网络内的主机转发数据。</p>
+<h2 id="约束"><a href="#约束" class="headerlink" title="约束"></a>约束</h2><p>在大规模集群场景下，需要使用vrrp 协议的keepalived的 组件运行在同一子网内，用于发送组播</p>
+]]></content>
+      <tags>
+        <tag>linux</tag>
       </tags>
   </entry>
 </search>
