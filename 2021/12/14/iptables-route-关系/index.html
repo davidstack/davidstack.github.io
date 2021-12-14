@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="c5YHonM6Ek6i_dIKMceKoszIqEtrVddsax9qcaoQfR4" />
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="code-NBGBY3mVBb" />
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/robot-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/robot-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. 路由1.1 路由策略（路由规则）路由策略具体是指，使用ip rule 命令操作路由策略数据库，基于策略的路由比传统路由在功能上更强大，使用更灵活，它使网络管理员不仅能够根据目的地址，而且能够根据报文大小、应用或IP源地址等属性来选择转发路径。 ip rule 命令：Usage:   ip rule [ list | add | del ] SELECTOR ACTION （add 添加；de">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iptables route 关系">
+<meta property="og:url" content="https://damonyi.cc/2021/12/14/iptables-route-%E5%85%B3%E7%B3%BB/index.html">
+<meta property="og:site_name" content="云里雾里">
+<meta property="og:description" content="1. 路由1.1 路由策略（路由规则）路由策略具体是指，使用ip rule 命令操作路由策略数据库，基于策略的路由比传统路由在功能上更强大，使用更灵活，它使网络管理员不仅能够根据目的地址，而且能够根据报文大小、应用或IP源地址等属性来选择转发路径。 ip rule 命令：Usage:   ip rule [ list | add | del ] SELECTOR ACTION （add 添加；de">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://damonyi.cc/2021/12/14/iptables-route-%E5%85%B3%E7%B3%BB/1.png">
+<meta property="article:published_time" content="2021-12-14T07:59:34.000Z">
+<meta property="article:modified_time" content="2021-12-14T07:59:34.064Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://damonyi.cc/2021/12/14/iptables-route-%E5%85%B3%E7%B3%BB/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+<script data-ad-client="ca-pub-1404859281731123" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+
+
+  <link rel="canonical" href="https://damonyi.cc/2021/12/14/iptables-route-关系/"/>
+
+
+<script data-ad-client="ca-pub-1404859281731123" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+
+
+  <title>iptables route 关系 | 云里雾里</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">云里雾里</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://damonyi.cc/2021/12/14/iptables-route-%E5%85%B3%E7%B3%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="云里雾里">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">iptables route 关系</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-12-14T15:59:34+08:00">
+                2021-12-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  5.6k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  22分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-路由"><a href="#1-路由" class="headerlink" title="1. 路由"></a>1. 路由</h2><h3 id="1-1-路由策略（路由规则）"><a href="#1-1-路由策略（路由规则）" class="headerlink" title="1.1 路由策略（路由规则）"></a>1.1 路由策略（路由规则）</h3><p>路由策略具体是指，使用ip rule 命令操作路由策略数据库，基于策略的路由比传统路由在功能上更强大，使用更灵活，它使网络管理员不仅能够根据目的地址，而且能够根据报文大小、应用或IP源地址等属性来选择转发路径。</p>
+<p>ip rule 命令：<br>Usage: </p>
+<ul>
+<li>ip rule [ list | add | del ] SELECTOR ACTION （add 添加；del 删除； llist 列表）</li>
+<li>SELECTOR := [ from PREFIX 数据包源地址] [ to PREFIX 数据包目的地址] [ tos TOS 服务类型][ dev STRING 物理接口] [ pref NUMBER ] [fwmark MARK iptables 标签]</li>
+<li>ACTION := [ table TABLE_ID 指定所使用的路由表] [ nat ADDRESS 网络地址转换][ prohibit 丢弃该表| reject 拒绝该包| unreachable 丢弃该包]</li>
+<li>[ flowid CLASSID ]</li>
+<li>TABLE_ID := [ local | main | default | new | NUMBER ]</li>
+</ul>
+<p>例子：</p>
+<ul>
+<li>ip rule add from 192.203.80/24 table inr.ruhep prio 220 通过路由表 inr.ruhep 路由来自源地址为192.203.80/24的数据包 </li>
+<li>ip rule add from 193.233.7.83 nat 192.203.80.144 table 1 prio 320 把源地址为193.233.7.83的数据报的源地址转换为192.203.80.144，并通过表1进行路由 </li>
+</ul>
+<p>在 Linux 系统启动时，内核会为路由策略数据库配置三条缺省的规则： </p>
+<ol>
+<li>0 匹配任何条件 查询路由表local(ID 255,路由表local是一个特殊的路由表，包含对于本地和广播地址的高优先级控制路由)。rule 0非常特殊，不能被删除或者覆盖。  </li>
+<li>32766 匹配任何条件 查询路由表main(ID 254,路由表main(ID 254)是一个通常的表，包含所有的无策略路由)。系统管理员可以删除或者使用另外的规则覆盖这条规则。</li>
+<li>32767 匹配任何条件 查询路由表default(ID 253, 路由表default(ID 253)是一个空表，它是为一些后续处理保留的)。对于前面的缺省策略没有匹配到的数据包，系统使用这个策略进行处理。这个规则也可以删除。</li>
+</ol>
+<p>首先我们可以看看路由表默认的所有规则：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@netmonster# ip rule list</span><br><span class="line"></span><br><span class="line">0: from all lookup local</span><br><span class="line"></span><br><span class="line">32766: from all lookup main</span><br><span class="line"></span><br><span class="line">32767: from all lookup default</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>规则0，它是优先级别最高的规则，规则规定，所有的包，都必须首先使用local表（255）进行路由。本规则不能被更改和删除。</p>
+</li>
+<li><p>规则32766，规定所有的包，使用表main进行路由。本规则可以被更改和删除。</p>
+</li>
+</ul>
+<p>*　规则32767，规定所有的包，使用表default进行路由。本规则可以被更改和删除。</p>
+<p>在默认情况下进行路由时，首先会根据规则0在本地路由表里寻找路由，如果目的地址是本网络，或是广播地址的话，在这里就可以找到合适的路由；如果路由失败，就会匹配下一个不空的规则，在这里只有32766规则，在这里将会在主路由表里寻找路由;如果失败，就会匹配32767规则，即寻找默认路由表。如果失败，路由将失败。重这里可以看出，策略性路由是往前兼容的。</p>
+<p>另外一种表述：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在linux系统中是按照rule的优先级顺序依次匹配。假设系统中只有优先级为0，32766及32767这三条规则。那么系统首先会根据规则0在本地路由表里寻找路由，如果目的地址是本网络，或是广播地址的话，在这里就可以找到匹配的路由；如果没有找到路由，就会匹配下一个不空的规则，在这里只有32766规则，那么将会在主路由表里寻找路由；如果没有找到匹配的路由，就会依据32767规则，即寻找默认路由表；如果失败，路由将失败。</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-2-路由表"><a href="#1-2-路由表" class="headerlink" title="1.2 路由表"></a>1.2 路由表</h3><p>所谓路由表，指的是路由器或者其他互联网网络设备上存储的表，该表中存有到达特定网络终端的路径，在某些情况下，还有一些与这些路径相关的度量。路由器的主要工作就是为经过路由器的每个数据包寻找一条最佳的传输路径，并将该数据有效地传送到目的站点。由此可见，选择最佳路径的策略即路由算法是路由器的关键所在。为了完成这项工作，在路由器中保存着<strong>各种传输路径的相关数据——路由表（Routing Table）</strong>，供路由选择时使用，表中包含的信息决定了数据转发的策略。打个比方，路由表就像我们平时使用的地图一样，标识着各种路线，<strong>路由表中保存着子网的标志信息、网上路由器的个数和下一个路由器的名字等内容</strong>。路由表根据其建立的方法，可以分为动态路由表和静态路由表。</p>
+<pre><code>linux 系统中，可以自定义从 1－252个路由表，其中，linux系统维护了4个路由表：</code></pre>
+<ul>
+<li>0#表： 系统保留表</li>
+<li>253#表： defulte table 没特别指定的默认路由都放在该表</li>
+<li>254#表： main table 没指明路由表的所有路由放在该表，称为主路由表，表名为main。如果没有指明路由所属的表，所有的路由都默认都放在这个表里。一般来说， 旧的路由工具(如route)所添加的路由都会加到这个表。main表中路由记录都是普通的路由记录。而且，使用ip route配置路由时，如果不明确制定要操作的路由表，默认情况下也是主路由表（表254）进行操作</li>
+<li>255#表： locale table 称为本地路由表，表名为local。像本地接口地址，广播地址，以及NAT地址都放在这个表。该路由表由系统自动维护，管理员不能直接修改。</li>
+</ul>
+<p>路由表的查看可有以下二种方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ip route list table table_number</span><br><span class="line">ip route list table table_name</span><br></pre></td></tr></table></figure>
+
+<p>路由表序号和表名的对应关系在 /etc/iproute2/rt_tables 文件中，可手动编辑。路由表添加完毕即时生效，下面为实例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ip route add default via 192.168.1.1 table 1  #在一号表中添加默认路由为192.168.1.1</span><br><span class="line">ip route add 192.168.0.0&#x2F;24 via 192.168.1.2 table 1  #在一号表中添加一条到192.168.0.0网段的路由为192.168.1.2</span><br></pre></td></tr></table></figure>
+
+<p>路由表实例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Destination    Netmask    Gateway          Interface    Metric</span><br><span class="line">0.0.0.0    0.0.0.0    192.168.123.254    192.168.123.88    1 #缺省路由，目的地址不在本路由表中的数据包，经过本机的 192.168.123.88 接口发到下一个路由器 192.168.123.254</span><br><span class="line">127.0.0.0    255.0.0.0    127.0.0.1    127.0.0.1    1        #发给本机的网络包</span><br><span class="line">192.168.123.0    255.255.255.0    192.168.123.68    192.168.123.68    1 #直连路由。目的地址为 192.168.123.0&#x2F;24 的包发到本机 192.168.123.88 接口</span><br><span class="line">192.168.123.88    255.255.255.255    127.0.0.1    127.0.0.1    1        #目的地址为 192.168.123.88的包是发给本机的包</span><br><span class="line">192.168.123.255    255.255.255.255    192.168.123.88    192.168.123.88    1 #广播包的网段是 192.168.123.0&#x2F;24，经过 192.168.123.88 接口发出去</span><br><span class="line">224.0.0.0    224.0.0.0    192.168.123.88    192.168.123.88    1             #多播包，经过 192.168.123.88 接口发出去</span><br><span class="line">255.255.255.255    255.255.255.255    192.168.123.68    192.168.123.68    1 #全网广播包</span><br><span class="line">Default Gateway: 192.168.123.254</span><br></pre></td></tr></table></figure>
+
+<p>字段说明</p>
+<ul>
+<li>destination：目的网段</li>
+<li>mask：与网络目标地址相关联的网掩码（又称之为子网掩码）。子网掩码对于 IP 网络地址可以是一适当的子网掩码，对于主机路由是 255.255.255.255 ，对于默认路由是 0.0.0.0。如果忽略，则使用子网掩码 255.255.255.255。定义路由时由于目标地址和子网掩码之间的关系，目标地址不能比它对应的子网掩码更为详细。换句话说，如果子网掩码的一位是 0，则目标地址中的对应位就不能设置为 1。</li>
+<li>interface：到达该目的地的本路由器的出口ip</li>
+<li>gateway： 下一跳路由器入口的 ip，路由器通过 interface 和 gateway 定义一调到下一个路由器的链路。通常情况下，interface 和 gateway 是同一网段的metric 跳数，该条路由记录的质量，一般情况下，如果有多条到达相同目的地的路由记录，路由器会采用metric值小的那条路由</li>
+</ul>
+<p>根据子网掩码，可以将路由分为三种类型：</p>
+<p>主机路由：主机路由是路由选择表中指向单个IP地址或主机名的路由记录。主机路由的Flags字段为H。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Destination    Gateway       Genmask        Flags     Metric    Ref    Use    Iface</span><br><span class="line">-----------    -------     -------            -----     ------    ---    ---    -----</span><br><span class="line">10.0.0.10     192.168.1.1    255.255.255.255   UH       0        0      0    eth0</span><br></pre></td></tr></table></figure>
+<p>网络路由：网络路由是代表主机可以到达的网络。网络路由的Flags字段为N。例如，在下面的示例中，本地主机将发送到网络192.19.12的数据包转发到IP地址为192.168.1.1的路由器。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Destination    Gateway       Genmask      Flags    Metric    Ref     Use    Iface</span><br><span class="line">-----------    -------     -------         -----    -----   ---    ---    -----</span><br><span class="line">192.19.12     192.168.1.1    255.255.255.0      UN      0       0     0    eth0</span><br></pre></td></tr></table></figure>
+
+<p>默认路由：当主机不能在路由表中查找到目标主机的IP地址或网络路由时，数据包就被发送到默认路由（默认网关）上。默认路由的Flags字段为G。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Destination    Gateway       Genmask    Flags     Metric    Ref    Use    Iface</span><br><span class="line">-----------    -------     ------- -----      ------    ---    ---    -----</span><br><span class="line">default       192.168.1.1     0.0.0.0    UG       0        0     0    eth0</span><br></pre></td></tr></table></figure>
+
+<p>设置和查看路由表都可以用 route 命令，设置内核路由表的命令格式是：</p>
+<p>route [add|del] [-net|-host] target [netmask Nm] [gw Gw] [[dev] If]</p>
+<p>其中：</p>
+<p>add : 添加一条路由规则，</p>
+<p>del : 删除一条路由规则，</p>
+<p>-net : 目的地址是一个网络，</p>
+<p>-host : 目的地址是一个主机，</p>
+<p>target : 目的网络或主机</p>
+<p>netmask : 目的地址的网络掩码，</p>
+<p>gw : 路由数据包通过的网关，</p>
+<p>dev : 为路由指定的网络接口<br>比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">route add 0.0.0.0 mask 0.0.0.0 192.168.12.1</span><br><span class="line">route add 10.41.0.0 mask 255.255.0.0 10.27.0.1 metric 7</span><br></pre></td></tr></table></figure>
+<p>优先级别越高的规则越先匹配（数值越小优先级别越高）</p>
+<p>关于 src 属性：</p>
+<p>当一个主机有多个网卡配置了多个 IP 的时候，对于它产生的网络包，可以在路由选择时<strong>设置源 IP 地址</strong>。比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip route add 78.22.45.0&#x2F;24 via 10.45.22.1 src 10.45.22.12 （##发到 78.22.45.0&#x2F;24 网段的网络包，下一跳的路由器 IP 是 10.45.22.1，包的源IP地址设为10.45.22.12）。</span><br></pre></td></tr></table></figure>
+
+<p>要注意的是，src 选项只会影响该 host 上产生的网络包。如果是一个被路由的外来包，明显地它已经带有了一个源 IP 地址，这时候，src 参数的配置对它没有任何影响，除非你使用 NAT 来改变它。对 Neutron 来说，qrouter 和 qif namespace 中的路由表中的 src 都没有实际意义，因为它们只会处理外来的网络包。</p>
+<h3 id="1-3-路由表和策略的区别"><a href="#1-3-路由表和策略的区别" class="headerlink" title="1.3 路由表和策略的区别"></a>1.3 路由表和策略的区别</h3><p>不要混淆路由表和策略：规则指向路由表，多个规则可以引用一个路由表，而且某些路由表可以没有策略指向它。如果系统管理员删除了指向某个路由表的所有规则，这个表就没有用了，但是仍然存在，直到里面的所有路由都被删除，它才会消失。</p>
+<p>结合前面讲的路由表和路由策略来进行分析</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@netmonster# ip rule list</span><br><span class="line"></span><br><span class="line">0: from all lookup local</span><br><span class="line"></span><br><span class="line">32766: from all lookup main</span><br><span class="line"></span><br><span class="line">32767: from all lookup default</span><br></pre></td></tr></table></figure>
+<p>首先所有的数据包都会选择规则0，它是优先级别最高的规则，规则规定，所有的包，都必须首先使用local表（255）进行路由。本规则不能被更改和删除，这里我们查看254 表的内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="1-4-路由分类-静态路由"><a href="#1-4-路由分类-静态路由" class="headerlink" title="1.4 路由分类-静态路由"></a>1.4 路由分类-静态路由</h3><p>静态路由是指由用户或网络管理员手工配置的路由信息。当网络的拓扑结构或链路的状态发生变化时，网络管理员需要手工去修改路由表中相关的静态路由信息。静态路由信息在缺省情况下是私有的，不会传递给其他的路由器。当然，网管员也可以通过对路由器进行设置使之成为共享的。静态路由一般适用于比较简单的网络环境，在这样的环境中，网络管理员易于清楚地了解网络的拓扑结构，便于设置正确的路由信息。<br><img src="/2021/12/14/iptables-route-%E5%85%B3%E7%B3%BB/1.png" alt="avatar"></p>
+<p>以上面的拓扑结构为例，在没有配置路由的情况下，计算机1 和 2 无法互相通信，因为 1 发给 2 的包在到达路由器 A 后，它不知道怎么转发它。B 也同样。管理员可以配置如下的静态路由来实现 1 和 2 之间的通信：</p>
+<p>计算机配置默认网关：</p>
+<p>计算机1 上：route add default gw 192.168.1.1</p>
+<p>计算机2 上：route add default gw 192.168.3.1</p>
+<p>路由器配置：</p>
+<p>R1 上：ip route 192.168.3.0 255.255.255.0 f0/1 （意思为：目标网络地址为 192.168.3.0/24 的数据包，经过 f0/1 端口发出）</p>
+<p>R2 上：ip route 192.168.1.0 255.255.255.0 f0/1 （意思为：目标网络地址为 192.168.1.0/24 的数据包，经过 f0/1 端口发出）</p>
+<p>或者</p>
+<p>R1 上：ip route 192.168.3.0 255.255.255.0 192.168.2.2 （意思为：要去 192.168.3.0/24 的数据包，下一路由器 IP 地址为 192.168.2.2）</p>
+<p>R2 上：ip route 192.168.1.0 255.255.255.0 192.168.2.1</p>
+<h3 id="1-5-路由分类-动态路由"><a href="#1-5-路由分类-动态路由" class="headerlink" title="1.5 路由分类-动态路由"></a>1.5 路由分类-动态路由</h3><p>动态路由是指路由器能够自动地建立自己的路由表，并且能够根据实际情况的变化适时地进行调整。它是与静态路由相对的一个概念，指路由器能够根据路由器之间的交换的特定路由信息自动地建立自己的路由表，并且能够根据链路和节点的变化适时地进行自动调整。当网络中节点或节点间的链路发生故障，或存在其它可用路由时，动态路由可以自行选择最佳的可用路由并继续转发报文。</p>
+<p>常见的动态路由协议有以下几个：路由信息协议（RIP）、OSPF(Open Shortest Path First开放式最短路径优先）、IS-IS（Intermediate System-to-Intermediate System，中间系统到中间系统）、边界网关协议（BGP）是运行于 TCP 上的一种自治系统的路由协议。</p>
+<h3 id="1-6-ip-rule，ip-route，iptables-三者之间的关系"><a href="#1-6-ip-rule，ip-route，iptables-三者之间的关系" class="headerlink" title="1.6  ip rule，ip route，iptables 三者之间的关系"></a>1.6  ip rule，ip route，iptables 三者之间的关系</h3><p>以一例子来说明：公司内网要求192.168.0.100 以内的使用 10.0.0.1 网关上网 （电信），其他IP使用 20.0.0.1 （网通）上网。</p>
+<ol>
+<li>首先要在网关服务器上添加一个默认路由，当然这个指向是绝大多数的IP的出口网关：ip route add default gw 20.0.0.1</li>
+<li>之后通过 ip route 添加一个路由表：ip route add table 3 via 10.0.0.1 dev ethX (ethx 是 10.0.0.1 所在的网卡, 3 是路由表的编号)</li>
+<li>之后添加 ip rule 规则：ip rule add fwmark 3 table 3 （fwmark 3 是标记，table 3 是路由表3 上边。 意思就是凡事标记了 3 的数据使用 table3 路由表）</li>
+<li>之后使用 iptables 给相应的数据打上标记：iptables -A PREROUTING -t mangle -i eth0 -s 192.168.0.1 - 192.168.0.100 -j MARK –set-mark 3（因为 mangle 的处理是优先于 nat 和 fiter 表的，所以在数据包到达之后先打上标记，之后再通过 ip rule 规则，对应的数据包使用相应的路由表进行路由，最后读取路由表信息，将数据包送出网关。）</li>
+</ol>
+<h3 id="1-7-Traceroute-工具"><a href="#1-7-Traceroute-工具" class="headerlink" title="1.7 Traceroute 工具"></a>1.7 Traceroute 工具</h3><p>我们在 linux 机器上，使用 traceroute 来获知从你的计算机到互联网另一端的主机是走的什么路径。当然每次数据包由某一同样的出发点（source）到达某一同样的目的地(destination)走的路径可能会不一样，但基本上来说大部分时候所走的路由是相同的。在 MS Windows 中该工具为 tracert。 在大多数情况下，<br>我们会在linux主机系统下，直接执行命令行：traceroute hostname；</p>
+<p>而在Windows系统下是执行tracert的命令： tracert hostname。</p>
+<ul>
+<li>命令格式：traceroute [参数] [主机]</li>
+<li>命令功能：traceroute 指令让你追踪网络数据包的路由途径，预设数据包大小是 40Bytes，用户可另行设置。</li>
+<li>具体参数格式：traceroute [-dFlnrvx][-f&lt;存活数值&gt;][-g&lt;网关&gt;…][-i&lt;网络界面&gt;][-m&lt;存活数值&gt;][-p&lt;通信端口&gt;][-s&lt;来源地址&gt;][-t&lt;服务类型&gt;][-w&lt;超时秒数&gt;][主机名称或IP地址][数据包大小]</li>
+</ul>
+<p>命令参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> -d 使用Socket层级的排错功能，</span><br><span class="line"> -f 设置第一个检测数据包的存活数值TTL的大小，</span><br><span class="line"> -F 设置勿离断位，</span><br><span class="line"> -g 设置来源路由网关，最多可设置8个，</span><br><span class="line"> -i 使用指定的网络界面送出数据包，</span><br><span class="line"> -I 使用ICMP回应取代UDP资料信息，</span><br><span class="line"> -m 设置检测数据包的最大存活数值TTL的大小，</span><br><span class="line"> -n 直接使用IP地址而非主机名称。</span><br><span class="line"> -p 设置UDP传输协议的通信端口，</span><br><span class="line"> -r 忽略普通的Routing Table，直接将数据包送到远端主机上，</span><br><span class="line"> -s 设置本地主机送出数据包的IP地址，</span><br><span class="line"> -t 设置检测数据包的TOS数值。</span><br><span class="line"> -v 详细显示指令的执行过程，</span><br><span class="line"> -w 设置等待远端主机回报的时间，</span><br><span class="line"> -x 开启或关闭数据包的正确性检验。</span><br><span class="line">&#96;</span><br></pre></td></tr></table></figure>
+
+<p>（1）例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# traceroute www.baidu.com</span><br><span class="line">traceroute to www.baidu.com (61.135.169.125), 30 hops max, 40 byte packets</span><br><span class="line">1 192.168.74.2 (192.168.74.2) 2.606 ms 2.771 ms 2.950 ms</span><br><span class="line">2 211.151.56.57 (211.151.56.57) 0.596 ms 0.598 ms 0.591 ms</span><br><span class="line">3 211.151.227.206 (211.151.227.206) 0.546 ms 0.544 ms 0.538 ms</span><br><span class="line">4 210.77.139.145 (210.77.139.145) 0.710 ms 0.748 ms 0.801 ms</span><br><span class="line">5 202.106.42.101 (202.106.42.101) 6.759 ms 6.945 ms 7.107 ms</span><br><span class="line">6 61.148.154.97 (61.148.154.97) 718.908 ms * bt-228-025.bta.net.cn (202.106.228.25) 5.177 ms</span><br><span class="line">7 124.65.58.213 (124.65.58.213) 4.343 ms 4.336 ms 4.367 ms</span><br><span class="line">8 202.106.35.190 (202.106.35.190) 1.795 ms 61.148.156.138 (61.148.156.138) 1.899 ms 1.951 ms</span><br><span class="line">9 * * *</span><br><span class="line">30 * * *</span><br></pre></td></tr></table></figure>
+<p>说明：</p>
+<p>记录按序列号从1开始，每个纪录就是一跳 ，每跳表示一个网关，我们看到每行有三个时间，单位是 ms，其实就是 -q 的默认参数。探测数据包向每个网关发送三个数据包后，网关响应后返回的时间；如果您用 traceroute -q 4 <a href="http://www.58.com/" target="_blank" rel="noopener">www.58.com</a> ，表示向每个网关发送4个数据包。有时我们 traceroute 一台主机时，会看到有一些行是以星号表示的。出现这样的情况，可能是防火墙封掉了ICMP 的返回信息，所以我们得不到什么相关的数据包返回数据。有时我们在某一网关处延时比较长，有可能是某台网关比较阻塞，也可能是物理设备本身的原因。当然如果某台 DNS 出现问题时，不能解析主机名、域名时，也会 有延时长的现象；您可以加-n 参数来避免DNS解析，以IP格式输出数据。</p>
+<p>如果在局域网中的不同网段之间，我们可以通过 traceroute 来排查问题所在，是主机的问题还是网关的问题。如果我们通过远程来访问某台服务器遇到问题时，我们用到traceroute 追踪数据包所经过的网关，提交IDC服务商，也有助于解决问题；但目前看来在国内解决这样的问题是比较困难的，就是我们发现问题所在，IDC服务商也不可能帮助我们解决。</p>
+<p>（2）原理</p>
+<p> Traceroute 程序的设计是利用 ICMP 及 IP header 的 TTL（Time To Live）栏位（field）。</p>
+<ul>
+<li>首先，traceroute 送出一个 TTL 是 1 的 IP datagram（其实，每次送出的为3个40字节的包，包括源地址，目的地址和包发出的时间标签）到目的地，当路径上的第一个路由器（router）收到这个datagram 时，它将TTL减1。此时，TTL变为0了，所以该路由器会将此 datagram 丢掉，并送回一个「ICMP time exceeded」消息（包括发IP包的源地址，IP包的所有内容及路由器的IP地址），traceroute 收到这个消息后，便知道这个路由器存在于这个路径上。</li>
+<li>接着，traceroute 再送出另一个TTL 是 2  的datagram，发现第2 个路由器…… </li>
+<li>然后，traceroute  每次将送出的 datagram 的 TTL  加1来发现另一个路由器，这个重复的动作一直持续到某个datagram 抵达目的地。当datagram到达目的地后，该主机并不会送回ICMP time exceeded消息，因为它已是目的地了，那么traceroute如何得知目的地到达了呢？</li>
+</ul>
+<p>Traceroute 在送出 UDP datagrams 到目的地时，它所选择送达的 port number 是一个一般应用程序都不会用的号码（30000 以上），所以当此 UDP datagram 到达目的地后该主机会送回一个「ICMP port unreachable」的消息，而当traceroute 收到这个消息时，便知道目的地已经到达了。所以traceroute 在Server端也是没有所谓的Daemon 程式。Traceroute提取发 ICMP TTL 到期消息设备的 IP 地址并作域名解析。每次 ，Traceroute 都打印出一系列数据,包括所经过的路由设备的域名及 IP地址,三个包每次来回所花时间。</p>
+<p>参考文章 <a href="https://www.cnblogs.com/EasonJim/p/8424731.html" target="_blank" rel="noopener">https://www.cnblogs.com/EasonJim/p/8424731.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1404859281731123"
+     data-ad-slot="6219253750"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/10/06/%E9%9B%B6%E7%BC%BA%E9%99%B7%E5%AD%A6%E4%B9%A0/" rel="next" title="零缺陷学习">
+                <i class="fa fa-chevron-left"></i> 零缺陷学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">82</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:wangdk789@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://bingerambo.com/" title="Binge Blog" target="_blank">Binge Blog</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://47.94.14.169:8080/home.html" title="林夕-博客" target="_blank">林夕-博客</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-路由"><span class="nav-number">1.</span> <span class="nav-text">1. 路由</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-路由策略（路由规则）"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 路由策略（路由规则）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-路由表"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 路由表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-路由表和策略的区别"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 路由表和策略的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-路由分类-静态路由"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 路由分类-静态路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-路由分类-动态路由"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 路由分类-动态路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-ip-rule，ip-route，iptables-三者之间的关系"><span class="nav-number">1.6.</span> <span class="nav-text">1.6  ip rule，ip route，iptables 三者之间的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-Traceroute-工具"><span class="nav-number">1.7.</span> <span class="nav-text">1.7 Traceroute 工具</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DavidStack</span>
+
+  <!-- <div class="beian">
+  </div> -->
+ 
+  <div class="BbeiAn-info">
+    鲁ICP备 -
+    <a target="_blank"  href="https://beian.miit.gov.cn">16023683号-1</a>
+  </div>
+
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
