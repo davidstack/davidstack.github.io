@@ -1,1 +1,1 @@
-https://damonyi.cc/2021/12/14/iptables-route-%E5%85%B3%E7%B3%BB/
+https://damonyi.cc/2022/01/02/k8s-%E4%B8%AD%E7%9A%84taints%E6%9C%BA%E5%88%B6/

@@ -91,7 +91,7 @@
 <meta property="og:description" content="docker不太常用的命令 docker ps -s  #查看容器所占的磁盘大小 docker rm ${docker ps -q -a} # 删除全部非运行态的容器 docker system df  #查看docker存储的使用情况 docker system prun #清理无用的容器、网络、数据集 docker rmi $(docker images | awk ‘&#x2F;^&#x2F; { print">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-03T09:00:23.000Z">
-<meta property="article:modified_time" content="2021-12-13T06:44:28.860Z">
+<meta property="article:modified_time" content="2021-12-14T08:05:48.680Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -454,6 +454,7 @@
 <h2 id="docker-NET-ADMIN-权限"><a href="#docker-NET-ADMIN-权限" class="headerlink" title="docker NET_ADMIN 权限"></a>docker NET_ADMIN 权限</h2><p>允许在容器内进行一些网络的操作权限，在某些情况下如果容器具有该权限后，会操作宿主机的网络(为容器设置–net=host时，会对宿主机网络带来安全隐患)</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">For interacting with the network stack, instead of using --privileged they should use --cap-add&#x3D;NET_ADMIN to modify the network interfaces.</span><br><span class="line">CAP_NET_ADMIN lets you use the SIOCETHTOOL ioctl() on any network device inside the namespace. This includes commands like ETHTOOL_FLASHDEV, i.e. ethtool -f</span><br></pre></td></tr></table></figure>
 
+
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Perform various network-related operations:</span><br><span class="line">- interface configuration;</span><br><span class="line">- administration of IP firewall, masquerading, and accounting</span><br><span class="line">- modify routing tables;</span><br><span class="line">- bind to any address for transparent proxying;</span><br><span class="line">- set type-of-service (TOS)</span><br><span class="line">- clear driver statistics;</span><br><span class="line">- set promiscuous mode;</span><br><span class="line">- enabling multicasting;</span><br></pre></td></tr></table></figure>
       
     </div>
@@ -576,7 +577,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">82</span>
+                  <span class="site-state-item-count">83</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -669,7 +670,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

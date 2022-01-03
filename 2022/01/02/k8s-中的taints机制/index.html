@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="c5YHonM6Ek6i_dIKMceKoszIqEtrVddsax9qcaoQfR4" />
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="code-NBGBY3mVBb" />
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/robot-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/robot-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Taint 使用说明给节点增加taint 12345kubectl taint nodes node1 key1&#x3D;value1:NoSchedulekubectl taint nodes node1 key1&#x3D;value1:NoExcutekubectl taint node node2 node.kubernetes.io&#x2F;unschedulable&#x3D;tr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="k8s 中的taints机制">
+<meta property="og:url" content="https://damonyi.cc/2022/01/02/k8s-%E4%B8%AD%E7%9A%84taints%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="云里雾里">
+<meta property="og:description" content="Taint 使用说明给节点增加taint 12345kubectl taint nodes node1 key1&#x3D;value1:NoSchedulekubectl taint nodes node1 key1&#x3D;value1:NoExcutekubectl taint node node2 node.kubernetes.io&#x2F;unschedulable&#x3D;tr">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://damonyi.cc/2022/01/02/k8s-%E4%B8%AD%E7%9A%84taints%E6%9C%BA%E5%88%B6/1.png">
+<meta property="og:image" content="https://damonyi.cc/2022/01/02/k8s-%E4%B8%AD%E7%9A%84taints%E6%9C%BA%E5%88%B6/2.png">
+<meta property="article:published_time" content="2022-01-02T01:01:06.000Z">
+<meta property="article:modified_time" content="2022-01-03T00:10:15.484Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://damonyi.cc/2022/01/02/k8s-%E4%B8%AD%E7%9A%84taints%E6%9C%BA%E5%88%B6/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+<script data-ad-client="ca-pub-1404859281731123" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+
+
+  <link rel="canonical" href="https://damonyi.cc/2022/01/02/k8s-中的taints机制/"/>
+
+
+<script data-ad-client="ca-pub-1404859281731123" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+
+
+  <title>k8s 中的taints机制 | 云里雾里</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">云里雾里</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://damonyi.cc/2022/01/02/k8s-%E4%B8%AD%E7%9A%84taints%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="云里雾里">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">k8s 中的taints机制</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-01-02T09:01:06+08:00">
+                2022-01-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.3k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  11分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Taint-使用说明"><a href="#Taint-使用说明" class="headerlink" title="Taint 使用说明"></a>Taint 使用说明</h2><p>给节点增加taint</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">kubectl taint nodes node1 key1&#x3D;value1:NoSchedule</span><br><span class="line">kubectl taint nodes node1 key1&#x3D;value1:NoExcute</span><br><span class="line">kubectl taint node node2 node.kubernetes.io&#x2F;unschedulable&#x3D;true:NoExecute</span><br><span class="line"></span><br><span class="line">kubectl taint node node2 node.kubernetes.io&#x2F;unschedulable- # 取消污点</span><br></pre></td></tr></table></figure>
+<p>设置节点不可调度并增加taint</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">kubectl cordon node2</span><br><span class="line">kubectl taint node node2 node.kubernetes.io&#x2F;unschedulable:NoExecute</span><br><span class="line">kubectl taint node node2 node.kubernetes.io&#x2F;unschedulable:NoSchedule</span><br><span class="line"></span><br><span class="line">取消</span><br><span class="line">kubectl uncordon node2</span><br><span class="line">kubectl taint node node2 node.kubernetes.io&#x2F;unschedulable-</span><br></pre></td></tr></table></figure>
+<p>在节点上增加taint后（即增加污点后），k8s调度时对无法容忍这些污点的Pod，不会将这些Pod 调度到这些节点， 对于taint为effect: NoExecute的污点，会交由taint_manager进行处理，即NoExecuteTaintManager，节点上的所有Pod 都会被污点管理器（taint_manager.go）计划删除。而在节点被认定为不可用状态到删除节点上的 Pod 之间是有一段时间的，这段时间被称为容忍度，即tolerationSeconds</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">tolerations:</span><br><span class="line">      - key: node.kubernetes.io&#x2F;not-ready</span><br><span class="line">        operator: Exists</span><br><span class="line">        effect: NoExecute</span><br><span class="line">        tolerationSeconds: 180</span><br><span class="line">      - key: node.kubernetes.io&#x2F;unreachable</span><br><span class="line">        operator: Exists</span><br><span class="line">        effect: NoExecute</span><br><span class="line">        tolerationSeconds: 180</span><br></pre></td></tr></table></figure>
+<p>我们在创建Pod时，有时候并没有配置tolerations，此时k8s 会自动为Pod增加两个默认的toleration，TaintNodeNotReady,TaintNodeUnreachable，参考如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">var (</span><br><span class="line">	defaultNotReadyTolerationSeconds &#x3D; flag.Int64(&quot;default-not-ready-toleration-seconds&quot;, 300,</span><br><span class="line">		&quot;Indicates the tolerationSeconds of the toleration for notReady:NoExecute&quot;+</span><br><span class="line">			&quot; that is added by default to every pod that does not already have such a toleration.&quot;)</span><br><span class="line"></span><br><span class="line">	defaultUnreachableTolerationSeconds &#x3D; flag.Int64(&quot;default-unreachable-toleration-seconds&quot;, 300,</span><br><span class="line">		&quot;Indicates the tolerationSeconds of the toleration for unreachable:NoExecute&quot;+</span><br><span class="line">			&quot; that is added by default to every pod that does not already have such a toleration.&quot;)</span><br><span class="line"></span><br><span class="line">	notReadyToleration &#x3D; api.Toleration&#123;</span><br><span class="line">		Key:               v1.TaintNodeNotReady,</span><br><span class="line">		Operator:          api.TolerationOpExists,</span><br><span class="line">		Effect:            api.TaintEffectNoExecute,</span><br><span class="line">		TolerationSeconds: defaultNotReadyTolerationSeconds,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	unreachableToleration &#x3D; api.Toleration&#123;</span><br><span class="line">		Key:               v1.TaintNodeUnreachable,</span><br><span class="line">		Operator:          api.TolerationOpExists,</span><br><span class="line">		Effect:            api.TaintEffectNoExecute,</span><br><span class="line">		TolerationSeconds: defaultUnreachableTolerationSeconds,</span><br><span class="line">	&#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">....</span><br><span class="line"></span><br><span class="line">	for _, toleration :&#x3D; range tolerations &#123;</span><br><span class="line">		if (toleration.Key &#x3D;&#x3D; v1.TaintNodeNotReady || len(toleration.Key) &#x3D;&#x3D; 0) &amp;&amp;</span><br><span class="line">			(toleration.Effect &#x3D;&#x3D; api.TaintEffectNoExecute || len(toleration.Effect) &#x3D;&#x3D; 0) &#123;</span><br><span class="line">			toleratesNodeNotReady &#x3D; true</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		if (toleration.Key &#x3D;&#x3D; v1.TaintNodeUnreachable || len(toleration.Key) &#x3D;&#x3D; 0) &amp;&amp;</span><br><span class="line">			(toleration.Effect &#x3D;&#x3D; api.TaintEffectNoExecute || len(toleration.Effect) &#x3D;&#x3D; 0) &#123;</span><br><span class="line">			toleratesNodeUnreachable &#x3D; true</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	if !toleratesNodeNotReady &#123;</span><br><span class="line">		pod.Spec.Tolerations &#x3D; append(pod.Spec.Tolerations, notReadyToleration)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	if !toleratesNodeUnreachable &#123;</span><br><span class="line">		pod.Spec.Tolerations &#x3D; append(pod.Spec.Tolerations, unreachableToleration)</span><br><span class="line">	&#125;</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+<h2 id="处理流程"><a href="#处理流程" class="headerlink" title="处理流程"></a>处理流程</h2><p>NoExecuteTaintManager<br>处理节点node上taint的更新、删除事件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">pkg&#x2F;controller&#x2F;nodelifecycle&#x2F;scheduler&#x2F;taint_manager.go:419</span><br><span class="line">这里只处理节点NoExecute的taint，对于这种Taint,我们需要驱逐节点的Pod</span><br><span class="line">	klog.V(4).Infof(&quot;Noticed node update: %#v&quot;, nodeUpdate)</span><br><span class="line">	taints :&#x3D; getNoExecuteTaints(node.Spec.Taints)</span><br><span class="line">	func() &#123;</span><br><span class="line">		tc.taintedNodesLock.Lock()</span><br><span class="line">		defer tc.taintedNodesLock.Unlock()</span><br><span class="line">		klog.V(4).Infof(&quot;Updating known taints on node %v: %v&quot;, node.Name, taints)</span><br><span class="line">		if len(taints) &#x3D;&#x3D; 0 &#123;</span><br><span class="line">			delete(tc.taintedNodes, node.Name)</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			tc.taintedNodes[node.Name] &#x3D; taints</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">....</span><br><span class="line">在查询到节点的taint后，再查询节点上运行的Pod，此时会判断节点的taint是否为空，如果为空，则需要将之前的删除Pod事件取消掉，不再进行删除pod</span><br><span class="line">	&#x2F;&#x2F; Short circuit, to make this controller a bit faster.</span><br><span class="line">	if len(taints) &#x3D;&#x3D; 0 &#123;</span><br><span class="line">		klog.V(4).Infof(&quot;All taints were removed from the Node %v. Cancelling all evictions...&quot;, node.Name)</span><br><span class="line">		for i :&#x3D; range pods &#123;</span><br><span class="line">			tc.cancelWorkWithEvent(types.NamespacedName&#123;Namespace: pods[i].Namespace, Name: pods[i].Name&#125;)</span><br><span class="line">		&#125;</span><br><span class="line">		return</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">....</span><br><span class="line">取消Pod 的驱逐操作</span><br><span class="line"> func (tc *NoExecuteTaintManager) emitCancelPodDeletionEvent(nsName types.NamespacedName) &#123;</span><br><span class="line">	if tc.recorder &#x3D;&#x3D; nil &#123;</span><br><span class="line">		return</span><br><span class="line">	&#125;</span><br><span class="line">	ref :&#x3D; &amp;v1.ObjectReference&#123;</span><br><span class="line">		Kind:      &quot;Pod&quot;,</span><br><span class="line">		Name:      nsName.Name,</span><br><span class="line">		Namespace: nsName.Namespace,</span><br><span class="line">	&#125;</span><br><span class="line">	tc.recorder.Eventf(ref, v1.EventTypeNormal, &quot;TaintManagerEviction&quot;, &quot;Cancelling deletion of Pod %s&quot;, nsName.String())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>后续就是依次处理每个节点的Pod</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">  如果节点的pod的toleration 不满足节点的taint，则取消对pod的定时事件处理，立即将该pod删除，将pod 加入到删除队列</span><br><span class="line">allTolerated, usedTolerations :&#x3D; v1helper.GetMatchingTolerations(taints, tolerations)</span><br><span class="line">if !allTolerated &#123;</span><br><span class="line">	klog.V(2).Infof(&quot;Not all taints are tolerated after update for Pod %v on %v&quot;, podNamespacedName.String(), nodeName)</span><br><span class="line">	&#x2F;&#x2F; We&#39;re canceling scheduled work (if any), as we&#39;re going to delete the Pod right away.</span><br><span class="line">	tc.cancelWorkWithEvent(podNamespacedName)</span><br><span class="line">	tc.taintEvictionQueue.AddWork(NewWorkArgs(podNamespacedName.Name, podNamespacedName.Namespace), time.Now(), time.Now())</span><br><span class="line">	return</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  对比toleration time，如果超过时间，则删除pod的删除事件处理，立即执行删除pod 操作，将删除pod的操作加入执行队列</span><br><span class="line">minTolerationTime :&#x3D; getMinTolerationTime(usedTolerations)</span><br><span class="line">&#x2F;&#x2F; getMinTolerationTime returns negative value to denote infinite toleration.</span><br><span class="line">if minTolerationTime &lt; 0 &#123;</span><br><span class="line">	klog.V(4).Infof(&quot;Current tolerations for %v tolerate forever, cancelling any scheduled deletion.&quot;, podNamespacedName.String())</span><br><span class="line">	tc.cancelWorkWithEvent(podNamespacedName)</span><br><span class="line">	return</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">startTime :&#x3D; now</span><br><span class="line">triggerTime :&#x3D; startTime.Add(minTolerationTime)</span><br><span class="line">scheduledEviction :&#x3D; tc.taintEvictionQueue.GetWorkerUnsafe(podNamespacedName.String()) ## 获得一个指定时间执行的worker</span><br><span class="line">if scheduledEviction !&#x3D; nil &#123;</span><br><span class="line">	startTime &#x3D; scheduledEviction.CreatedAt</span><br><span class="line">	if startTime.Add(minTolerationTime).Before(triggerTime) &#123; &#x2F;&#x2F;在容忍时间内，不触发删除pod</span><br><span class="line">		return</span><br><span class="line">	&#125;</span><br><span class="line">	tc.cancelWorkWithEvent(podNamespacedName)  ## 这里为什么要执行cancel 呢？当超过了执行时间，是不是应该立即删除？取消之后，再添加到taintEvictionQueue，删除时间是不是就延后了?答案：此时startTime 超过triggertime，在调用AddWork函数时，会直接触发删除操作</span><br><span class="line">&#125;</span><br><span class="line">tc.taintEvictionQueue.AddWork(NewWorkArgs(podNamespacedName.Name, podNamespacedName.Namespace), startTime, triggerTime)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">经过查看time——worker的代码,可以解释上述问题，在执行tc.taintEvictionQueue.AddWork 时，会调用CreateWorker，当fireAt 时间小于createAt 时间时，直接触发删除pod 的操作</span><br><span class="line"></span><br><span class="line">func CreateWorker(args *WorkArgs, createdAt time.Time, fireAt time.Time, f func(args *WorkArgs) error) *TimedWorker &#123;</span><br><span class="line">	delay :&#x3D; fireAt.Sub(createdAt)</span><br><span class="line">	if delay &lt;&#x3D; 0 &#123;</span><br><span class="line">		go f(args)</span><br><span class="line">		return nil</span><br><span class="line">	&#125;</span><br><span class="line">	timer :&#x3D; time.AfterFunc(delay, func() &#123; f(args) &#125;)</span><br><span class="line">	return &amp;TimedWorker&#123;</span><br><span class="line">		WorkItem:  args,</span><br><span class="line">		CreatedAt: createdAt,</span><br><span class="line">		FireAt:    fireAt,</span><br><span class="line">		Timer:     timer,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>taintEvictionQueue的处理函数：尝试删除pod，删除失败时，尝试5次，每一次sleep 0.01秒</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">func deletePodHandler(c clientset.Interface, emitEventFunc func(types.NamespacedName)) func(args *WorkArgs) error &#123;</span><br><span class="line">	return func(args *WorkArgs) error &#123;</span><br><span class="line">		ns :&#x3D; args.NamespacedName.Namespace</span><br><span class="line">		name :&#x3D; args.NamespacedName.Name</span><br><span class="line">		klog.V(0).Infof(&quot;NoExecuteTaintManager is deleting Pod: %v&quot;, args.NamespacedName.String())</span><br><span class="line">		if emitEventFunc !&#x3D; nil &#123;</span><br><span class="line">			emitEventFunc(args.NamespacedName)</span><br><span class="line">		&#125;</span><br><span class="line">		var err error</span><br><span class="line">		for i :&#x3D; 0; i &lt; retries; i++ &#123;</span><br><span class="line">			err &#x3D; c.CoreV1().Pods(ns).Delete(context.TODO(), name, metav1.DeleteOptions&#123;&#125;)</span><br><span class="line">			if err &#x3D;&#x3D; nil &#123;</span><br><span class="line">				break</span><br><span class="line">			&#125;</span><br><span class="line">			time.Sleep(10 * time.Millisecond)</span><br><span class="line">		&#125;</span><br><span class="line">		return err</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>timedworkerqueue,在执行workerfun（deletePodHandler）后，就直接把worker在队列中删除，不再执行了，删除失败了如何处理呢？等待后续的处理？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">func (q *TimedWorkerQueue) getWrappedWorkerFunc(key string) func(args *WorkArgs) error &#123;</span><br><span class="line">	return func(args *WorkArgs) error &#123;</span><br><span class="line">		err :&#x3D; q.workFunc(args)</span><br><span class="line">		q.Lock()</span><br><span class="line">		defer q.Unlock()</span><br><span class="line">		if err &#x3D;&#x3D; nil &#123;</span><br><span class="line">			&#x2F;&#x2F; To avoid duplicated calls we keep the key in the queue, to prevent</span><br><span class="line">			&#x2F;&#x2F; subsequent additions.</span><br><span class="line">			q.workers[key] &#x3D; nil</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			delete(q.workers, key)</span><br><span class="line">		&#125;</span><br><span class="line">		return err</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="频繁给节点增加污点删除污点的问题"><a href="#频繁给节点增加污点删除污点的问题" class="headerlink" title="频繁给节点增加污点删除污点的问题"></a>频繁给节点增加污点删除污点的问题</h2><h3 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h3><p>  将一个Statefulset的Pod运行在node2，此时给节点打上污点,taint_manager 会驱逐节点的Pod</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl cordon node2</span><br><span class="line">kubectl taint node node2 node.kubernetes.io&#x2F;unschedulable:NoExecute</span><br><span class="line">kubectl taint node node2 node.kubernetes.io&#x2F;unschedulable:NoSchedule</span><br></pre></td></tr></table></figure>
+<p>再移除节点的污点,此时 该pod会重新运行在node2</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl uncordon node2</span><br><span class="line">kubectl taint node node2 node.kubernetes.io&#x2F;unschedulable-</span><br></pre></td></tr></table></figure>
+
+<p>给节点增加污点，Statefulset的Pod被删除，再执行移除节点污点的操作，POd正常运行在该节点，此时间隔比较短的实际执行增加污点的操作，此时会发现等待很长时间，Statefulset的Pod也不会被删除，如下所示<br> <img src="/2022/01/02/k8s-%E4%B8%AD%E7%9A%84taints%E6%9C%BA%E5%88%B6/1.png" alt="avatar"></p>
+<p>观察日志可以看到，当清楚节点污点时，controller-manager会将驱逐队列清空<br>Cancelling TimedWorkerQueue item…<br> <img src="/2022/01/02/k8s-%E4%B8%AD%E7%9A%84taints%E6%9C%BA%E5%88%B6/2.png" alt="avatar"></p>
+<p> 日志中是执行了两边增加污点和删除污点的操作，删除污点时正常情况会有两条<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">timed_workers.go:129] Cancelling TimedWorkerQueue item 67a41957-f57d-4156-ae53-dc796a3c66f2&#x2F;cn0r7j27908mp-0</span><br></pre></td></tr></table></figure><br>此时只有1条，证明还没有删除 67a41957-f57d-4156-ae53-dc796a3c66f2/cn0r7j27908mp-0 对应的key，但是此时收到了增加污点的操作，由于队列中仍然还存在这个key，则没有执行CreateWorker的操作，导致Pod 一直存在,参考以下代码和日志</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; AddWork adds a work to the WorkerQueue which will be executed not earlier than &#96;fireAt&#96;.</span><br><span class="line">func (q *TimedWorkerQueue) AddWork(args *WorkArgs, createdAt time.Time, fireAt time.Time) &#123;</span><br><span class="line">   key :&#x3D; args.KeyFromWorkArgs()</span><br><span class="line">   klog.V(4).Infof(&quot;Adding TimedWorkerQueue item %v at %v to be fired at %v&quot;, key, createdAt, fireAt)</span><br><span class="line"></span><br><span class="line">   q.Lock()</span><br><span class="line">   defer q.Unlock()</span><br><span class="line">   if _, exists :&#x3D; q.workers[key]; exists &#123;</span><br><span class="line">      klog.Warningf(&quot;Trying to add already existing work for %+v. Skipping.&quot;, args)</span><br><span class="line">      return</span><br><span class="line">   &#125;</span><br><span class="line">   worker :&#x3D; CreateWorker(args, createdAt, fireAt, q.getWrappedWorkerFunc(key))</span><br><span class="line">   q.workers[key] &#x3D; worker</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以看到日志有以下信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">I0102 07:42:44.106288       1 taint_manager.go:440] Updating known taints on node node2: [&#123;node.kubernetes.io&#x2F;unschedulable  NoExecute &lt;nil&gt;&#125;]</span><br><span class="line">I0102 07:42:44.106350       1 taint_manager.go:352] Not all taints are tolerated after update for Pod kube-system&#x2F;whereabouts-tqxf6 on node2</span><br><span class="line">I0102 07:42:44.106358       1 timed_workers.go:110] Adding TimedWorkerQueue item kube-system&#x2F;whereabouts-tqxf6 at 2022-01-02 07:42:44.106354809 +0000 UTC m&#x3D;+5343.566104243 to be fired at 2022-01-02 07:42:44.106354871 +0000 UTC m&#x3D;+5343.566104306</span><br><span class="line">I0102 07:42:44.106391       1 timed_workers.go:110] Adding TimedWorkerQueue item 67a41957-f57d-4156-ae53-dc796a3c66f2&#x2F;cn0r7j27908mp-0 at 2022-01-02 07:42:44.10634238 +0000 UTC m&#x3D;+5343.566091815 to be fired at 2022-01-02 07:43:14.10634238 +0000 UTC m&#x3D;+5373.566091815</span><br><span class="line">W0102 07:42:44.106398       1 timed_workers.go:115] Trying to add already existing work for &amp;&#123;NamespacedName:67a41957-f57d-4156-ae53-dc796a3c66f2&#x2F;cn0r7j27908mp-0&#125;. Skipping.</span><br></pre></td></tr></table></figure>
+
+<h2 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h2><ol>
+<li>执行操作间隔时间太短，以及taint—manager有多个worker处理该消息</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">for i :&#x3D; 0; i &lt; UpdateWorkerSize; i++ &#123;</span><br><span class="line">	tc.nodeUpdateChannels &#x3D; append(tc.nodeUpdateChannels, make(chan nodeUpdateItem, NodeUpdateChannelSize))</span><br><span class="line">	tc.podUpdateChannels &#x3D; append(tc.podUpdateChannels, make(chan podUpdateItem, podUpdateChannelSize))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Functions that are responsible for taking work items out of the workqueues and putting them</span><br><span class="line">&#x2F;&#x2F; into channels.</span><br><span class="line">go func(stopCh &lt;-chan struct&#123;&#125;) &#123;</span><br><span class="line">	for &#123;</span><br><span class="line">		item, shutdown :&#x3D; tc.nodeUpdateQueue.Get()</span><br><span class="line">		if shutdown &#123;</span><br><span class="line">			break</span><br><span class="line">		&#125;</span><br><span class="line">		nodeUpdate :&#x3D; item.(nodeUpdateItem)</span><br><span class="line">		hash :&#x3D; hash(nodeUpdate.nodeName, UpdateWorkerSize)</span><br><span class="line">		select &#123;</span><br><span class="line">		case &lt;-stopCh:</span><br><span class="line">			tc.nodeUpdateQueue.Done(item)</span><br><span class="line">			return</span><br><span class="line">		case tc.nodeUpdateChannels[hash] &lt;- nodeUpdate:</span><br><span class="line">			&#x2F;&#x2F; tc.nodeUpdateQueue.Done is called by the nodeUpdateChannels worker</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;(stopCh)</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>进行删除Pod时，进行尝试删除，删除失败后只是返回error，将该pod从taint队列中移除，等待下一次处理。但是如果没有下一次的事件触发，Pod应该无法被删除了（只是猜测）</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1404859281731123"
+     data-ad-slot="6219253750"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/12/14/iptables-route-%E5%85%B3%E7%B3%BB/" rel="next" title="iptables route 关系">
+                <i class="fa fa-chevron-left"></i> iptables route 关系
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">83</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:wangdk789@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://bingerambo.com/" title="Binge Blog" target="_blank">Binge Blog</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://47.94.14.169:8080/home.html" title="林夕-博客" target="_blank">林夕-博客</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Taint-使用说明"><span class="nav-number">1.</span> <span class="nav-text">Taint 使用说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理流程"><span class="nav-number">2.</span> <span class="nav-text">处理流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#频繁给节点增加污点删除污点的问题"><span class="nav-number">3.</span> <span class="nav-text">频繁给节点增加污点删除污点的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#现象"><span class="nav-number">3.1.</span> <span class="nav-text">现象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原因分析"><span class="nav-number">4.</span> <span class="nav-text">原因分析</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DavidStack</span>
+
+  <!-- <div class="beian">
+  </div> -->
+ 
+  <div class="BbeiAn-info">
+    鲁ICP备 -
+    <a target="_blank"  href="https://beian.miit.gov.cn">16023683号-1</a>
+  </div>
+
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
