@@ -295,6 +295,34 @@
 
       <h3 class="post-title">
         
+            <a class="post-title-link" href="/2022/01/12/kubernetes%E4%B8%AD%E7%9A%84%E5%86%85%E7%BD%AE%E7%9B%91%E6%8E%A7%E6%8C%87%E6%A0%87/" itemprop="url">
+              
+                <span itemprop="name">kubernetes中的内置监控指标</span>
+              
+            </a>
+        
+      </h3>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2022-01-12T09:52:39+08:00"
+              content="2022-01-12" >
+          01-12
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+      
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h3 class="post-title">
+        
             <a class="post-title-link" href="/2021/03/23/k8s%E8%AF%81%E4%B9%A6%E7%AE%A1%E7%90%86/" itemprop="url">
               
                 <span itemprop="name">k8s证书管理</span>
@@ -367,7 +395,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">83</span>
+                  <span class="site-state-item-count">85</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -982,25 +1010,7 @@
 
 </body>
 </html>
-               resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
-                  }
-
-                  slicesOfContent.forEach(function (slice) {
-                    resultItem += "<a href='" + articleUrl + "'>" +
-                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
-                      "...</p>" + "</a>";
-                  });
-
-                  resultItem += "</li>";
-                  resultItems.push({
-                    item: resultItem,
-                    searchTextCount: searchTextCount,
-                    hitCount: hitCount,
-                    id: resultItems.length
-                  });
-                }
-              })
-            };
+   };
             if (keywords.length === 1 && keywords[0] === "") {
               resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
             } else if (resultItems.length === 0) {

@@ -1,1 +1,1 @@
-https://damonyi.cc/2022/01/02/k8s-%E4%B8%AD%E7%9A%84taints%E6%9C%BA%E5%88%B6/
+https://damonyi.cc/2022/01/26/kubernetes-%E4%B8%ADzone%E7%8A%B6%E6%80%81%E5%BC%95%E8%B5%B7%E7%9A%84%E9%97%AE%E9%A2%98/
