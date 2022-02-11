@@ -3344,4 +3344,16 @@ I1222 07:23:34.043137 78755 nvc_mount.c:412] mounting /proc/driver/nvidia/gpus/0
         <tag>kubernetes</tag>
       </tags>
   </entry>
+  <entry>
+    <title>升级nccl</title>
+    <url>/2022/02/10/%E5%8D%87%E7%BA%A7nccl/</url>
+    <content><![CDATA[<p>在使用nccl 2.8.4版本进行训练时，偶尔会出现训练任务卡主的问题，官方建议升级到nccl2.12版本，升级后确实训练任务能够正常运行了</p>
+<p>升级nccl 流程：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">apt install build-essential fakeroot devscripts lintian debhelper</span><br><span class="line">git clone -b v2.12  https:&#x2F;&#x2F;github.com&#x2F;NVIDIA&#x2F;nccl.git</span><br><span class="line">cd nccl</span><br><span class="line">make -j src.build</span><br><span class="line">make pkg.debian.build</span><br><span class="line">dpkg -l</span><br><span class="line">dpkg -r libnccl-dev</span><br><span class="line">dpkg -r libnccl2</span><br><span class="line">cd build&#x2F;pkg&#x2F;deb&#x2F;</span><br><span class="line">chmod 777 libnccl*</span><br><span class="line">dpkg -i libnccl2_2.12.6-1+cuda11.0_amd64.deb</span><br><span class="line">dpkg -i libnccl-dev_2.12.6-1+cuda11.0_amd64.deb</span><br></pre></td></tr></table></figure>
+
+<p>运行nccl-test，确认使用了最新的nccl版本</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;NVIDIA&#x2F;nccl-tests.git</span><br><span class="line">cd nccl-tests&#x2F;</span><br><span class="line">make</span><br><span class="line">export NCCL_DEBUG&#x3D;INFO</span><br><span class="line">.&#x2F;build&#x2F;all_reduce_perf -b 8 -e 256M -f 2 -g 2</span><br></pre></td></tr></table></figure>
+<p>   <img src="/2022/02/10/%E5%8D%87%E7%BA%A7nccl/ncclversion.png" alt="avatar"></p>
+]]></content>
+  </entry>
 </search>
