@@ -3370,7 +3370,7 @@ I1222 07:23:34.043137 78755 nvc_mount.c:412] mounting /proc/driver/nvidia/gpus/0
   <entry>
     <title>IntelE810 使用说明</title>
     <url>/2022/04/18/IntelE810-%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/</url>
-    <content><![CDATA[<p>==============================================================================<br>irdma - Linux* RDMA Driver for the E810 and X722 Intel(R) Ethernet Controllers<br>==============================================================================</p>
+    <content><![CDATA[<p>==============================================================================<br>irdma - Linux* RDMA Driver for the E800 Series and X722 Intel(R) Ethernet Controllers<br>==============================================================================</p>
 <hr>
 <h2 id="Contents"><a href="#Contents" class="headerlink" title="Contents"></a>Contents</h2><ul>
 <li>Overview</li>
@@ -3382,7 +3382,7 @@ I1222 07:23:34.043137 78755 nvc_mount.c:412] mounting /proc/driver/nvidia/gpus/0
 <li>iWARP Port Mapper (iwpmd)</li>
 <li>Flow Control Settings</li>
 <li>ECN Configuration</li>
-<li>Devlink Configuration</li>
+<li>DSCP Configuration</li>
 <li>Memory Requirements</li>
 <li>Resource Profile Limits</li>
 <li>Resource Limits Selector</li>
@@ -3394,30 +3394,31 @@ I1222 07:23:34.043137 78755 nvc_mount.c:412] mounting /proc/driver/nvidia/gpus/0
 <li>Dynamic Tracing</li>
 <li>Dynamic Debug</li>
 <li>Capturing RDMA Traffic with tcpdump</li>
+<li>Virtualization</li>
 <li>Known Issues/Notes</li>
 </ul>
 <hr>
 <h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>The irdma Linux* driver enables RDMA functionality on RDMA-capable Intel<br>network devices. Devices supported by this driver:</p>
 <ul>
-<li>Intel(R) Ethernet Controller E810</li>
-<li>Intel(R) Ethernet Network Adapter X722</li>
+<li>Intel(R) Ethernet Controller E800 Series</li>
+<li>Intel(R) Ethernet Network Connection X722</li>
 </ul>
-<p>The E810 and X722 devices each support a different set of RDMA features.<br>    - E810 supports both iWARP and RoCEv2 RDMA transports, and also supports<br>      congestion management features like priority flow control (PFC) and<br>      explicit congestion notification (ECN).<br>    - X722 supports only iWARP and a more limited set of configuration<br>      parameters.</p>
+<p>The Intel Ethernet 800 Series and X722 each support a different set of RDMA features.<br>    - Intel Ethernet 800 Series supports both iWARP and RoCEv2 RDMA transports, and also supports<br>      congestion management features like priority flow control (PFC) and<br>      explicit congestion notification (ECN).<br>    - X722 supports only iWARP and a more limited set of configuration<br>      parameters.</p>
 <p>Differences between adapters are described in each section of this document.</p>
-<p>For both E810 and X722, the corresponding LAN driver (ice or i40e) must be<br>built from source included in this release and installed on your system prior<br>to installing irdma.</p>
+<p>For both Intel Ethernet 800 Series and X722, the corresponding LAN driver (ice or i40e) must be<br>built from source included in this release and installed on your system prior<br>to installing irdma.</p>
 <hr>
 <h2 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h2><ul>
-<li>Compile and install the E810 or X722 LAN PF driver from source included in<br>this release. Refer to the ice or i40e driver README for installation<br>instructions.<ul>
-<li>For E810 adapters, use the ice driver.</li>
+<li>Compile and install the Intel Ethernet 800 Series or X722 LAN PF driver from source included in<br>this release. Refer to the ice or i40e driver README for installation<br>instructions.<ul>
+<li>For Intel Ethernet 800 Series, use the ice driver.</li>
 <li>For X722 adapters, use the i40e driver.</li>
 </ul>
 </li>
 <li>For best results, use a fully supported OS from the Supported OS List below.</li>
 <li>For server memory requirements, see the “Memory Requirements” section of this<br>document.</li>
-<li>Install required packages. Refer to the “Building” section of the rdma-core<br>README for required packages for your OS:<pre><code>  https://github.com/linux-rdma/rdma-core/blob/v27.0/README.md</code></pre>
+<li>Install required packages. Refer to the “Building” section of the rdma-core<br>README for required packages for your OS:<pre><code>  https://github.com/linux-rdma/rdma-core/blob/v35.0/README.md</code></pre>
 <ul>
 <li>RHEL 7 and SLES:<br>  Install all required packages listed in the rdma-core README.</li>
-<li>RHEL 8:<br>  Install the required packages for RHEL 7, then install the following<br>  additional packages:<pre><code>  dnf install python3-docutils perl-generators</code></pre>
+<li>RHEL 8:<br>  Install the required packages for RHEL 7, then install the following<br>  additional packages:<pre><code>  dnf install python3-docutils perl-generators python3-Cython python3-devel</code></pre>
 </li>
 <li>Ubuntu:<br>  Install the required packages listed in the rdma-core README, then<br>  install the following additional package:<pre><code>  apt-get install python3-docutils libsystemd-dev</code></pre>
 </li>
@@ -3428,35 +3429,40 @@ I1222 07:23:34.043137 78755 nvc_mount.c:412] mounting /proc/driver/nvidia/gpus/0
 <li>Note:<br>The following are sample repo files that can be used to get the dependent packages<br>for rdma-core. However, these may not be all that is required.</li>
 </ul>
 <ul>
-<li><p>For SLES<br>  <a href="http://download.opensuse.org/distribution/leap/42.3/repo/oss" target="_blank" rel="noopener">http://download.opensuse.org/distribution/leap/42.3/repo/oss</a></p>
+<li><p>For SLES 15.2<br>  <a href="http://download.opensuse.org/distribution/leap/15.2/repo/oss" target="_blank" rel="noopener">http://download.opensuse.org/distribution/leap/15.2/repo/oss</a></p>
 </li>
 <li><p>For RHEL 8.1<br>  <a href="http://vault.centos.org/8.1.1911/PowerTools/x86_64/os/" target="_blank" rel="noopener">http://vault.centos.org/8.1.1911/PowerTools/x86_64/os/</a></p>
 </li>
 </ul>
 <hr>
 <h2 id="Supported-OS-List"><a href="#Supported-OS-List" class="headerlink" title="Supported OS List"></a>Supported OS List</h2><pre><code>Supported:
-    * RHEL 8.3
-    * RHEL 7.9
-    * SLES 15 SP2
-    * SLES 12 SP5
-    * Ubuntu 18.04
+    * RHEL 8.5
+    * RHEL 8.4
+    * SLES 15 SP3
     * Ubuntu 20.04
+    * CentOS 7.4 with LTS 4.14
 
 Supported Not Validated:
+    * RHEL 8.3
     * RHEL 8.2
     * RHEL 8.1
     * RHEL 8
+    * RHEL 7.9
     * RHEL 7.8
     * RHEL 7.7
     * RHEL 7.6 + OFED 4.17-1
     * RHEL 7.5 + OFED 4.17-1
     * RHEL 7.4 + OFED 4.17-1
+    * RHEL 7.2 + OFED 4.8-2
+    * SLES 15 SP2
     * SLES 15 SP1
+    * SLES 12 SP5
     * SLES 15 + OFED 4.17-1
     * SLES 12 SP 4 + OFED 4.17-1
     * SLES 12 SP 3 + OFED 4.17-1
-    * Linux kernel stable 5.10.*
-    * Linux kernel longterm 5.4.*, 4.19.*, 4.14.*</code></pre>
+    * Ubuntu 18.04
+    * Linux kernel stable 5.14.*
+    * Linux kernel longterm 5.10.*, 5.4.*, 4.19.*, 4.14.*</code></pre>
 <hr>
 <h2 id="Building-and-Installation"><a href="#Building-and-Installation" class="headerlink" title="Building and Installation"></a>Building and Installation</h2><p>To build and install the irdma driver and supporting rdma-core libraries:</p>
 <ol>
@@ -3493,67 +3499,101 @@ To install irdma using OFED modules:<ul>
        allow_unsupported_modules 1</code></pre>
 </li>
 <li><p>Uninstall any previous versions of rdma-core user-space libraries.<br>For example, in RHEL:</p>
-<pre><code> yum erase rdma-core</code></pre>
-<p> Note: “yum erase rdma-core” will also remove any packages that depend on</p>
-<pre><code>   rdma-core, such as perftest or fio. Please re-install them after
-   installing rdma-core.</code></pre>
+<pre><code> yum erase rdma-core
+
+ If yum erase doesn&#39;t work (on RHEL 8.4 it fails with &quot;Error: The operation would result in removing the following protected packages: systemd&quot;),
+ use the following command to uninstall the rdma-core packages:
+
+ rpm -e --nodeps ibacm iwpmd libibumad libibverbs librdmacm srp_daemon infiniband-diags 2&gt;/dev/null
+ rpm -e --nodeps rdma-core
+
+ Note: The errors in post-uninstall scritps of these packages can be ignored with 2&gt;/dev/null.
+       The packages provided to rpm -e --nodeps above could be looked up with the following command: rpm -e rdma-core
+       The output is &quot;error: Failed dependencies: rdma-core(x86-64) =  is needed by (installed) rdma-core-devel
+                                                  rdma-core(x86-64) =  is needed by (installed) iwpmd
+                                                  rdma-core(x86-64) =  is needed by (installed) libibumad
+                                                  rdma-core(x86-64) =  is needed by (installed) libibverbs
+                                                  rdma-core(x86-64) =  is needed by (installed) ibacm
+                                                  rdma-core(x86-64) =  is needed by (installed) librdmacm
+                                                  rdma-core(x86-64) =  is needed by (installed) srp_daemon&quot;
+
+       To confirm that rdma-core is uninstalled after rpm -e --nodeps run: yum erase rdma-core
+       The output should look like this: &quot;No match for argument: rdma-core No packages marked for removal... Nothing to do. Complete!&quot;</code></pre>
 </li>
+</ol>
+<pre><code>Note: &quot;yum erase rdma-core&quot; will also remove any packages that depend on
+      rdma-core, such as perftest or fio. Please re-install them after
+      installing rdma-core.</code></pre>
+<ol start="5">
 <li><p>Patch, build, and install rdma-core user space libraries:</p>
 <p> RHEL:</p>
-<pre><code> # Download rdma-core-27.0.tar.gz from GitHub
- wget https://github.com/linux-rdma/rdma-core/releases/download/v27.0/rdma-core-27.0.tar.gz
- # Apply patch libirdma-27.0.patch to rdma-core
- tar -xzvf rdma-core-27.0.tar.gz
- cd rdma-core-27.0
- patch -p2 &lt; /path/to/irdma-&lt;version&gt;/libirdma-27.0.patch
+<pre><code> # Download rdma-core-35.0.tar.gz from GitHub
+ wget https://github.com/linux-rdma/rdma-core/releases/download/v35.0/rdma-core-35.0.tar.gz
+ # Apply patch libirdma-35.0.patch to rdma-core
+ tar -xzvf rdma-core-35.0.tar.gz
+ cd rdma-core-35.0
+ patch -p2 &lt; /path/to/irdma-&lt;version&gt;/libirdma-35.0.patch
  # Make sure directories rdma-core/redhat and contents are under group &#39;root&#39;
  cd ..
- chgrp -R root rdma-core-27.0/redhat
+ chgrp -R root rdma-core-35.0/redhat
  # Zip with proper name for building (note &quot;tgz&quot; extension instead of &quot;tar.gz&quot;)
- tar -zcvf rdma-core-27.0.tgz rdma-core-27.0
+ tar -zcvf rdma-core-35.0.tgz rdma-core-35.0
  # Build rdma-core
  mkdir -p ~/rpmbuild/SOURCES
  mkdir -p ~/rpmbuild/SPECS
- cp rdma-core-27.0.tgz ~/rpmbuild/SOURCES/
+ cp rdma-core-35.0.tgz ~/rpmbuild/SOURCES/
  cd ~/rpmbuild/SOURCES
- tar -xzvf rdma-core-27.0.tgz
- cp ~/rpmbuild/SOURCES/rdma-core-27.0/redhat/rdma-core.spec ~/rpmbuild/SPECS/
+ tar -xzvf rdma-core-35.0.tgz
+ cp ~/rpmbuild/SOURCES/rdma-core-35.0/redhat/rdma-core.spec ~/rpmbuild/SPECS/
  cd ~/rpmbuild/SPECS/
  rpmbuild -ba rdma-core.spec
  # Install RPMs
  cd ~/rpmbuild/RPMS/x86_64
- yum install *27.0*.rpm</code></pre>
+ yum install *35.0*.rpm</code></pre>
 <p> SLES:</p>
-<pre><code> # Download rdma-core-27.0.tar.gz from GitHub
- wget https://github.com/linux-rdma/rdma-core/releases/download/v27.0/rdma-core-27.0.tar.gz
- # Apply patch libirdma-27.0.patch to rdma-core
- tar -xzvf rdma-core-27.0.tar.gz
- cd rdma-core-27.0
- patch -p2 &lt; /path/to/irdma-&lt;version&gt;/libirdma-27.0.patch
+<pre><code> # Download rdma-core-35.0.tar.gz from GitHub
+ wget https://github.com/linux-rdma/rdma-core/releases/download/v35.0/rdma-core-35.0.tar.gz
+ # Apply patch libirdma-35.0.patch to rdma-core
+ tar -xzvf rdma-core-35.0.tar.gz
+ cd rdma-core-35.0
+ patch -p2 &lt; /path/to/irdma-&lt;version&gt;/libirdma-35.0.patch
  cd ..
  # Zip the rdma-core directory into a tar.gz archive
- tar -zcvf rdma-core-27.0.tar.gz rdma-core-27.0
+ tar -zcvf rdma-core-35.0.tar.gz rdma-core-35.0
  # Create an empty placeholder baselibs.conf file
  touch /usr/src/packages/SOURCES/baselibs.conf
  # Build rdma-core
- cp rdma-core-27.0.tar.gz /usr/src/packages/SOURCES
- cp rdma-core-27.0/suse/rdma-core.spec /usr/src/packages/SPECS/
+ cp rdma-core-35.0.tar.gz /usr/src/packages/SOURCES
+ cp rdma-core-35.0/suse/rdma-core.spec /usr/src/packages/SPECS/
  cd /usr/src/packages/SPECS/
  rpmbuild -ba rdma-core.spec --without=curlmini
  cd /usr/src/packages/RPMS/x86_64
- rpm -ivh --force *27.0*.rpm</code></pre>
+ rpm -ivh --force *35.0*.rpm</code></pre>
 <p> Ubuntu:</p>
 <pre><code> To create Debian packages from rdma-core:
- # Download rdma-core-27.0.tar.gz from GitHub
- wget https://github.com/linux-rdma/rdma-core/releases/download/v27.0/rdma-core-27.0.tar.gz
- # Apply patch libirdma-27.0.patch to rdma-core
- tar -xzvf rdma-core-27.0.tar.gz
- cd rdma-core-27.0
- patch -p2 &lt; /path/to/irdma-&lt;version&gt;/libirdma-27.0.patch
+ # Download rdma-core-35.0.tar.gz from GitHub
+ wget https://github.com/linux-rdma/rdma-core/releases/download/v35.0/rdma-core-35.0.tar.gz
+ # Apply patch libirdma-35.0.patch to rdma-core
+ tar -xzvf rdma-core-35.0.tar.gz
+ cd rdma-core-35.0
+ patch -p2 &lt; /path/to/irdma-&lt;version&gt;/libirdma-35.0.patch
  # Build rdma-core
  dh clean --with python3,systemd --builddirectory=build-deb
  dh build --with systemd --builddirectory=build-deb
  sudo dh binary --with python3,systemd --builddirectory=build-deb
+ # This creates .deb packages in the parent directory
+ # To install the .deb packages
+ sudo dpkg -i ../*.deb</code></pre>
+<p> Debian:</p>
+<pre><code> To create Debian packages from rdma-core:
+ # Download rdma-core-35.0.tar.gz from GitHub
+ wget https://github.com/linux-rdma/rdma-core/releases/download/v35.0/rdma-core-35.0.tar.gz
+ # Apply patch libirdma-35.0.patch to rdma-core
+ tar -xzvf rdma-core-35.0.tar.gz
+ cd rdma-core-35.0
+ patch -p2 &lt; /path/to/irdma-&lt;version&gt;/libirdma-35.0.patch
+ # Build rdma-core
+ dpkg-buildpackage -rfakeroot -b -uc -us -d
  # This creates .deb packages in the parent directory
  # To install the .deb packages
  sudo dpkg -i ../*.deb</code></pre>
@@ -3563,9 +3603,9 @@ To install irdma using OFED modules:<ul>
  * hard memlock unlimited
  * soft nofile 1048000
  * hard nofile 1048000</code></pre>
-<p>This avoids any limits on user mode applications as far as pinned memory and number of open files used.</p>
-</li>
-<li><p>Reboot the server after installing the irdma driver and rdma-core packages.</p>
+<p>In addition, the files /etc/systemd/user.conf and /etc/systemd/system.conf may need to have the following line:<br> DefaultLimitMEMLOCK=1073741824<br>This will change the Max locked memory for all process to 1G.</p>
+<p>Restart the active session so new values will take effect.<br>This avoids any limits on user mode applications as far as pinned memory and number of open files used.</p>
+<p> Note: A reboot may be needed if any RDMA applications were running during the rdma-core reinstall.</p>
 </li>
 </ol>
 <hr>
@@ -3592,14 +3632,14 @@ Notes:
         * Run rping server on Host B and rping client on Host A.
     - When connecting multiple rping clients to a persistent rping server,
       older kernels may experience a crash related to the handling of cm_id
-      values in the kernel stack. With E810, this problem typically appears
+      values in the kernel stack. With Intel Ethernet 800 Series, this problem typically appears
       in the system log as a kernel oops and stack trace pointing to
       irdma_accept. The issue has been fixed in kernels 5.4.61 and later.
       For patch details, see:
       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/infiniband/core/ucma.c?h=v5.9-rc2&amp;id=7c11910783a1ea17e88777552ef146cace607b3c</code></pre>
 <hr>
 <h2 id="iWARP-RoCEv2-Selection"><a href="#iWARP-RoCEv2-Selection" class="headerlink" title="iWARP/RoCEv2 Selection"></a>iWARP/RoCEv2 Selection</h2><p>X722:<br>The X722 adapter supports only the iWARP transport.</p>
-<p>E810:<br>The E810 controller supports both iWARP and RoCEv2 transports. By default, the<br>irdma driver is loaded in iWARP mode. RoCEv2 may be selected either globally<br>(for all ports) using the module parameter “roce_ena=1” or for individual ports<br>using the devlink interface.</p>
+<p>Intel Ethernet 800 Series:<br>The Intel Ethernet 800 Series supports both iWARP and RoCEv2 transports. By default, the<br>irdma driver is loaded in iWARP mode. RoCEv2 may be selected globally<br>(for all ports) using the module parameter “roce_ena=1”</p>
 <p>— Global Selection<br>To automatically enable RoCEv2 mode for all ports when the irdma driver is<br>loaded, add the following line to /etc/modprobe.d/irdma.conf:<br>    options irdma roce_ena=1</p>
 <p>The irdma driver may also be manually loaded with the “roce_ena=1” parameter<br>on the modprobe command line. To manually load all irdma ports in RoCEv2 mode:</p>
 <ul>
@@ -3608,32 +3648,77 @@ Notes:
 <li>Reload the driver in RoCEv2 mode:<pre><code>modprobe irdma roce_ena=1</code></pre>
 </li>
 </ul>
-<p>— Per-Port Selection<br>E810 interfaces may be configured per interface for iWARP mode (default) or<br>RoCEv2 via devlink parameter configuration. See the “Devlink Configuration”<br>section below for instructions on per-port iWARP/RoCEv2 selection.</p>
+<p>Alternatively, ports may be individually set to RoCEv2 mode using the module<br>parameter roce_port_cfg set as a binary bit field converted to a decimal number.<br>All other ports are configured for iWARP mode.<br>    Example 1 - to configure only port 0 in RoCE v2 mode (0001b -&gt; 1):<br>        modprobe irdma roce_port_cfg=1<br>    Example 2 - to configure both port 0 and port 1 in RoCE v2 mode (0011b -&gt; 3):<br>        modprobe irdma roce_port_cfg=3<br>    Example 3 - to configure only port 3 in RoCE v2 mode (1000b -&gt; 8):<br>        modprobe irdma roce_port_cfg=8</p>
+<p>Note: The roce_ena module parameter supersedes roce_port_cfg.</p>
+<p>If the irdma driver is currently loaded, first unload it:<br>        rmmod irdma<br>Reload the driver with appropriate roce_ena value:<br>        modprobe irdma roce_ena=1</p>
 <hr>
 <h2 id="iWARP-Port-Mapper-iwpmd"><a href="#iWARP-Port-Mapper-iwpmd" class="headerlink" title="iWARP Port Mapper (iwpmd)"></a>iWARP Port Mapper (iwpmd)</h2><p>The iWARP port mapper service (iwpmd) coordinates with the host network stack<br>and manages TCP port space for iWARP applications.</p>
 <p>iwpmd is automatically loaded when ice or i40e is loaded via udev rules in<br>/usr/lib/udev/rules.d/90-iwpmd.rules.</p>
 <p>To verify iWARP port mapper status:<br>    systemctl status iwpmd</p>
 <hr>
-<h2 id="Flow-Control-Settings"><a href="#Flow-Control-Settings" class="headerlink" title="Flow Control Settings"></a>Flow Control Settings</h2><p>X722:<br>The X722 adapter supports only link-level flow control (LFC).</p>
-<p>E810:<br>The E810 controller supports both link-level flow control (LFC) and priority<br>flow control (PFC). Enabling flow control is strongly recommended when using<br>E810 in RoCEv2 mode.</p>
-<p>— Link Level Flow Control (LFC) (E810 and X722)</p>
-<p>To enable link-level flow control on E810 or X722, use “ethtool -A”.<br>For example, to enable LFC in both directions (rx and tx):<br>    ethtool -A DEVNAME rx on tx on</p>
+<h2 id="Flow-Control-Settings"><a href="#Flow-Control-Settings" class="headerlink" title="Flow Control Settings"></a>Flow Control Settings</h2><p>X722:<br>The X722 supports only link-level flow control (LFC).</p>
+<p>Intel Ethernet 800 Series:<br>The Intel Ethernet 800 Series supports both link-level flow control (LFC) and priority<br>flow control (PFC). Enabling flow control is strongly recommended when using<br>Intel Ethernet 800 Series in RoCEv2 mode.</p>
+<p>— Link Level Flow Control (LFC) (Intel Ethernet 800 Series and X722)</p>
+<p>To enable link-level flow control on Intel Ethernet 800 Series or X722, use “ethtool -A”.<br>For example, to enable LFC in both directions (rx and tx):<br>    ethtool -A DEVNAME rx on tx on</p>
 <p>Confirm the setting with “ethtool -a”:<br>    ethtool -a DEVNAME</p>
 <p>Sample output:<br>    Pause parameters for interface:<br>    Autonegotiate: on<br>    RX: on<br>    TX: on<br>    RX negotiated:  on<br>    TX negotiated:  on</p>
 <p>Full enablement of LFC requires the switch or link partner be configured for<br>rx and tx pause frames. Refer to switch vendor documentation for more details.</p>
-<p>— Priority Level Flow Control (PFC) (E810 only)</p>
-<p>Priority flow control (PFC) is supported on E810 in both willing and<br>non-willing modes. E810 also has two Data Center Bridging (DCB) modes: software<br>and firmware. For more background on software and firmware modes, refer to the<br>E810 ice driver README.</p>
+<p>— Priority Level Flow Control (PFC) (Intel Ethernet 800 Series only)</p>
+<p>Priority flow control (PFC) is supported on Intel Ethernet 800 Series in both willing and<br>non-willing modes. Intel Ethernet 800 Series also has two Data Center Bridging (DCB) modes: software<br>and firmware. For more background on software and firmware modes, refer to the<br>Intel Ethernet 800 Series ice driver README.</p>
 <ul>
-<li>For PFC willing mode, firmware DCB is recommended.</li>
+<li>For PFC willing mode, software DCB is recommended.</li>
 <li>For PFC non-willing mode, software DCB must be used.</li>
 </ul>
-<p>Note: E810 supports a maximum of 4 traffic classes (TCs), one of which may<br>      have PFC enabled.</p>
+<p>Notes: Intel Ethernet 800 Series supports a maximum of 4 traffic classes (TCs), one of which may<br>       have PFC enabled. In addition, iWARP mode requires a VLAN to be configured to fully enable PFC.</p>
 <p>*** PFC willing mode</p>
-<p>In willing mode, E810 is “willing” to accept DCB settings from its link<br>partner. DCB is configured on the link partner (typically a switch), and the<br>E810 will automatically discover and apply the DCB settings to its own port.<br>This simplifies DCB configuration in a larger cluster and eliminates the need<br>to independently configure DCB on both sides of the link.</p>
-<p>To enable PFC in willing mode on E810, use ethtool to enable firmware DCB.<br>Enabling firmware DCB automatically places the NIC in willing mode:<br>    ethtool –set-priv-flags DEVNAME fw-lldp-agent on</p>
+<p>In willing mode, Intel Ethernet 800 Series is “willing” to accept DCB settings from its link<br>partner. DCB is configured on the link partner (typically a switch), and the<br>Intel Ethernet 800 Series will automatically discover and apply the DCB settings to its own port.<br>This simplifies DCB configuration in a larger cluster and eliminates the need<br>to independently configure DCB on both sides of the link.</p>
+<p>To enable PFC in willing mode on Intel Ethernet 800 Series:</p>
+<ol>
+<li>Use ethtool to disable firmware DCB.<br>ethtool –set-priv-flags DEVNAME fw-lldp-agent off</li>
+</ol>
 <p>To confirm settings, use following command:<br>    ethtool –show-priv-flags DEVNAME</p>
-<p>Expected output:<br>    fw-lldp-agent     :on</p>
-<p>Note: When firmware DCB is enabled, the E810 NIC may experience an adapter-wide<br>      reset when the DCBX willing configuration change propagated from the link<br>      partner removes an RDMA-enabled traffic class (TC). This typically occurs<br>      when removing a TC associated with priority 0 (the default priority for<br>      RDMA). The reset results in a temporary loss of connectivity as the<br>      adapter re-initializes.</p>
+<p>Expected output:<br>    fw-lldp-agent     :off</p>
+<ol start="2">
+<li><p>Install OpenLLDP if not already installed:</p>
+<pre><code>  yum install lldpad</code></pre>
+</li>
+<li><p>Start the Open LLDP daemon:</p>
+<pre><code> lldpad -d</code></pre>
+</li>
+<li><p>Disable CEE transmission:</p>
+<pre><code> lldptool -Ti DEVNAME -V CEE-DCBX enableTx=no</code></pre>
+</li>
+<li><p>Reset the DCBX mode to be ‘auto’ (start in IEEE DCBX mode) after the next lldpad restart:</p>
+<pre><code> lldptool -Ti DEVNAME -V IEEE-DCBX mode=reset</code></pre>
+</li>
+<li><p>Configure willing configuration for interface:</p>
+<pre><code> lldptool -Ti DEVNAME -V ETS-CFG enableTx=yes willing=yes</code></pre>
+</li>
+<li><p>Configure willing recommendation for interface:</p>
+<pre><code> lldptool -Ti DEVNAME -V ETS-REC enableTx=yes</code></pre>
+</li>
+<li><p>Configure willing PFC for interface:</p>
+<pre><code> lldptool -Ti DEVNAME -V PFC enable=yes willing=yes enableTx=yes</code></pre>
+</li>
+<li><p>Terminate the first instance of lldpad that was started (e.g. from initrd):</p>
+<pre><code> lldpad -k</code></pre>
+</li>
+<li><p>Remove lldpad state records from shared memory:</p>
+<pre><code>lldpad -s</code></pre>
+</li>
+<li><p>Restart service lldpad:</p>
+<pre><code>systemctl restart lldpad.service</code></pre>
+</li>
+<li><p>Check CEE mode enableTx settings. Must be no:</p>
+<pre><code>lldptool -ti DEVNAME -V CEE-DCBX -c</code></pre>
+</li>
+</ol>
+<p>Expected output:<br>        enableTx=no</p>
+<ol start="13">
+<li>Check DCBX mode settings. Must be auto:<pre><code>lldptool -ti DEVNAME -V IEEE-DCBX -c</code></pre>
+</li>
+</ol>
+<p>Expected output:<br>        mode=auto</p>
 <p>Switch DCB and PFC configuration syntax varies by vendor. Consult your switch<br>manual for details. Sample Arista switch configuration commands:</p>
 <ul>
 <li>Example: Enable PFC for priority 0 on switch port 21<ul>
@@ -3650,8 +3735,8 @@ Notes:
 </li>
 </ul>
 <p>*** PFC non-willing mode</p>
-<p>In non-willing mode, DCB settings must be configured on both E810 and its link<br>partner. Non-willing mode is software-based. OpenLLDP (lldpad and lldptool) is<br>recommended.</p>
-<p>To enable non-willing PFC on E810:</p>
+<p>In non-willing mode, DCB settings must be configured on both Intel Ethernet 800 Series and its link<br>partner. Non-willing mode is software-based. OpenLLDP (lldpad and lldptool) is<br>recommended.</p>
+<p>To enable non-willing PFC on Intel Ethernet 800 Series:</p>
 <ol>
 <li>Disable firmware DCB. Firmware DCB is always willing. If enabled, it<br>will override any software settings.<pre><code>ethtool --set-priv-flags DEVNAME fw-lldp-agent off</code></pre>
 </li>
@@ -3682,6 +3767,8 @@ b. Map all priorities to TC0 and allocate all bandwidth to TC0:<pre><code>  lldp
 <li>Configure the same settings on the link partner.</li>
 </ol>
 <p>Full enablement of PFC requires the switch or link partner be configured for<br>PFC pause frames. Refer to switch vendor documentation for more details.</p>
+<p>Additional notes and example:<br>    The 800 Series supports a maximum of four TCs, only one of which has PFC enabled.<br>    Traffic classes must be contiguous and must start at zero.<br>    ETS bandwidth allocations must total 100%.<br>    Multiple priorities can map to the same TC.<br>    Linux PFC defines eight TCs, but if you are steering traffic using ToS, there are only four priorities<br>    available: 0, 2, 4, and 6, which correspond with ToS 0, 8, 24, and 16 respectively.</p>
+<p>The following example configures RDMA on Priority = 2 and TC = 2:<br>    Follow steps 1 - 5 for non-willing mode above. Then Configure DCB:<br>        a. Enable PFC for priority 2:<br>            lldptool -Ti <interface> -V PFC willing=no enabled=2<br>        b. Map all priorities to TC0, TC1 and TC2 and allocate all bandwidth to TC2:<br>            lldptool -Ti <interface> -V ETS-CFG willing=no up2tc=0:0,1:1,2:2,3:0,4:0,5:0,6:0,7:0 <br>            tsa=0:ets,1:ets,2:ets,3:strict,4:strict,5:strict,6:strict,7:strict tcbw=0,0,100,0,0,0,0,0<br>           Note: Even with 0 allocated BW on TC0 and TC1, traffic can still occur on those TC’s.<br>        c. Verify settings:<br>             lldptool -ti <interface><br>                Chassis ID TLV<br>                    MAC: 12:ce:dc:05:92:25<br>                Port ID TLV<br>                    MAC: 12:ce:dc:05:92:25<br>                Time to Live TLV<br>                    120<br>                IEEE 8021QAZ ETS Configuration TLV<br>                     Willing: no<br>                     CBS: not supported<br>                     MAX_TCS: 8<br>                     PRIO_MAP: 0:0 1:1 2:2 3:0 4:0 5:0 6:0 7:0<br>                     TC Bandwidth: 0% 0% 100% 0% 0% 0% 0% 0%<br>                     TSA_MAP: 0:ets 1:ets 2:ets 3:strict 4:strict 5:strict 6:strict 7:strict<br>                IEEE 8021QAZ PFC TLV<br>                     Willing: no<br>                     MACsec Bypass Capable: no<br>                     PFC capable traffic classes: 8<br>                     PFC enabled: 2<br>                End of LLDPDU TL<br>        d. Set the default TOS for all RoCEv2 traffic to 8 (which maps to priority 2):<br>            echo 8 &gt; /sys/kernel/config/rdma_cm/rdma<interface>/ports/1/default_roce_tos </interface></interface></interface></interface></p>
 <p>— Directing RDMA traffic to a traffic class</p>
 <p>When using PFC, traffic may be directed to one or more traffic classes (TCs).<br>Because RDMA traffic bypasses the kernel, Linux traffic control methods like<br>tc, cgroups, or egress-qos-map can’t be used. Instead, set the Type of Service<br>(ToS) field on your application command line. ToS-to-priority mappings are<br>hardcoded in Linux as follows:<br>  ToS   Priority</p>
 <hr>
@@ -3689,9 +3776,9 @@ b. Map all priorities to TC0 and allocate all bandwidth to TC0:<pre><code>  lldp
 <p>Examples of setting ToS 16 in an application:<br>  ucmatose -t 16<br>  ib_write_bw -t 16</p>
 <p>Alternatively, for RoCEv2, ToS may be set for all RoCEv2 traffic using<br>configfs. For example, to set ToS 16 on device rdma<interface>, port 1:<br>  mkdir /sys/kernel/config/rdma_cm/rdma<interface><br>  echo 16 &gt; /sys/kernel/config/rdma_cm/rdma<interface>/ports/1/default_roce_tos</interface></interface></interface></p>
 <hr>
-<h2 id="ECN-Configuration"><a href="#ECN-Configuration" class="headerlink" title="ECN Configuration"></a>ECN Configuration</h2><p>X722:<br>Congestion control settings are not supported on X722 adapters.</p>
-<p>E810:<br>The E810 controller supports the following congestion control algorithms:<br>    - iWARP DCTCP<br>    - iWARP TCP New Reno plus ECN<br>    - iWARP TIMELY<br>    - RoCEv2 DCQCN<br>    - RoCEv2 DCTCP<br>    - RoCEv2 TIMELY</p>
-<p>Congestion control settings are accessed through configfs. Additional DCQCN<br>tunings are available through the devlink interface. See the “Devlink<br>Configuration” section for details.</p>
+<h2 id="ECN-Configuration"><a href="#ECN-Configuration" class="headerlink" title="ECN Configuration"></a>ECN Configuration</h2><p>X722:<br>Congestion control settings are not supported on X722.</p>
+<p>Intel Ethernet 800 Series:<br>The Intel Ethernet 800 Series supports the following congestion control algorithms:<br>    - iWARP DCTCP<br>    - iWARP TCP New Reno plus ECN<br>    - iWARP TIMELY<br>    - RoCEv2 DCQCN<br>    - RoCEv2 DCTCP<br>    - RoCEv2 TIMELY</p>
+<p>Congestion control settings are accessed through configfs. Additional DCQCN<br>tunings are available via module parameters.</p>
 <p>— Configuration in configfs</p>
 <p>To access congestion control settings:</p>
 <ol>
@@ -3732,106 +3819,26 @@ b. Map all priorities to TC0 and allocate all bandwidth to TC0:<pre><code>  lldp
 <pre><code>   rmdir /sys/kernel/config/irdma/rdmap&lt;interface&gt;</code></pre>
 </li>
 </ol>
+<p>— Advanced Congestion Control Knobs</p>
+<p>Module parameters on Intel Ethernet 800 Series for RoCEv2 DCQCN tuning:<br>        dcqcn_enable<br>            Enables the DCQCN algorithm for RoCEv2.<br>            Note: “roce_ena” must also be set to “true”.<br>        dcqcn_cc_cfg_valid<br>            Indicates that all DCQCN parameters are valid and should be updated<br>            in registers or QP context.<br>        dcqcn_min_dec_factor<br>            The minimum factor by which the current transmit rate can be<br>            changed when processing a CNP. Value is given as a percentage<br>            (1-100).<br>        dcqcn_min_rate<br>            The minimum value, in Mbits per second, for rate to limit.<br>        dcqcn_F<br>            The number of times to stay in each stage of bandwidth recovery.<br>        dcqcn_T<br>            The number of microseconds that should elapse before increasing the<br>            CWND in DCQCN mode.<br>        dcqcn_B<br>            The number of bytes to transmit before updating CWND in DCQCN mode.<br>        dcqcn_rai_factor<br>            The number of MSS to add to the congestion window in additive<br>            increase mode.<br>        dcqcn_hai_factor<br>            The number of MSS to add to the congestion window in hyperactive<br>            increase mode.<br>        dcqcn_rreduce_mperiod<br>            The minimum time between 2 consecutive rate reductions for a single<br>            flow. Rate reduction will occur only if a CNP is received during<br>            the relevant time interval.</p>
 <hr>
-<h2 id="Devlink-Configuration"><a href="#Devlink-Configuration" class="headerlink" title="Devlink Configuration"></a>Devlink Configuration</h2><p>X722:<br>Devlink parameter configuration is not supported on the X722 adapters.</p>
-<p>E810:<br>The E810 controller supports devlink configuration for the following controls:</p>
-<ul>
-<li>iWARP/RoCEv2 per-port selection</li>
-<li>DCQCN congestion control tunings</li>
-<li>Fragment count limit</li>
-</ul>
-<p>— Devlink OS support</p>
-<p>Devlink dev parameter configuration is a recent Linux capability that requires<br>both iproute2 tool support as well as kernel support.</p>
-<p>The following OS/Kernel versions support devlink dev parameters:<br>    - RHEL 8 or later<br>    - SLES 15 SP1 or later<br>    - Ubuntu 18.04 or later<br>    - Linux kernel 4.19 or later</p>
-<p>iproute2 may need to be updated to add parameter capability to the devlink<br>configuration. The latest released version can be downloaded and installed<br>from: <a href="https://github.com/shemminger/iproute2/releases" target="_blank" rel="noopener">https://github.com/shemminger/iproute2/releases</a></p>
-<p>— Devlink parameter configuration (E810 only)</p>
+<h2 id="DSCP-Configuration"><a href="#DSCP-Configuration" class="headerlink" title="DSCP Configuration"></a>DSCP Configuration</h2><p>The ice driver supports setting DSCP-based Layer 3 Quality of Service (L3 QoS) in the PF driver.</p>
+<p>The following is an example of how to map all RoCEv2 traffic to a DSCP/ToS:</p>
 <ol>
-<li><p>Get PCIe bus-info of the desired interface using “ethtool -i”:</p>
-<pre><code>ethtool -i DEVNAME</code></pre>
-<p>Example:</p>
-<pre><code># ethtool -i enp175s0f0
-driver: ice
-version: 0.11.7
-firmware-version: 0.50 0x800019de 1.2233.0
-expansion-rom-version:
-bus-info: 0000:af:00.0
-supports-statistics: yes
-supports-test: yes
-supports-eeprom-access: yes
-supports-register-dump: yes
-supports-priv-flags: yes</code></pre>
-<p>bus-info is 0000:af:00.0</p>
-</li>
-<li><p>Find the devlink name ‘ice_rdma.x’ in the /sys/devices folder:</p>
-<pre><code>ls /sys/devices/*/*/&lt;bus-info&gt;/ | grep ice_rdma</code></pre>
-<p>Example:</p>
-<pre><code>ls /sys/devices/*/*/0000:af:00.0/ | grep ice_rdma
-ice_rdma.16</code></pre>
-</li>
-<li><p>To display available parameters:</p>
-<pre><code>devlink dev param show</code></pre>
-<p>RDMA devlink parameters for E810:</p>
-<pre><code>roce_enable
-    Selects RDMA transport: RoCEv2 (true) or iWARP (false)
-resource_limits_selector
-    Limits available queue pairs (QPs). See &quot;Resource Limits Selector&quot;
-    section for details and values.
-dcqcn_enable
-    Enables the DCQCN algorithm for RoCEv2.
-    Note: &quot;roce_enable&quot; must also be set to &quot;true&quot;.
-dcqcn_cc_cfg_valid
-    Indicates that all DCQCN parameters are valid and should be updated
-    in registers or QP context.
-dcqcn_min_dec_factor
-    The minimum factor by which the current transmit rate can be
-    changed when processing a CNP. Value is given as a percentage
-    (1-100).
-dcqcn_min_rate
-    The minimum value, in Mbits per second, for rate to limit.
-dcqcn_F
-    The number of times to stay in each stage of bandwidth recovery.
-dcqcn_T
-    The number of microseconds that should elapse before increasing the
-    CWND in DCQCN mode.
-dcqcn_B
-    The number of bytes to transmit before updating CWND in DCQCN mode.
-dcqcn_rai_factor
-    The number of MSS to add to the congestion window in additive
-    increase mode.
-dcqcn_hai_factor
-    The number of MSS to add to the congestion window in hyperactive
-    increase mode.
-dcqcn_rreduce_mperiod
-    The minimum time between 2 consecutive rate reductions for a single
-    flow. Rate reduction will occur only if a CNP is received during
-    the relevant time interval.
-fragment_count_limit
-    Set fragment count limit to adjust maximum values for queue depth
-    and inline data size.</code></pre>
-</li>
-<li><p>To set a parameter:</p>
-<pre><code>devlink dev param set platform/&lt;ice_rdma.X&gt; name &lt;param name&gt; value &lt;param value&gt; cmode driverinit</code></pre>
-<p>Example: Enable RoCEv2, enable DCQCN, and set min_dec_factor=5 on ice_rdma.17:</p>
-<pre><code>devlink dev param set platform/ice_rdma.17 name roce_enable value true cmode driverinit
-devlink dev param set platform/ice_rdma.17 name dcqcn_enable value true cmode driverinit
-devlink dev param set platform/ice_rdma.17 name dcqcn_min_dec_factor value 5 cmode driverinit</code></pre>
-</li>
-<li><p>Reload the device port with new mode:</p>
-<pre><code>devlink dev reload platform/&lt;ice_rdma.X&gt;</code></pre>
-<p>Example:</p>
-<pre><code>devlink dev reload platform/ice_rdma.16</code></pre>
-<p>Note: This does not reload the driver, so other ports are unaffected.</p>
-</li>
+<li>Map a DSCP/ToS to a TC<br>lldptool -T -i <ethX> -V APP app=<prio>,<sel>,<pid><br> where:<br>   <prio>: The TC assigned to the DSCP/ToS code point<br>   <sel>: 5 for DSCP to TC mapping<br>   <pid>: The DSCP/ToS code point<br>For example, to map DSCP value 63 to traffic class 0:<br> lldptool -T -i eth0 -V APP app=0,5,63</pid></sel></prio></pid></sel></prio></ethX></li>
+<li>Set the default_roce_tos<br>Since the ToS field is 8 bits and the DSCP field is only 6 bits, set the ToS value to<br>4 X DSCP value(4 X 63 = 252):<br>mkdir /sys/kernel/config/rdma_cm/rdma<interface><br>echo 252 &gt; /sys/kernel/config/rdma_cm/rdma<interface>/ports/1/default_roce_tos</interface></interface></li>
 </ol>
+<p>NOTE:<br>  L3 QoS mode is not available when FW-LLDP is enabled. You also cannot enable<br>  FW-LLDP if L3 QoS mode is active. Please see the “L3 QoS mode” section, in the ice README,<br>  for more details.</p>
 <hr>
-<h2 id="Memory-Requirements"><a href="#Memory-Requirements" class="headerlink" title="Memory Requirements"></a>Memory Requirements</h2><p>Default irdma initialization requires a minimum of ~210 MB (for E810) or<br>~160 MB (for X722) of memory per port.</p>
-<p>For servers where the amount of memory is constrained, you can decrease the<br>required memory by lowering the resources available to E810 or X722 by loading<br>the driver with the following resource profile setting:</p>
-<pre><code>modprobe irdma rsrc_profile=2</code></pre>
-<p>To automatically apply the setting when the driver is loaded, add the following<br>to /etc/modprobe.d/irdma.conf:<br>    options irdma rsrc_profile=2</p>
-<p>Note: This can have performance and scaling impacts as the number of queue<br>pairs and other RDMA resources are decreased in order to lower memory usage to<br>approximately 55 MB (for E810) or 51 MB (for X722) per port.</p>
+<h2 id="Memory-Requirements"><a href="#Memory-Requirements" class="headerlink" title="Memory Requirements"></a>Memory Requirements</h2><p>Default irdma initialization requires a minimum of ~210 MB (for Intel Ethernet 800 Series) or<br>~160 MB (for X722) of memory per port.</p>
+<p>For servers where the amount of memory is constrained, you can decrease the<br>required memory by lowering the resources available to Intel Ethernet 800 Series or X722 by loading<br>the driver with the following resource profile setting:</p>
+<pre><code>modprobe irdma resource_profile=2</code></pre>
+<p>To automatically apply the setting when the driver is loaded, add the following<br>to /etc/modprobe.d/irdma.conf:<br>    options irdma resource_profile=2</p>
+<p>Note: This can have performance and scaling impacts as the number of queue<br>pairs and other RDMA resources are decreased in order to lower memory usage to<br>approximately 55 MB (for Intel Ethernet 800 Series) or 51 MB (for X722) per port.</p>
 <hr>
-<h2 id="Resource-Profile-Limits"><a href="#Resource-Profile-Limits" class="headerlink" title="Resource Profile Limits"></a>Resource Profile Limits</h2><p>In the default resource profile, the RDMA resources configured for each<br>adapter are as follows:</p>
-<pre><code>E810 (2 ports):
+<h2 id="Resource-Profiles"><a href="#Resource-Profiles" class="headerlink" title="Resource Profiles"></a>Resource Profiles</h2><p>Resource profiles determine how resources are allocated between PFs and VFs.<br>Please see the Virtualization section for more information on profiles.</p>
+<p>In the default resource profile, the RDMA resources configured for each<br>adapter are as follows:</p>
+<pre><code>Intel Ethernet 800 Series (2 ports):
     Queue Pairs: 4092
     Completion Queues: 8189
     Memory Regions: 4194302
@@ -3840,7 +3847,7 @@ X722 (4 ports):
     Completion Queues: 2045
     Memory Regions: 2097150</code></pre>
 <p>For resource profile 2, the configuration is:</p>
-<pre><code>E810 (2 ports):
+<pre><code>Intel Ethernet 800 Series (2 ports):
     Queue Pairs: 508
     Completion Queues: 1021
     Memory Regions: 524286
@@ -3851,20 +3858,20 @@ X722 (4 ports):
     Memory Regions: 524286</code></pre>
 <hr>
 <h2 id="Resource-Limits-Selector"><a href="#Resource-Limits-Selector" class="headerlink" title="Resource Limits Selector"></a>Resource Limits Selector</h2><p>In addition to resource profile, you can further limit resources via the<br>“limits_sel” module parameter:</p>
-<p>E810:<br>    modprobe irdma limits_sel=&lt;0-6&gt;<br>X722:<br>    modprobe irdma gen1_limits_sel=&lt;0-5&gt;</p>
+<p>Intel Ethernet 800 Series:<br>    modprobe irdma limits_sel=&lt;0-6&gt;<br>X722:<br>    modprobe irdma gen1_limits_sel=&lt;0-5&gt;</p>
 <p>To automatically apply this setting when the driver is loaded, add the<br>following to /etc/modprobe.d/irdma.conf:<br>    options irdma limits_sel=<value></value></p>
-<p>The values below apply to a 2-port E810 NIC.<br>        0 - Default, up to 4092 QPs<br>        1 - Minimum, up to 124 QPs<br>        2 - Up to 1020 QPs<br>        3 - Up to 2044 QPs<br>        4 - Up to 16380 QPs<br>        5 - Up to 65532 QPs<br>        6 - Maximum, up to 131068 QPs</p>
-<p>For X722, the resource limit selector defaults to a value of 2. A single port<br>supports a maximum of 64k QPs, and a 4-port X722 supports up to 16k QPs per<br>port.</p>
+<p>The values below apply to a 2-port Intel Ethernet 800 Series.<br>        0 - Minimum, up to 124 QPs<br>        1 - Up to 1020 QPs<br>        2 - Up to 2044 QPs<br>        3 - Default, up to 4092 QPs<br>        4 - Up to 16380 QPs<br>        5 - Up to 65532 QPs<br>        6 - Maximum, up to 131068 QPs</p>
+<p>For X722, the resource limit selector defaults to a value of 1 and provides<br>2K QPs. A single X722 port supports a maximum of 32k QPs, and a 4-port X722<br>supports up to 8k QPs per port.</p>
 <hr>
-<h2 id="RDMA-Statistics"><a href="#RDMA-Statistics" class="headerlink" title="RDMA Statistics"></a>RDMA Statistics</h2><p>RDMA protocol statistics for E810 or X722 are found in sysfs. To display all<br>counters and values:<br>    cd /sys/class/infiniband/rdmap<interface>/hw_counters;<br>    for f in *; do echo -n “$f: “; cat “$f”; done;</interface></p>
+<h2 id="RDMA-Statistics"><a href="#RDMA-Statistics" class="headerlink" title="RDMA Statistics"></a>RDMA Statistics</h2><p>RDMA protocol statistics for Intel Ethernet 800 Series or X722 are found in sysfs. To display all<br>counters and values:<br>    cd /sys/class/infiniband/rdmap<interface>/hw_counters;<br>    for f in *; do echo -n “$f: “; cat “$f”; done;</interface></p>
 <p>The following counters will increment when RDMA applications are transferring<br>data over the network in iWARP mode:<br>    - tcpInSegs<br>    - tcpOutSegs</p>
 <p>Available counters:<br>    ip4InDiscards       IPv4 packets received and discarded.<br>    ip4InReasmRqd       IPv4 fragments received by Protocol Engine.<br>    ip4InMcastOctets    IPv4 multicast octets received.<br>    ip4InMcastPkts      IPv4 multicast packets received.<br>    ip4InOctets         IPv4 octets received.<br>    ip4InPkts           IPv4 packets received.<br>    ip4InTruncatedPkts  IPv4 packets received and truncated due to insufficient<br>                          buffering space in UDA RQ.<br>    ip4OutSegRqd        IPv4 fragments supplied by Protocol Engine to the lower<br>                          layers for transmission<br>    ip4OutMcastOctets   IPv4 multicast octets transmitted.<br>    ip4OutMcastPkts     IPv4 multicast packets transmitted.<br>    ip4OutNoRoutes      IPv4 datagrams discarded due to routing problem (no hit<br>                          in ARP table).<br>    ip4OutOctets        IPv4 octets supplied by the PE to the lower layers for<br>                           transmission.<br>    ip4OutPkts          IPv4 packets supplied by the PE to the lower layers for<br>                          transmission.<br>    ip6InDiscards       IPv6 packets received and discarded.<br>    ip6InReasmRqd       IPv6 fragments received by Protocol Engine.<br>    ip6InMcastOctets    IPv6 multicast octets received.<br>    ip6InMcastPkts      IPv6 multicast packets received.<br>    ip6InOctets         IPv6 octets received.<br>    ip6InPkts           IPv6 packets received.<br>    ip6InTruncatedPkts  IPv6 packets received and truncated due to insufficient<br>                          buffering space in UDA RQ.<br>    ip6OutSegRqd        IPv6 fragments received by Protocol Engine<br>    ip6OutMcastOctets   IPv6 multicast octets transmitted.<br>    ip6OutMcastPkts     IPv6 multicast packets transmitted.<br>    ip6OutNoRoutes      IPv6 datagrams discarded due to routing problem (no hit<br>                           in ARP table).<br>    ip6OutOctets        IPv6 octets supplied by the PE to the lower layers for<br>                           transmission.<br>    ip6OutPkts          IPv6 packets supplied by the PE to the lower layers for<br>                           transmission.<br>    iwInRdmaReads       RDMAP total RDMA read request messages received.<br>    iwInRdmaSends       RDMAP total RDMA send-type messages received.<br>    iwInRdmaWrites      RDMAP total RDMA write messages received.<br>    iwOutRdmaReads      RDMAP total RDMA read request messages sent.<br>    iwOutRdmaSends      RDMAP total RDMA send-type messages sent.<br>    iwOutRdmaWrites     RDMAP total RDMA write messages sent.<br>    iwRdmaBnd           RDMA verbs total bind operations carried out.<br>    iwRdmaInv           RDMA verbs total invalidate operations carried out.<br>    RxECNMrkd           Number of packets that have the ECN bits set to<br>                           indicate congestion<br>    cnpHandled          Number of Congestion Notification Packets that have<br>                           been handled by the reaction point.<br>    cnpIgnored          Number of Congestion Notification Packets that have<br>                           been ignored by the reaction point.<br>    rxVlanErrors        Ethernet received packets with incorrect VLAN_ID.<br>    tcpRetransSegs      Total number of TCP segments retransmitted.<br>    tcpInOptErrors      TCP segments received with unsupported TCP options or<br>                           TCP option length errors.<br>    tcpInProtoErrors    TCP segments received that are dropped by TRX due to<br>                           TCP protocol errors.<br>    tcpInSegs           TCP segments received.<br>    tcpOutSegs          TCP segments transmitted.<br>    cnpSent             Number of Congestion Notification Packets that have<br>                           been sent by the reaction point.<br>    RxUDP               UDP segments received without errors<br>    TxUDP               UDP segments transmitted without errors</p>
 <hr>
 <h2 id="perftest"><a href="#perftest" class="headerlink" title="perftest"></a>perftest</h2><p>The perftest package is a set of RDMA microbenchmarks designed to test<br>bandwidth and latency using RDMA verbs. The package is maintained upstream<br>here: <a href="https://github.com/linux-rdma/perftest" target="_blank" rel="noopener">https://github.com/linux-rdma/perftest</a></p>
-<p>perftest-4.4-0.29 is recommended.</p>
+<p>perftest-4.5-0.2 is recommended.</p>
 <p>Earlier versions of perftest had known issues with iWARP that have since been<br>fixed. Versions 4.4-0.4 through 4.4-0.18 are therefore NOT recommended.</p>
 <p>To run a basic ib_write_bw test:<br>    1. Start server<br>           ib_write_bw -R<br>    2. Start client:<br>           ib_write_bw -R <IP address of server><br>    3. Benchmark will run to completion and print performance data on both<br>       client and server consoles.</IP></p>
-<p>Notes:<br>    - The “-R” option is required for iWARP and optional for RoCEv2.<br>    - Use “-d <device>“ on the perftest command lines to use a specific RDMA<br>      device.<br>    - For ib_read_bw, use “-o 1” for testing with 3rd-party link partners.<br>    - For ib_send_lat and ib_write lat, use “-I 96” to limit inline data size<br>      to the supported value.<br>    - iWARP supports only RC connections.<br>      RoCEv2 supports RC and UD.<br>      Connection types XRC, UC, and DC are not supported.<br>    - Atomic operations are not supported on E810 or X722.</device></p>
+<p>Notes:<br>    - The “-R” option is required for iWARP and optional for RoCEv2.<br>    - Use “-d <device>“ on the perftest command lines to use a specific RDMA<br>      device.<br>    - For ib_read_bw, use “-o 1” for testing with 3rd-party link partners.<br>    - For ib_send_lat and ib_write lat, use “-I 96” to limit inline data size<br>      to the supported value.<br>    - iWARP supports only RC connections.<br>      RoCEv2 supports RC and UD.<br>      Connection types XRC, UC, and DC are not supported.<br>    - Atomic operations are not supported on Intel Ethernet 800 Series or X722.</device></p>
 <hr>
 <h2 id="MPI-Testing"><a href="#MPI-Testing" class="headerlink" title="MPI Testing"></a>MPI Testing</h2><p>— Intel MPI<br>Intel MPI uses the OpenFabrics Interfaces (OFI) framework and libfabric user<br>space libraries to communicate with network hardware.</p>
 <ul>
@@ -3872,7 +3879,7 @@ X722 (4 ports):
 <p>Note: Intel MPI 2019u4 is not recommended due to known incompatibilities with</p>
 <pre><code>  iWARP.</code></pre>
 </li>
-<li><p>Recommended libfabric version: libfabric-1.11.0</p>
+<li><p>Recommended libfabric version: libfabric-1.11.0 or the latest release</p>
 <p>The Intel MPI package includes a version of libfabric. This “internal”<br>version is automatically installed along with Intel MPI and used by default.<br>To use a different (“external”) version of libfabric with Intel MPI:</p>
 <pre><code>1. Download libfabric from https://github.com/ofiwg/libfabric.
 2. Build and install it according to the libfabric documentation.
@@ -3889,6 +3896,7 @@ X722 (4 ports):
 <p>Notes:</p>
 <ul>
 <li>Example is for libfabrics 1.8 or greater. For earlier versions, use<br>“-genv FI_PROVIDER=’verbs’”</li>
+<li>SRQ is not supported, set FI_OFI_RXM_USE_SRX=0</li>
 <li>For Intel MPI 2019u6, use “-genv MPIR_CVAR_CH4_OFI_ENABLE_DATA=0”.</li>
 <li>When using Intel MPI, it’s recommended to enable only one interface on<br>your networking device to avoid MPI application connectivity issues or<br>hangs. This issue affects all Intel MPI transports, including TCP and<br>RDMA. To avoid the issue, use “ifdown <interface>“ or “ip link set down<br><interface>“ to disable all network interfaces on your adapter except for<br>the one used for MPI.</interface></interface></li>
 </ul>
@@ -3912,6 +3920,13 @@ X722 (4 ports):
 <li>To specify CPUs when running an Intel MPI application:<br>  mpirun <options> -genv I_MPI_PIN_PROCESSOR_LIST=24-47 ./my_prog</options></li>
 </ul>
 </li>
+<li><p>For some workloads, latency may be improved by enabling push_mode in the<br>irdma driver.</p>
+<ul>
+<li>Create the configfs directory for your RDMA device:<br>  mkdir /sys/kernel/config/irdma/rdmap<interface></interface></li>
+<li>Enable push_mode:<br>  echo 1 &gt; /sys/kernel/config/irdma/rdmap<interface>/push_mode</interface></li>
+<li>Remove the directory<br>  rmdir /sys/kernel/config/irdma/rdmap<interface></interface></li>
+</ul>
+</li>
 <li><p>System and BIOS tunings may also improve performance. Settings vary by<br>platform - consult your OS and BIOS documentation for details.<br>In general:</p>
 <ul>
 <li>Disable power-saving features such as P-states and C-states</li>
@@ -3923,9 +3938,9 @@ X722 (4 ports):
 </ul>
 <hr>
 <h2 id="Interoperability"><a href="#Interoperability" class="headerlink" title="Interoperability"></a>Interoperability</h2><p>— Mellanox</p>
-<p>E810 and X722 support interop with Mellanox RoCEv2-capable adapters.</p>
+<p>Intel Ethernet 800 Series and X722 support interop with Mellanox RoCEv2-capable adapters.</p>
 <p>In tests like ib_send_bw, use -R option to select rdma_cm for connection<br>establishment. You can also use gid-index with -x option instead of -R:</p>
-<p>Example:<br>    On E810 or X722:  ib_send_bw -F -n 5 -x 0<br>    On Mellanox:      ib_send_bw -F -n 5 -x <gid-index for rocev2> <ip></ip></gid-index></p>
+<p>Example:<br>    On Intel Ethernet 800 Series or X722:  ib_send_bw -F -n 5 -x 0<br>    On Mellanox           :  ib_send_bw -F -n 5 -x <gid-index for rocev2> <ip></ip></gid-index></p>
 <pre><code>...where x specifies the gid index value for RoCEv2.</code></pre>
 <p>Look in /sys/class/infiniband/mlx5_0/ports/1/gid_attrs/types directory for<br>port 1.</p>
 <p>Note: Using RDMA reads with Mellanox may result in poor performance if there is<br>      packet loss.</p>
@@ -3962,6 +3977,17 @@ X722 (4 ports):
 </li>
 </ol>
 <hr>
+<h2 id="Virtualization"><a href="#Virtualization" class="headerlink" title="Virtualization"></a>Virtualization</h2><p>The irdma driver supports virtualization on Intel Ethernet 800 Series only and requires<br>the iavf driver. Please refer to its README for installation instructions.</p>
+<p>Loading the drivers:<br>Load the ice driver on the host and enable virtualization by setting the<br>number of VFs. For example, to set 2 VFs:<br>  echo 2 &gt; /sys/class/net/p4p1/device/sriov_numvfs</p>
+<p>Reload the irdma driver, on the host, with a VF specific resource_profile and<br>set the number of VFs needed.<br>The resource_profile value is one of the following:<br>  0 = PF only(default), no VF support, all resources assigned to PFs<br>  1 = Weighted VF, most resources assigned to the VFs, the PF gets minimal resources<br>  2 = Even Distribution, resources are distributed evenly among PFs and VFs</p>
+<p>For example:<br>  modprobe irdma resource_profile=2 max_rdma_vfs=2</p>
+<p>Next, start the VM and make sure the iavf and irdma drivers are loaded. For example:<br>  modprobe iavf<br>  modprobe irdma</p>
+<p>Notes:</p>
+<ul>
+<li>The irdma driver must be loaded on the host when the VM is started. Otherwise,<br>the iavf must be reloaded to enable RDMA functionality.</li>
+<li>If the irdma driver on the host is unloaded, then any client VFs will require<br>the iavf to be reloaded.</li>
+</ul>
+<hr>
 <h2 id="Known-Issues-Notes"><a href="#Known-Issues-Notes" class="headerlink" title="Known Issues/Notes"></a>Known Issues/Notes</h2><p>X722:</p>
 <ul>
 <li><p>Support for the Intel(R) Ethernet Connection X722 iWARP RDMA VF driver<br>(i40iwvf) has been discontinued.</p>
@@ -3970,18 +3996,22 @@ X722 (4 ports):
 </li>
 </ul>
 <p>Specifically, look for i40e, ib_addr, ib_cm, ib_core, ib_mad, ib_sa, ib_ucm,<br>ib_uverbs, iw_cm, rdma_cm, rdma_ucm in the output of the following command:<br>  lsinitrd |less<br>If you see any of those modules, rebuild initramfs with the following command<br>and include the name of the module in the “” list. For example:<br>  dracut –force –omit-drivers “i40e ib_addr ib_cm ib_core ib_mad ib_sa<br>  ib_ucm ib_uverbs iw_cm rdma_cm rdma_ucm”</p>
-<p>E810:</p>
+<p>Intel Ethernet 800 Series:</p>
 <ul>
-<li><p>Linux SRIOV for RDMA on E810 is currently not supported.</p>
+<li><p>RDMA is not supported when Intel Ethernet 800 Series is configured for more than 4 ports.</p>
 </li>
-<li><p>RDMA is not supported when E810 is configured for more than 4 ports.</p>
+<li><p>Intel Ethernet 800 Series is limited to 4 traffic classes (TCs), one of which may be enabled for<br>priority flow control (PFC).</p>
 </li>
-<li><p>E810 is limited to 4 traffic classes (TCs), one of which may be enabled for<br>priority flow control (PFC).</p>
+<li><p>When using RoCEv2 on Linux kernel version 5.9 or earlier, some iSER operations<br>may experience errors related to iSER’s handling of work requests. To work<br>around this issue, set the Intel Ethernet 800 Series fragment_count_limit module parameter to 13.</p>
 </li>
-<li><p>When using RoCEv2 on Linux kernel version 5.9 or earlier, some iSER operations<br>may experience errors related to iSER’s handling of work requests. To work<br>around this issue, set the E810 fragment_count_limit devlink parameter to 13.<br>Refer to the “Devlink Configuration” section for details on setting devlink<br>parameters.</p>
+<li><p>RoCEv2 devices require application level flow control in order to prevent message<br>loss due to insufficient receive buffers. The libfabric RxM provider implements application<br>level flow control for RDM endpoints running over RoCEv2 queue pairs.  The recommended way<br>to specify the provider in the RDM tests (e.g. fi_rdm) is with -p “ofi_rxm;verbs”.</p>
 </li>
 </ul>
-<p>X722 and E810:</p>
+<p>However, message endpoint tests (e.g. fi_msg_bw) which don’t support the libfabric RxM<br>provider use the verbs provider with -p “verbs” directly and can fail without application<br>level flow control.</p>
+<ul>
+<li>iWARP and RoCEv2 do not interoperate. Configure Intel Ethernet 800 Series to use the same protocol(iWARP/<br>RoCEv2) as its connection partner.</li>
+</ul>
+<p>X722 and Intel Ethernet 800 Series:</p>
 <ul>
 <li><p>Some commands (such as ‘tc qdisc add’ and ‘ethtool -L’) will cause the ice<br>driver to close the associated RDMA interface and reopen it. This will disrupt<br>RDMA traffic for a few seconds until the RDMA interface is available again.</p>
 </li>
@@ -4002,7 +4032,7 @@ X722 (4 ports):
 </ul>
 <hr>
 <h2 id="Support"><a href="#Support" class="headerlink" title="Support"></a>Support</h2><p>For general information, go to the Intel support website at:<br><a href="http://www.intel.com/support/" target="_blank" rel="noopener">http://www.intel.com/support/</a> or the Intel Wired Networking project<br>hosted by Sourceforge at: <a href="http://sourceforge.net/projects/e1000" target="_blank" rel="noopener">http://sourceforge.net/projects/e1000</a></p>
-<p>If an issue is identified with the released source code on a supported kernel<br>with a supported adapter, email the specific information related to the issue<br>to <a href="mailto:&#101;&#49;&#48;&#48;&#x30;&#x2d;&#114;&#x64;&#109;&#x61;&#x40;&#x6c;&#x69;&#115;&#116;&#115;&#46;&#115;&#x6f;&#117;&#114;&#x63;&#101;&#x66;&#111;&#114;&#103;&#x65;&#x2e;&#110;&#x65;&#116;">&#101;&#49;&#48;&#48;&#x30;&#x2d;&#114;&#x64;&#109;&#x61;&#x40;&#x6c;&#x69;&#115;&#116;&#115;&#46;&#115;&#x6f;&#117;&#114;&#x63;&#101;&#x66;&#111;&#114;&#103;&#x65;&#x2e;&#110;&#x65;&#116;</a></p>
+<p>If an issue is identified with the released source code on a supported kernel<br>with a supported adapter, email the specific information related to the issue<br>to <a href="mailto:&#101;&#49;&#48;&#x30;&#48;&#45;&#x72;&#100;&#109;&#97;&#x40;&#x6c;&#x69;&#x73;&#x74;&#x73;&#x2e;&#x73;&#111;&#117;&#114;&#x63;&#101;&#x66;&#111;&#114;&#x67;&#101;&#x2e;&#110;&#101;&#116;">&#101;&#49;&#48;&#x30;&#48;&#45;&#x72;&#100;&#109;&#97;&#x40;&#x6c;&#x69;&#x73;&#x74;&#x73;&#x2e;&#x73;&#111;&#117;&#114;&#x63;&#101;&#x66;&#111;&#114;&#x67;&#101;&#x2e;&#110;&#101;&#116;</a></p>
 <hr>
 <h2 id="License"><a href="#License" class="headerlink" title="License"></a>License</h2><p>This software is available to you under a choice of one of two<br>licenses. You may choose to be licensed under the terms of the GNU<br>General Public License (GPL) Version 2, available from the file<br>COPYING in the main directory of this source tree, or the<br>OpenFabrics.org BSD license below:</p>
 <p>  Redistribution and use in source and binary forms, with or<br>  without modification, are permitted provided that the following<br>  conditions are met:</p>
