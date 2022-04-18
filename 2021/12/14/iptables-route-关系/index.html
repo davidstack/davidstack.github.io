@@ -92,7 +92,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://damonyi.cc/2021/12/14/iptables-route-%E5%85%B3%E7%B3%BB/1.png">
 <meta property="article:published_time" content="2021-12-14T07:59:34.000Z">
-<meta property="article:modified_time" content="2021-12-14T08:02:50.937Z">
+<meta property="article:modified_time" content="2022-03-09T08:12:17.361Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://damonyi.cc/2021/12/14/iptables-route-%E5%85%B3%E7%B3%BB/1.png">
 
@@ -434,7 +434,7 @@
 
 
 <h3 id="1-2-路由表"><a href="#1-2-路由表" class="headerlink" title="1.2 路由表"></a>1.2 路由表</h3><p>所谓路由表，指的是路由器或者其他互联网网络设备上存储的表，该表中存有到达特定网络终端的路径，在某些情况下，还有一些与这些路径相关的度量。路由器的主要工作就是为经过路由器的每个数据包寻找一条最佳的传输路径，并将该数据有效地传送到目的站点。由此可见，选择最佳路径的策略即路由算法是路由器的关键所在。为了完成这项工作，在路由器中保存着<strong>各种传输路径的相关数据——路由表（Routing Table）</strong>，供路由选择时使用，表中包含的信息决定了数据转发的策略。打个比方，路由表就像我们平时使用的地图一样，标识着各种路线，<strong>路由表中保存着子网的标志信息、网上路由器的个数和下一个路由器的名字等内容</strong>。路由表根据其建立的方法，可以分为动态路由表和静态路由表。</p>
-<pre><code>linux 系统中，可以自定义从 1－252个路由表，其中，linux系统维护了4个路由表：</code></pre>
+<pre><code>linux 系统中，可以自定义从 1－252个路由表，（实际可以创建 2^32-1个路由表）其中，linux系统维护了4个路由表：</code></pre>
 <ul>
 <li>0#表： 系统保留表</li>
 <li>253#表： defulte table 没特别指定的默认路由都放在该表</li>
@@ -657,7 +657,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">86</span>
+                  <span class="site-state-item-count">89</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

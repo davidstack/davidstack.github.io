@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="c5YHonM6Ek6i_dIKMceKoszIqEtrVddsax9qcaoQfR4" />
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="code-NBGBY3mVBb" />
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/robot-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/robot-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;irdma - Linux* RDMA Driver for the E810 and X722 Intel(R) Ethernet Controllers&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IntelE810 使用说明">
+<meta property="og:url" content="https://damonyi.cc/2022/04/18/IntelE810-%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/index.html">
+<meta property="og:site_name" content="云里雾里">
+<meta property="og:description" content="&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;irdma - Linux* RDMA Driver for the E810 and X722 Intel(R) Ethernet Controllers&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-18T02:15:49.000Z">
+<meta property="article:modified_time" content="2022-04-18T02:20:22.462Z">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+<script data-ad-client="ca-pub-1404859281731123" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+
+
+  <link rel="canonical" href="https://damonyi.cc/2022/04/18/IntelE810-使用说明/"/>
+
+
+<script data-ad-client="ca-pub-1404859281731123" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+
+
+  <title>IntelE810 使用说明 | 云里雾里</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">云里雾里</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://damonyi.cc/2022/04/18/IntelE810-%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="云里雾里">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">IntelE810 使用说明</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-04-18T10:15:49+08:00">
+                2022-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  6.2k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  38分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>==============================================================================<br>irdma - Linux* RDMA Driver for the E810 and X722 Intel(R) Ethernet Controllers<br>==============================================================================</p>
+<hr>
+<h2 id="Contents"><a href="#Contents" class="headerlink" title="Contents"></a>Contents</h2><ul>
+<li>Overview</li>
+<li>Prerequisites</li>
+<li>Supported OS List</li>
+<li>Building and Installation</li>
+<li>Confirm RDMA Functionality</li>
+<li>iWARP/RoCEv2 Selection</li>
+<li>iWARP Port Mapper (iwpmd)</li>
+<li>Flow Control Settings</li>
+<li>ECN Configuration</li>
+<li>Devlink Configuration</li>
+<li>Memory Requirements</li>
+<li>Resource Profile Limits</li>
+<li>Resource Limits Selector</li>
+<li>RDMA Statistics</li>
+<li>perftest</li>
+<li>MPI</li>
+<li>Performance</li>
+<li>Interoperability</li>
+<li>Dynamic Tracing</li>
+<li>Dynamic Debug</li>
+<li>Capturing RDMA Traffic with tcpdump</li>
+<li>Known Issues/Notes</li>
+</ul>
+<hr>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>The irdma Linux* driver enables RDMA functionality on RDMA-capable Intel<br>network devices. Devices supported by this driver:</p>
+<ul>
+<li>Intel(R) Ethernet Controller E810</li>
+<li>Intel(R) Ethernet Network Adapter X722</li>
+</ul>
+<p>The E810 and X722 devices each support a different set of RDMA features.<br>    - E810 supports both iWARP and RoCEv2 RDMA transports, and also supports<br>      congestion management features like priority flow control (PFC) and<br>      explicit congestion notification (ECN).<br>    - X722 supports only iWARP and a more limited set of configuration<br>      parameters.</p>
+<p>Differences between adapters are described in each section of this document.</p>
+<p>For both E810 and X722, the corresponding LAN driver (ice or i40e) must be<br>built from source included in this release and installed on your system prior<br>to installing irdma.</p>
+<hr>
+<h2 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h2><ul>
+<li>Compile and install the E810 or X722 LAN PF driver from source included in<br>this release. Refer to the ice or i40e driver README for installation<br>instructions.<ul>
+<li>For E810 adapters, use the ice driver.</li>
+<li>For X722 adapters, use the i40e driver.</li>
+</ul>
+</li>
+<li>For best results, use a fully supported OS from the Supported OS List below.</li>
+<li>For server memory requirements, see the “Memory Requirements” section of this<br>document.</li>
+<li>Install required packages. Refer to the “Building” section of the rdma-core<br>README for required packages for your OS:<pre><code>  https://github.com/linux-rdma/rdma-core/blob/v27.0/README.md</code></pre>
+<ul>
+<li>RHEL 7 and SLES:<br>  Install all required packages listed in the rdma-core README.</li>
+<li>RHEL 8:<br>  Install the required packages for RHEL 7, then install the following<br>  additional packages:<pre><code>  dnf install python3-docutils perl-generators</code></pre>
+</li>
+<li>Ubuntu:<br>  Install the required packages listed in the rdma-core README, then<br>  install the following additional package:<pre><code>  apt-get install python3-docutils libsystemd-dev</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Note:<br>The following are sample repo files that can be used to get the dependent packages<br>for rdma-core. However, these may not be all that is required.</li>
+</ul>
+<ul>
+<li><p>For SLES<br>  <a href="http://download.opensuse.org/distribution/leap/42.3/repo/oss" target="_blank" rel="noopener">http://download.opensuse.org/distribution/leap/42.3/repo/oss</a></p>
+</li>
+<li><p>For RHEL 8.1<br>  <a href="http://vault.centos.org/8.1.1911/PowerTools/x86_64/os/" target="_blank" rel="noopener">http://vault.centos.org/8.1.1911/PowerTools/x86_64/os/</a></p>
+</li>
+</ul>
+<hr>
+<h2 id="Supported-OS-List"><a href="#Supported-OS-List" class="headerlink" title="Supported OS List"></a>Supported OS List</h2><pre><code>Supported:
+    * RHEL 8.3
+    * RHEL 7.9
+    * SLES 15 SP2
+    * SLES 12 SP5
+    * Ubuntu 18.04
+    * Ubuntu 20.04
+
+Supported Not Validated:
+    * RHEL 8.2
+    * RHEL 8.1
+    * RHEL 8
+    * RHEL 7.8
+    * RHEL 7.7
+    * RHEL 7.6 + OFED 4.17-1
+    * RHEL 7.5 + OFED 4.17-1
+    * RHEL 7.4 + OFED 4.17-1
+    * SLES 15 SP1
+    * SLES 15 + OFED 4.17-1
+    * SLES 12 SP 4 + OFED 4.17-1
+    * SLES 12 SP 3 + OFED 4.17-1
+    * Linux kernel stable 5.10.*
+    * Linux kernel longterm 5.4.*, 4.19.*, 4.14.*</code></pre>
+<hr>
+<h2 id="Building-and-Installation"><a href="#Building-and-Installation" class="headerlink" title="Building and Installation"></a>Building and Installation</h2><p>To build and install the irdma driver and supporting rdma-core libraries:</p>
+<ol>
+<li><p>Decompress the irdma driver archive:</p>
+<pre><code> tar zxf irdma-&lt;version&gt;.tgz</code></pre>
+</li>
+<li><p>Build and install the RDMA driver:</p>
+<pre><code> cd irdma-&lt;version&gt;
+ ./build.sh</code></pre>
+<p>By default, the irdma driver is built using in-distro RDMA libraries and<br>modules. Optionally, irdma may also be built using OFED modules. See the<br>Supported OS List above for a list of OSes that support this option.</p>
+<ul>
+<li>Note: Intel products are not validated on other vendors’ proprietary<pre><code>  software packages.</code></pre>
+To install irdma using OFED modules:<ul>
+<li>Download OFED-4.17-1.tgz from the OpenFabrics Alliance:<br>   wget <a href="http://openfabrics.org/downloads/OFED/ofed-4.17-1/OFED-4.17-1.tgz" target="_blank" rel="noopener">http://openfabrics.org/downloads/OFED/ofed-4.17-1/OFED-4.17-1.tgz</a></li>
+<li>Decompress the archive:<br>   tar xzvf OFED-4.17.1.tgz</li>
+<li>Install OFED:<br>   cd OFED-4.17-1<br>   ./install –all</li>
+<li>Reboot after installation is complete.</li>
+<li>Build the irdma driver with the “ofed” option:<br>   cd /path/to/irdma-<version><br>  ./build.sh ofed</version></li>
+<li>Continue with the installation steps below.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Load the driver:<br> RHEL and Ubuntu:</p>
+<pre><code> modprobe irdma</code></pre>
+<p> SLES:</p>
+<pre><code> modprobe irdma --allow-unsupported</code></pre>
+<p> Notes:</p>
+<pre><code> - This modprobe step is required only during installation. Normally,
+   irdma is autoloaded via a udev rule when ice or i40e is loaded:
+      /usr/lib/udev/rules.d/90-rdma-hw-modules.rules
+ - For SLES, to automatically allow loading unsupported modules, add the
+   following to /etc/modprobe.d/10-unsupported-modules.conf:
+       allow_unsupported_modules 1</code></pre>
+</li>
+<li><p>Uninstall any previous versions of rdma-core user-space libraries.<br>For example, in RHEL:</p>
+<pre><code> yum erase rdma-core</code></pre>
+<p> Note: “yum erase rdma-core” will also remove any packages that depend on</p>
+<pre><code>   rdma-core, such as perftest or fio. Please re-install them after
+   installing rdma-core.</code></pre>
+</li>
+<li><p>Patch, build, and install rdma-core user space libraries:</p>
+<p> RHEL:</p>
+<pre><code> # Download rdma-core-27.0.tar.gz from GitHub
+ wget https://github.com/linux-rdma/rdma-core/releases/download/v27.0/rdma-core-27.0.tar.gz
+ # Apply patch libirdma-27.0.patch to rdma-core
+ tar -xzvf rdma-core-27.0.tar.gz
+ cd rdma-core-27.0
+ patch -p2 &lt; /path/to/irdma-&lt;version&gt;/libirdma-27.0.patch
+ # Make sure directories rdma-core/redhat and contents are under group &#39;root&#39;
+ cd ..
+ chgrp -R root rdma-core-27.0/redhat
+ # Zip with proper name for building (note &quot;tgz&quot; extension instead of &quot;tar.gz&quot;)
+ tar -zcvf rdma-core-27.0.tgz rdma-core-27.0
+ # Build rdma-core
+ mkdir -p ~/rpmbuild/SOURCES
+ mkdir -p ~/rpmbuild/SPECS
+ cp rdma-core-27.0.tgz ~/rpmbuild/SOURCES/
+ cd ~/rpmbuild/SOURCES
+ tar -xzvf rdma-core-27.0.tgz
+ cp ~/rpmbuild/SOURCES/rdma-core-27.0/redhat/rdma-core.spec ~/rpmbuild/SPECS/
+ cd ~/rpmbuild/SPECS/
+ rpmbuild -ba rdma-core.spec
+ # Install RPMs
+ cd ~/rpmbuild/RPMS/x86_64
+ yum install *27.0*.rpm</code></pre>
+<p> SLES:</p>
+<pre><code> # Download rdma-core-27.0.tar.gz from GitHub
+ wget https://github.com/linux-rdma/rdma-core/releases/download/v27.0/rdma-core-27.0.tar.gz
+ # Apply patch libirdma-27.0.patch to rdma-core
+ tar -xzvf rdma-core-27.0.tar.gz
+ cd rdma-core-27.0
+ patch -p2 &lt; /path/to/irdma-&lt;version&gt;/libirdma-27.0.patch
+ cd ..
+ # Zip the rdma-core directory into a tar.gz archive
+ tar -zcvf rdma-core-27.0.tar.gz rdma-core-27.0
+ # Create an empty placeholder baselibs.conf file
+ touch /usr/src/packages/SOURCES/baselibs.conf
+ # Build rdma-core
+ cp rdma-core-27.0.tar.gz /usr/src/packages/SOURCES
+ cp rdma-core-27.0/suse/rdma-core.spec /usr/src/packages/SPECS/
+ cd /usr/src/packages/SPECS/
+ rpmbuild -ba rdma-core.spec --without=curlmini
+ cd /usr/src/packages/RPMS/x86_64
+ rpm -ivh --force *27.0*.rpm</code></pre>
+<p> Ubuntu:</p>
+<pre><code> To create Debian packages from rdma-core:
+ # Download rdma-core-27.0.tar.gz from GitHub
+ wget https://github.com/linux-rdma/rdma-core/releases/download/v27.0/rdma-core-27.0.tar.gz
+ # Apply patch libirdma-27.0.patch to rdma-core
+ tar -xzvf rdma-core-27.0.tar.gz
+ cd rdma-core-27.0
+ patch -p2 &lt; /path/to/irdma-&lt;version&gt;/libirdma-27.0.patch
+ # Build rdma-core
+ dh clean --with python3,systemd --builddirectory=build-deb
+ dh build --with systemd --builddirectory=build-deb
+ sudo dh binary --with python3,systemd --builddirectory=build-deb
+ # This creates .deb packages in the parent directory
+ # To install the .deb packages
+ sudo dpkg -i ../*.deb</code></pre>
+</li>
+<li><p>Add the following to /etc/security/limits.conf:</p>
+<pre><code> * soft memlock unlimited
+ * hard memlock unlimited
+ * soft nofile 1048000
+ * hard nofile 1048000</code></pre>
+<p>This avoids any limits on user mode applications as far as pinned memory and number of open files used.</p>
+</li>
+<li><p>Reboot the server after installing the irdma driver and rdma-core packages.</p>
+</li>
+</ol>
+<hr>
+<h2 id="Confirm-RDMA-functionality"><a href="#Confirm-RDMA-functionality" class="headerlink" title="Confirm RDMA functionality"></a>Confirm RDMA functionality</h2><p>After successful installation, RDMA devices are listed in the output of<br>“ibv_devices”. For example:<br>    # ibv_devices<br>    device                 node GUID<br>    ——              —————-<br>    rdmap175s0f0        40a6b70b6f300000<br>    rdmap175s0f1        40a6b70b6f310000</p>
+<p>Notes:<br>    - Device names may differ depending on OS or kernel.<br>    - Node GUID is different for the same device in iWARP vs. RoCEv2 mode.</p>
+<p>Each RDMA device is associated with a network interface. The sysfs filesystem<br>can help show how these devices are related. For example:<br>    - To show RDMA devices associated with the “ens801f0” network interface:<br>         # ls /sys/class/net/ens801f0/device/infiniband/<br>         rdmap175s0f0<br>    - To show the network interface associated with the “rdmap175s0f0” RDMA<br>      device:<br>         # ls /sys/class/infiniband/rdmap175s0f0/device/net/<br>         ens801f0</p>
+<p>Before running RDMA applications, ensure that all hosts have IP addresses<br>assigned to the network interface associated with the RDMA device. The RDMA<br>device uses the IP configuration from the corresponding network interface.<br>There is no additional configuration required for the RDMA device.</p>
+<p>To confirm RDMA functionality, run rping:</p>
+<pre><code>1) Start the rping server:
+      rping -sdvVa [server IP address]
+
+2) Start the rping client:
+      rping -cdvVa [server IP address] -C 10
+
+3) rping will run for 10 iterations (-C 10) and print data payloads on
+   the console.
+
+Notes:
+    - Confirm rping functionality both from each host to itself and between
+      hosts. For example:
+        * Run rping server and client both on Host A.
+        * Run rping server and client both on Host B.
+        * Run rping server on Host A and rping client on Host B.
+        * Run rping server on Host B and rping client on Host A.
+    - When connecting multiple rping clients to a persistent rping server,
+      older kernels may experience a crash related to the handling of cm_id
+      values in the kernel stack. With E810, this problem typically appears
+      in the system log as a kernel oops and stack trace pointing to
+      irdma_accept. The issue has been fixed in kernels 5.4.61 and later.
+      For patch details, see:
+      https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/infiniband/core/ucma.c?h=v5.9-rc2&amp;id=7c11910783a1ea17e88777552ef146cace607b3c</code></pre>
+<hr>
+<h2 id="iWARP-RoCEv2-Selection"><a href="#iWARP-RoCEv2-Selection" class="headerlink" title="iWARP/RoCEv2 Selection"></a>iWARP/RoCEv2 Selection</h2><p>X722:<br>The X722 adapter supports only the iWARP transport.</p>
+<p>E810:<br>The E810 controller supports both iWARP and RoCEv2 transports. By default, the<br>irdma driver is loaded in iWARP mode. RoCEv2 may be selected either globally<br>(for all ports) using the module parameter “roce_ena=1” or for individual ports<br>using the devlink interface.</p>
+<p>— Global Selection<br>To automatically enable RoCEv2 mode for all ports when the irdma driver is<br>loaded, add the following line to /etc/modprobe.d/irdma.conf:<br>    options irdma roce_ena=1</p>
+<p>The irdma driver may also be manually loaded with the “roce_ena=1” parameter<br>on the modprobe command line. To manually load all irdma ports in RoCEv2 mode:</p>
+<ul>
+<li>If the irdma driver is currently loaded, first unload it:<pre><code>rmmod irdma</code></pre>
+</li>
+<li>Reload the driver in RoCEv2 mode:<pre><code>modprobe irdma roce_ena=1</code></pre>
+</li>
+</ul>
+<p>— Per-Port Selection<br>E810 interfaces may be configured per interface for iWARP mode (default) or<br>RoCEv2 via devlink parameter configuration. See the “Devlink Configuration”<br>section below for instructions on per-port iWARP/RoCEv2 selection.</p>
+<hr>
+<h2 id="iWARP-Port-Mapper-iwpmd"><a href="#iWARP-Port-Mapper-iwpmd" class="headerlink" title="iWARP Port Mapper (iwpmd)"></a>iWARP Port Mapper (iwpmd)</h2><p>The iWARP port mapper service (iwpmd) coordinates with the host network stack<br>and manages TCP port space for iWARP applications.</p>
+<p>iwpmd is automatically loaded when ice or i40e is loaded via udev rules in<br>/usr/lib/udev/rules.d/90-iwpmd.rules.</p>
+<p>To verify iWARP port mapper status:<br>    systemctl status iwpmd</p>
+<hr>
+<h2 id="Flow-Control-Settings"><a href="#Flow-Control-Settings" class="headerlink" title="Flow Control Settings"></a>Flow Control Settings</h2><p>X722:<br>The X722 adapter supports only link-level flow control (LFC).</p>
+<p>E810:<br>The E810 controller supports both link-level flow control (LFC) and priority<br>flow control (PFC). Enabling flow control is strongly recommended when using<br>E810 in RoCEv2 mode.</p>
+<p>— Link Level Flow Control (LFC) (E810 and X722)</p>
+<p>To enable link-level flow control on E810 or X722, use “ethtool -A”.<br>For example, to enable LFC in both directions (rx and tx):<br>    ethtool -A DEVNAME rx on tx on</p>
+<p>Confirm the setting with “ethtool -a”:<br>    ethtool -a DEVNAME</p>
+<p>Sample output:<br>    Pause parameters for interface:<br>    Autonegotiate: on<br>    RX: on<br>    TX: on<br>    RX negotiated:  on<br>    TX negotiated:  on</p>
+<p>Full enablement of LFC requires the switch or link partner be configured for<br>rx and tx pause frames. Refer to switch vendor documentation for more details.</p>
+<p>— Priority Level Flow Control (PFC) (E810 only)</p>
+<p>Priority flow control (PFC) is supported on E810 in both willing and<br>non-willing modes. E810 also has two Data Center Bridging (DCB) modes: software<br>and firmware. For more background on software and firmware modes, refer to the<br>E810 ice driver README.</p>
+<ul>
+<li>For PFC willing mode, firmware DCB is recommended.</li>
+<li>For PFC non-willing mode, software DCB must be used.</li>
+</ul>
+<p>Note: E810 supports a maximum of 4 traffic classes (TCs), one of which may<br>      have PFC enabled.</p>
+<p>*** PFC willing mode</p>
+<p>In willing mode, E810 is “willing” to accept DCB settings from its link<br>partner. DCB is configured on the link partner (typically a switch), and the<br>E810 will automatically discover and apply the DCB settings to its own port.<br>This simplifies DCB configuration in a larger cluster and eliminates the need<br>to independently configure DCB on both sides of the link.</p>
+<p>To enable PFC in willing mode on E810, use ethtool to enable firmware DCB.<br>Enabling firmware DCB automatically places the NIC in willing mode:<br>    ethtool –set-priv-flags DEVNAME fw-lldp-agent on</p>
+<p>To confirm settings, use following command:<br>    ethtool –show-priv-flags DEVNAME</p>
+<p>Expected output:<br>    fw-lldp-agent     :on</p>
+<p>Note: When firmware DCB is enabled, the E810 NIC may experience an adapter-wide<br>      reset when the DCBX willing configuration change propagated from the link<br>      partner removes an RDMA-enabled traffic class (TC). This typically occurs<br>      when removing a TC associated with priority 0 (the default priority for<br>      RDMA). The reset results in a temporary loss of connectivity as the<br>      adapter re-initializes.</p>
+<p>Switch DCB and PFC configuration syntax varies by vendor. Consult your switch<br>manual for details. Sample Arista switch configuration commands:</p>
+<ul>
+<li>Example: Enable PFC for priority 0 on switch port 21<ul>
+<li>Enter configuration mode for switch port 21:<br>  switch#configure<br>  switch(config)#interface ethernet 21/1</li>
+<li>Turn PFC on:<br>  switch(config-if-Et21/1)#priority-flow-control mode on</li>
+<li>Set priority 0 for “no-drop” (i.e., PFC enabled):<br>  switch(config-if-Et21/1)#priority-flow-control priority 0 no-drop</li>
+<li>Verify switch port PFC configuration:<br>  switch(config-if-Et21/1)#show priority-flow-control</li>
+</ul>
+</li>
+<li>Example: Enable DCBX on switch port 21<ul>
+<li>Enable DCBX in IEEE mode:<br>  switch(config-if-Et21/1)#dcbx mode ieee</li>
+<li>Show DCBX settings (including neighbor port settings):<br>  switch(config-if-Et21/1)#show dcbx</li>
+</ul>
+</li>
+</ul>
+<p>*** PFC non-willing mode</p>
+<p>In non-willing mode, DCB settings must be configured on both E810 and its link<br>partner. Non-willing mode is software-based. OpenLLDP (lldpad and lldptool) is<br>recommended.</p>
+<p>To enable non-willing PFC on E810:</p>
+<ol>
+<li>Disable firmware DCB. Firmware DCB is always willing. If enabled, it<br>will override any software settings.<pre><code>ethtool --set-priv-flags DEVNAME fw-lldp-agent off</code></pre>
+</li>
+<li>Install OpenLLDP<pre><code>yum install lldpad</code></pre>
+</li>
+<li>Start the Open LLDP daemon:<br>   lldpad -d</li>
+<li>Verify functionality by showing current DCB settings on the NIC:<br>   lldptool -ti <ifname></ifname></li>
+<li>Configure your desired DCB settings, including traffic classes,<br>bandwidth allocations, and PFC.<br>The following example enables PFC on priority 0, maps all priorities to<br>traffic class (TC) 0, and allocates all bandwidth to TC0.<br>This simple configuration is suitable for enabling PFC for all traffic,<br>which may be useful for back-to-back benchmarking. Datacenters will<br>typically use a more complex configuration to ensure quality-of-service<br>(QoS).<br>a. Enable PFC for priority 0:<pre><code>  lldptool -Ti &lt;interface&gt; -V PFC willing=no enabled=0</code></pre>
+b. Map all priorities to TC0 and allocate all bandwidth to TC0:<pre><code>  lldptool -Ti &lt;interface&gt; -V ETS-CFG willing=no \
+  up2tc=0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0 \
+  tsa=0:ets,1:strict,2:strict,3:strict,4:strict,5:strict,6:strict,7:strict \
+  tcbw=100,0,0,0,0,0,0,0</code></pre>
+</li>
+<li>Verify output of “lldptool -ti <interface>“:<br>   Chassis ID TLV<pre><code>   MAC: 68:05:ca:a3:89:78</code></pre>
+   Port ID TLV<pre><code>   MAC: 68:05:ca:a3:89:78</code></pre>
+   Time to Live TLV<pre><code>   120</code></pre>
+   IEEE 8021QAZ ETS Configuration TLV<pre><code>   Willing: no
+   CBS: not supported
+   MAX_TCS: 8
+   PRIO_MAP: 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0
+   TC Bandwidth: 100% 0% 0% 0% 0% 0% 0% 0%
+   TSA_MAP: 0:ets 1:strict 2:strict 3:strict 4:strict 5:strict 6:strict 7:strict</code></pre>
+   IEEE 8021QAZ PFC TLV<pre><code>   Willing: no
+   MACsec Bypass Capable: no
+   PFC capable traffic classes: 8
+   PFC enabled: 0</code></pre>
+   End of LLDPDU LTV</interface></li>
+<li>Configure the same settings on the link partner.</li>
+</ol>
+<p>Full enablement of PFC requires the switch or link partner be configured for<br>PFC pause frames. Refer to switch vendor documentation for more details.</p>
+<p>— Directing RDMA traffic to a traffic class</p>
+<p>When using PFC, traffic may be directed to one or more traffic classes (TCs).<br>Because RDMA traffic bypasses the kernel, Linux traffic control methods like<br>tc, cgroups, or egress-qos-map can’t be used. Instead, set the Type of Service<br>(ToS) field on your application command line. ToS-to-priority mappings are<br>hardcoded in Linux as follows:<br>  ToS   Priority</p>
+<hr>
+<p>   0       0<br>   8       2<br>  24       4<br>  16       6<br>Priorities are then mapped to traffic classes using ETS using lldptool or switch<br>utilities.</p>
+<p>Examples of setting ToS 16 in an application:<br>  ucmatose -t 16<br>  ib_write_bw -t 16</p>
+<p>Alternatively, for RoCEv2, ToS may be set for all RoCEv2 traffic using<br>configfs. For example, to set ToS 16 on device rdma<interface>, port 1:<br>  mkdir /sys/kernel/config/rdma_cm/rdma<interface><br>  echo 16 &gt; /sys/kernel/config/rdma_cm/rdma<interface>/ports/1/default_roce_tos</interface></interface></interface></p>
+<hr>
+<h2 id="ECN-Configuration"><a href="#ECN-Configuration" class="headerlink" title="ECN Configuration"></a>ECN Configuration</h2><p>X722:<br>Congestion control settings are not supported on X722 adapters.</p>
+<p>E810:<br>The E810 controller supports the following congestion control algorithms:<br>    - iWARP DCTCP<br>    - iWARP TCP New Reno plus ECN<br>    - iWARP TIMELY<br>    - RoCEv2 DCQCN<br>    - RoCEv2 DCTCP<br>    - RoCEv2 TIMELY</p>
+<p>Congestion control settings are accessed through configfs. Additional DCQCN<br>tunings are available through the devlink interface. See the “Devlink<br>Configuration” section for details.</p>
+<p>— Configuration in configfs</p>
+<p>To access congestion control settings:</p>
+<ol>
+<li><p>After driver load, change to the irdma configfs directory:</p>
+<pre><code> cd /sys/kernel/config/irdma</code></pre>
+</li>
+<li><p>Create a new directory for each RDMA device you want to configure.<br>Note: Use “ibv_devices” for a list of RDMA devices.<br>For example, to create configfs entries for the rdmap<interface> device:</interface></p>
+<pre><code> mkdir rdmap&lt;interface&gt;</code></pre>
+</li>
+<li><p>List the new directory to get its dynamic congestion control knobs and<br>values:</p>
+<pre><code> cd rdmap&lt;interface&gt;
+ for f in *; do echo -n &quot;$f: &quot;; cat &quot;$f&quot;; done;</code></pre>
+<p> If the interface is in iWARP mode, the files have a “iw_” prefix:</p>
+<pre><code> - iw_dctcp_enable
+ - iw_ecn_enable
+ - iw_timely_enable</code></pre>
+<p> If the interface is in RoCEv2 mode, the files have a “roce_” prefix:</p>
+<pre><code> - roce_dcqcn_enable
+ - roce_dctcp_enable
+ - roce_timely_enable</code></pre>
+</li>
+<li><p>Enable or disable the desired algorithms.</p>
+<p>To enable an algorithm: echo 1 &gt; <attribute><br>For example, to add ECN marker processing to the default TCP New Reno iWARP<br>congestion control algorithm:</attribute></p>
+<pre><code> echo 1 &gt; /sys/kernel/config/irdma/rdmap&lt;interface&gt;/iw_ecn_enable</code></pre>
+<p> To disable an algorithm: echo 0 &gt; <attribute><br> For example:</attribute></p>
+<pre><code> echo 0 &gt; /sys/kernel/config/irdma/rdmap&lt;interface&gt;/iw_ecn_enable</code></pre>
+<p> To read the current status: cat <attribute></attribute></p>
+<p> Default values:</p>
+<pre><code> iwarp_dctcp_en: off
+ iwarp_timely_en: off
+ iwarp_ecn_en: ON
+
+ roce_timely_en: off
+ roce_dctcp_en: off
+ roce_dcqcn_en: off</code></pre>
+</li>
+<li><p>Remove the configfs directory created above. Without removing these<br>directories, the driver will not unload.</p>
+<pre><code>   rmdir /sys/kernel/config/irdma/rdmap&lt;interface&gt;</code></pre>
+</li>
+</ol>
+<hr>
+<h2 id="Devlink-Configuration"><a href="#Devlink-Configuration" class="headerlink" title="Devlink Configuration"></a>Devlink Configuration</h2><p>X722:<br>Devlink parameter configuration is not supported on the X722 adapters.</p>
+<p>E810:<br>The E810 controller supports devlink configuration for the following controls:</p>
+<ul>
+<li>iWARP/RoCEv2 per-port selection</li>
+<li>DCQCN congestion control tunings</li>
+<li>Fragment count limit</li>
+</ul>
+<p>— Devlink OS support</p>
+<p>Devlink dev parameter configuration is a recent Linux capability that requires<br>both iproute2 tool support as well as kernel support.</p>
+<p>The following OS/Kernel versions support devlink dev parameters:<br>    - RHEL 8 or later<br>    - SLES 15 SP1 or later<br>    - Ubuntu 18.04 or later<br>    - Linux kernel 4.19 or later</p>
+<p>iproute2 may need to be updated to add parameter capability to the devlink<br>configuration. The latest released version can be downloaded and installed<br>from: <a href="https://github.com/shemminger/iproute2/releases" target="_blank" rel="noopener">https://github.com/shemminger/iproute2/releases</a></p>
+<p>— Devlink parameter configuration (E810 only)</p>
+<ol>
+<li><p>Get PCIe bus-info of the desired interface using “ethtool -i”:</p>
+<pre><code>ethtool -i DEVNAME</code></pre>
+<p>Example:</p>
+<pre><code># ethtool -i enp175s0f0
+driver: ice
+version: 0.11.7
+firmware-version: 0.50 0x800019de 1.2233.0
+expansion-rom-version:
+bus-info: 0000:af:00.0
+supports-statistics: yes
+supports-test: yes
+supports-eeprom-access: yes
+supports-register-dump: yes
+supports-priv-flags: yes</code></pre>
+<p>bus-info is 0000:af:00.0</p>
+</li>
+<li><p>Find the devlink name ‘ice_rdma.x’ in the /sys/devices folder:</p>
+<pre><code>ls /sys/devices/*/*/&lt;bus-info&gt;/ | grep ice_rdma</code></pre>
+<p>Example:</p>
+<pre><code>ls /sys/devices/*/*/0000:af:00.0/ | grep ice_rdma
+ice_rdma.16</code></pre>
+</li>
+<li><p>To display available parameters:</p>
+<pre><code>devlink dev param show</code></pre>
+<p>RDMA devlink parameters for E810:</p>
+<pre><code>roce_enable
+    Selects RDMA transport: RoCEv2 (true) or iWARP (false)
+resource_limits_selector
+    Limits available queue pairs (QPs). See &quot;Resource Limits Selector&quot;
+    section for details and values.
+dcqcn_enable
+    Enables the DCQCN algorithm for RoCEv2.
+    Note: &quot;roce_enable&quot; must also be set to &quot;true&quot;.
+dcqcn_cc_cfg_valid
+    Indicates that all DCQCN parameters are valid and should be updated
+    in registers or QP context.
+dcqcn_min_dec_factor
+    The minimum factor by which the current transmit rate can be
+    changed when processing a CNP. Value is given as a percentage
+    (1-100).
+dcqcn_min_rate
+    The minimum value, in Mbits per second, for rate to limit.
+dcqcn_F
+    The number of times to stay in each stage of bandwidth recovery.
+dcqcn_T
+    The number of microseconds that should elapse before increasing the
+    CWND in DCQCN mode.
+dcqcn_B
+    The number of bytes to transmit before updating CWND in DCQCN mode.
+dcqcn_rai_factor
+    The number of MSS to add to the congestion window in additive
+    increase mode.
+dcqcn_hai_factor
+    The number of MSS to add to the congestion window in hyperactive
+    increase mode.
+dcqcn_rreduce_mperiod
+    The minimum time between 2 consecutive rate reductions for a single
+    flow. Rate reduction will occur only if a CNP is received during
+    the relevant time interval.
+fragment_count_limit
+    Set fragment count limit to adjust maximum values for queue depth
+    and inline data size.</code></pre>
+</li>
+<li><p>To set a parameter:</p>
+<pre><code>devlink dev param set platform/&lt;ice_rdma.X&gt; name &lt;param name&gt; value &lt;param value&gt; cmode driverinit</code></pre>
+<p>Example: Enable RoCEv2, enable DCQCN, and set min_dec_factor=5 on ice_rdma.17:</p>
+<pre><code>devlink dev param set platform/ice_rdma.17 name roce_enable value true cmode driverinit
+devlink dev param set platform/ice_rdma.17 name dcqcn_enable value true cmode driverinit
+devlink dev param set platform/ice_rdma.17 name dcqcn_min_dec_factor value 5 cmode driverinit</code></pre>
+</li>
+<li><p>Reload the device port with new mode:</p>
+<pre><code>devlink dev reload platform/&lt;ice_rdma.X&gt;</code></pre>
+<p>Example:</p>
+<pre><code>devlink dev reload platform/ice_rdma.16</code></pre>
+<p>Note: This does not reload the driver, so other ports are unaffected.</p>
+</li>
+</ol>
+<hr>
+<h2 id="Memory-Requirements"><a href="#Memory-Requirements" class="headerlink" title="Memory Requirements"></a>Memory Requirements</h2><p>Default irdma initialization requires a minimum of ~210 MB (for E810) or<br>~160 MB (for X722) of memory per port.</p>
+<p>For servers where the amount of memory is constrained, you can decrease the<br>required memory by lowering the resources available to E810 or X722 by loading<br>the driver with the following resource profile setting:</p>
+<pre><code>modprobe irdma rsrc_profile=2</code></pre>
+<p>To automatically apply the setting when the driver is loaded, add the following<br>to /etc/modprobe.d/irdma.conf:<br>    options irdma rsrc_profile=2</p>
+<p>Note: This can have performance and scaling impacts as the number of queue<br>pairs and other RDMA resources are decreased in order to lower memory usage to<br>approximately 55 MB (for E810) or 51 MB (for X722) per port.</p>
+<hr>
+<h2 id="Resource-Profile-Limits"><a href="#Resource-Profile-Limits" class="headerlink" title="Resource Profile Limits"></a>Resource Profile Limits</h2><p>In the default resource profile, the RDMA resources configured for each<br>adapter are as follows:</p>
+<pre><code>E810 (2 ports):
+    Queue Pairs: 4092
+    Completion Queues: 8189
+    Memory Regions: 4194302
+X722 (4 ports):
+    Queue Pairs: 1020
+    Completion Queues: 2045
+    Memory Regions: 2097150</code></pre>
+<p>For resource profile 2, the configuration is:</p>
+<pre><code>E810 (2 ports):
+    Queue Pairs: 508
+    Completion Queues: 1021
+    Memory Regions: 524286
+
+X722 (4 ports):
+    Queue Pairs: 252
+    Completion Queues: 509
+    Memory Regions: 524286</code></pre>
+<hr>
+<h2 id="Resource-Limits-Selector"><a href="#Resource-Limits-Selector" class="headerlink" title="Resource Limits Selector"></a>Resource Limits Selector</h2><p>In addition to resource profile, you can further limit resources via the<br>“limits_sel” module parameter:</p>
+<p>E810:<br>    modprobe irdma limits_sel=&lt;0-6&gt;<br>X722:<br>    modprobe irdma gen1_limits_sel=&lt;0-5&gt;</p>
+<p>To automatically apply this setting when the driver is loaded, add the<br>following to /etc/modprobe.d/irdma.conf:<br>    options irdma limits_sel=<value></value></p>
+<p>The values below apply to a 2-port E810 NIC.<br>        0 - Default, up to 4092 QPs<br>        1 - Minimum, up to 124 QPs<br>        2 - Up to 1020 QPs<br>        3 - Up to 2044 QPs<br>        4 - Up to 16380 QPs<br>        5 - Up to 65532 QPs<br>        6 - Maximum, up to 131068 QPs</p>
+<p>For X722, the resource limit selector defaults to a value of 2. A single port<br>supports a maximum of 64k QPs, and a 4-port X722 supports up to 16k QPs per<br>port.</p>
+<hr>
+<h2 id="RDMA-Statistics"><a href="#RDMA-Statistics" class="headerlink" title="RDMA Statistics"></a>RDMA Statistics</h2><p>RDMA protocol statistics for E810 or X722 are found in sysfs. To display all<br>counters and values:<br>    cd /sys/class/infiniband/rdmap<interface>/hw_counters;<br>    for f in *; do echo -n “$f: “; cat “$f”; done;</interface></p>
+<p>The following counters will increment when RDMA applications are transferring<br>data over the network in iWARP mode:<br>    - tcpInSegs<br>    - tcpOutSegs</p>
+<p>Available counters:<br>    ip4InDiscards       IPv4 packets received and discarded.<br>    ip4InReasmRqd       IPv4 fragments received by Protocol Engine.<br>    ip4InMcastOctets    IPv4 multicast octets received.<br>    ip4InMcastPkts      IPv4 multicast packets received.<br>    ip4InOctets         IPv4 octets received.<br>    ip4InPkts           IPv4 packets received.<br>    ip4InTruncatedPkts  IPv4 packets received and truncated due to insufficient<br>                          buffering space in UDA RQ.<br>    ip4OutSegRqd        IPv4 fragments supplied by Protocol Engine to the lower<br>                          layers for transmission<br>    ip4OutMcastOctets   IPv4 multicast octets transmitted.<br>    ip4OutMcastPkts     IPv4 multicast packets transmitted.<br>    ip4OutNoRoutes      IPv4 datagrams discarded due to routing problem (no hit<br>                          in ARP table).<br>    ip4OutOctets        IPv4 octets supplied by the PE to the lower layers for<br>                           transmission.<br>    ip4OutPkts          IPv4 packets supplied by the PE to the lower layers for<br>                          transmission.<br>    ip6InDiscards       IPv6 packets received and discarded.<br>    ip6InReasmRqd       IPv6 fragments received by Protocol Engine.<br>    ip6InMcastOctets    IPv6 multicast octets received.<br>    ip6InMcastPkts      IPv6 multicast packets received.<br>    ip6InOctets         IPv6 octets received.<br>    ip6InPkts           IPv6 packets received.<br>    ip6InTruncatedPkts  IPv6 packets received and truncated due to insufficient<br>                          buffering space in UDA RQ.<br>    ip6OutSegRqd        IPv6 fragments received by Protocol Engine<br>    ip6OutMcastOctets   IPv6 multicast octets transmitted.<br>    ip6OutMcastPkts     IPv6 multicast packets transmitted.<br>    ip6OutNoRoutes      IPv6 datagrams discarded due to routing problem (no hit<br>                           in ARP table).<br>    ip6OutOctets        IPv6 octets supplied by the PE to the lower layers for<br>                           transmission.<br>    ip6OutPkts          IPv6 packets supplied by the PE to the lower layers for<br>                           transmission.<br>    iwInRdmaReads       RDMAP total RDMA read request messages received.<br>    iwInRdmaSends       RDMAP total RDMA send-type messages received.<br>    iwInRdmaWrites      RDMAP total RDMA write messages received.<br>    iwOutRdmaReads      RDMAP total RDMA read request messages sent.<br>    iwOutRdmaSends      RDMAP total RDMA send-type messages sent.<br>    iwOutRdmaWrites     RDMAP total RDMA write messages sent.<br>    iwRdmaBnd           RDMA verbs total bind operations carried out.<br>    iwRdmaInv           RDMA verbs total invalidate operations carried out.<br>    RxECNMrkd           Number of packets that have the ECN bits set to<br>                           indicate congestion<br>    cnpHandled          Number of Congestion Notification Packets that have<br>                           been handled by the reaction point.<br>    cnpIgnored          Number of Congestion Notification Packets that have<br>                           been ignored by the reaction point.<br>    rxVlanErrors        Ethernet received packets with incorrect VLAN_ID.<br>    tcpRetransSegs      Total number of TCP segments retransmitted.<br>    tcpInOptErrors      TCP segments received with unsupported TCP options or<br>                           TCP option length errors.<br>    tcpInProtoErrors    TCP segments received that are dropped by TRX due to<br>                           TCP protocol errors.<br>    tcpInSegs           TCP segments received.<br>    tcpOutSegs          TCP segments transmitted.<br>    cnpSent             Number of Congestion Notification Packets that have<br>                           been sent by the reaction point.<br>    RxUDP               UDP segments received without errors<br>    TxUDP               UDP segments transmitted without errors</p>
+<hr>
+<h2 id="perftest"><a href="#perftest" class="headerlink" title="perftest"></a>perftest</h2><p>The perftest package is a set of RDMA microbenchmarks designed to test<br>bandwidth and latency using RDMA verbs. The package is maintained upstream<br>here: <a href="https://github.com/linux-rdma/perftest" target="_blank" rel="noopener">https://github.com/linux-rdma/perftest</a></p>
+<p>perftest-4.4-0.29 is recommended.</p>
+<p>Earlier versions of perftest had known issues with iWARP that have since been<br>fixed. Versions 4.4-0.4 through 4.4-0.18 are therefore NOT recommended.</p>
+<p>To run a basic ib_write_bw test:<br>    1. Start server<br>           ib_write_bw -R<br>    2. Start client:<br>           ib_write_bw -R <IP address of server><br>    3. Benchmark will run to completion and print performance data on both<br>       client and server consoles.</IP></p>
+<p>Notes:<br>    - The “-R” option is required for iWARP and optional for RoCEv2.<br>    - Use “-d <device>“ on the perftest command lines to use a specific RDMA<br>      device.<br>    - For ib_read_bw, use “-o 1” for testing with 3rd-party link partners.<br>    - For ib_send_lat and ib_write lat, use “-I 96” to limit inline data size<br>      to the supported value.<br>    - iWARP supports only RC connections.<br>      RoCEv2 supports RC and UD.<br>      Connection types XRC, UC, and DC are not supported.<br>    - Atomic operations are not supported on E810 or X722.</device></p>
+<hr>
+<h2 id="MPI-Testing"><a href="#MPI-Testing" class="headerlink" title="MPI Testing"></a>MPI Testing</h2><p>— Intel MPI<br>Intel MPI uses the OpenFabrics Interfaces (OFI) framework and libfabric user<br>space libraries to communicate with network hardware.</p>
+<ul>
+<li><p>Recommended Intel MPI versions:<br>  Single-rail: Intel MPI 2019u8<br>  Multi-rail:  Intel MPI 2019u3</p>
+<p>Note: Intel MPI 2019u4 is not recommended due to known incompatibilities with</p>
+<pre><code>  iWARP.</code></pre>
+</li>
+<li><p>Recommended libfabric version: libfabric-1.11.0</p>
+<p>The Intel MPI package includes a version of libfabric. This “internal”<br>version is automatically installed along with Intel MPI and used by default.<br>To use a different (“external”) version of libfabric with Intel MPI:</p>
+<pre><code>1. Download libfabric from https://github.com/ofiwg/libfabric.
+2. Build and install it according to the libfabric documentation.
+3. Configure Intel MPI to use a non-internal version of libfabric:
+       export I_MPI_OFI_LIBRARY_INTERNAL=0
+   or  source &lt;installdir&gt;/intel64/bin/mpivars.sh -ofi_internal=0
+4. Verify your libfabric version by using the I_MPI_DEBUG environment
+   variable on the mpirun command line:
+       -genv I_MPI_DEBUG=1
+   The libfabric version will appear in the mpirun output.</code></pre>
+</li>
+<li><p>Sample command line for a 2-process pingpong test:</p>
+<p>   mpirun -l -n 2 -ppn 1 -host myhost1,myhost2 -genv I_MPI_DEBUG=5 <br>   -genv FI_VERBS_MR_CACHE_ENABLE=1 -genv FI_VERBS_IFACE=<interface> <br>   -genv FI_OFI_RXM_USE_SRX=0 -genv FI_PROVIDER=’verbs;ofi_rxm’ <br>   /path/to/IMB-MPI1 Pingpong</interface></p>
+<p>Notes:</p>
+<ul>
+<li>Example is for libfabrics 1.8 or greater. For earlier versions, use<br>“-genv FI_PROVIDER=’verbs’”</li>
+<li>For Intel MPI 2019u6, use “-genv MPIR_CVAR_CH4_OFI_ENABLE_DATA=0”.</li>
+<li>When using Intel MPI, it’s recommended to enable only one interface on<br>your networking device to avoid MPI application connectivity issues or<br>hangs. This issue affects all Intel MPI transports, including TCP and<br>RDMA. To avoid the issue, use “ifdown <interface>“ or “ip link set down<br><interface>“ to disable all network interfaces on your adapter except for<br>the one used for MPI.</interface></interface></li>
+</ul>
+</li>
+</ul>
+<p>— OpenMPI</p>
+<ul>
+<li>OpenMPI version 4.0.3 is recommended.</li>
+</ul>
+<hr>
+<h2 id="Performance"><a href="#Performance" class="headerlink" title="Performance"></a>Performance</h2><p>RDMA performance may be optimized by adjusting system, application, or driver<br>settings.</p>
+<ul>
+<li><p>Flow control is required for best performance in RoCEv2 mode and is optional<br>in iWARP mode. Both link-level flow control (LFC) and priority flow control<br>(PFC) are supported, but PFC is recommended. See the “Flow Control Settings”<br>section of this document for configuration details.</p>
+</li>
+<li><p>For bandwidth applications, multiple queue pairs (QPs) are required for best<br>performance. For example, in the perftest suite, use “-q 8” on the command<br>line to run with 8 QP.</p>
+</li>
+<li><p>For best results, configure your application to use CPUs on the same NUMA<br>node as your adapter. For example:</p>
+<ul>
+<li>To list CPUs local to your NIC:<br>  cat /sys/class/infiniband/<interface>/device/local_cpulist</interface></li>
+<li>To specify CPUs (e.g., 27-47) when running a perftest application:<br>  taskset -c 24-47 ib_write_bw <test options></test></li>
+<li>To specify CPUs when running an Intel MPI application:<br>  mpirun <options> -genv I_MPI_PIN_PROCESSOR_LIST=24-47 ./my_prog</options></li>
+</ul>
+</li>
+<li><p>System and BIOS tunings may also improve performance. Settings vary by<br>platform - consult your OS and BIOS documentation for details.<br>In general:</p>
+<ul>
+<li>Disable power-saving features such as P-states and C-states</li>
+<li>Set BIOS CPU power policies to “Performance” or similar</li>
+<li>Set BIOS CPU workload configuration to “I/O Sensitive” or similar</li>
+<li>On RHEL 7.<em>/8.</em>, use the “latency-performance” tuning profile:<br>   tuned-adm profile latency-performance</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="Interoperability"><a href="#Interoperability" class="headerlink" title="Interoperability"></a>Interoperability</h2><p>— Mellanox</p>
+<p>E810 and X722 support interop with Mellanox RoCEv2-capable adapters.</p>
+<p>In tests like ib_send_bw, use -R option to select rdma_cm for connection<br>establishment. You can also use gid-index with -x option instead of -R:</p>
+<p>Example:<br>    On E810 or X722:  ib_send_bw -F -n 5 -x 0<br>    On Mellanox:      ib_send_bw -F -n 5 -x <gid-index for rocev2> <ip></ip></gid-index></p>
+<pre><code>...where x specifies the gid index value for RoCEv2.</code></pre>
+<p>Look in /sys/class/infiniband/mlx5_0/ports/1/gid_attrs/types directory for<br>port 1.</p>
+<p>Note: Using RDMA reads with Mellanox may result in poor performance if there is<br>      packet loss.</p>
+<p>— Chelsio</p>
+<p>X722 supports interop with Chelsio iWARP devices.</p>
+<p>Load Chelsio T4/T5 RDMA driver (iw_cxgb4) with parameter “dack_mode” set to 0.</p>
+<pre><code>modprobe iw_cxgb4 dack_mode=0</code></pre>
+<p>To automatically apply this setting when the iw_cxgb4 driver is loaded, add the<br>following to /etc/modprobe.d/iw_cxgb4.conf:<br>    options iw_cxgb4 dack_mode=0</p>
+<hr>
+<h2 id="Dynamic-Tracing"><a href="#Dynamic-Tracing" class="headerlink" title="Dynamic Tracing"></a>Dynamic Tracing</h2><p>Dynamic tracing is available for irdma’s connection manager.<br>Turn on tracing with the following command:<br>    echo 1 &gt; /sys/kernel/debug/tracing/events/irdma_cm/enable</p>
+<p>To retrieve the trace:<br>    cat /sys/kernel/debug/tracing/trace</p>
+<hr>
+<h2 id="Dynamic-Debug"><a href="#Dynamic-Debug" class="headerlink" title="Dynamic Debug"></a>Dynamic Debug</h2><p>irdma support Linux dynamic debug.</p>
+<p>To enable all dynamic debug messages upon irdma driver load, use the “dyndbg”<br>module parameter:<br>    modprobe irdma dyndbg=’+p’</p>
+<p>Debug messages will then appear in the system log or dmesg.</p>
+<p>Enabling dynamic debug can be extremely verbose and is not recommended for<br>normal operation. For more info on dynamic debug, including tips on how to<br>refine the debug output, see:<br>   <a href="https://www.kernel.org/doc/html/v4.11/admin-guide/dynamic-debug-howto.html" target="_blank" rel="noopener">https://www.kernel.org/doc/html/v4.11/admin-guide/dynamic-debug-howto.html</a></p>
+<hr>
+<h2 id="Capturing-RDMA-Traffic-with-tcpdump"><a href="#Capturing-RDMA-Traffic-with-tcpdump" class="headerlink" title="Capturing RDMA Traffic with tcpdump"></a>Capturing RDMA Traffic with tcpdump</h2><p>RDMA traffic bypasses the kernel and is not normally available to the Linux<br>tcpdump utility. You may capture RDMA traffic with tcpdump by using port<br>mirroring on a switch.</p>
+<ol>
+<li><p>Connect 3 hosts to a switch:</p>
+<ul>
+<li>2 compute nodes to run RDMA traffic</li>
+<li>1 host to monitor traffic</li>
+</ul>
+</li>
+<li><p>Configure the switch to mirror traffic from one compute node’s switch port<br>to the monitoring host’s switch port. Consult your switch documentation<br>for syntax.</p>
+</li>
+<li><p>Unload the irdma driver on the monitoring host:</p>
+<h1 id="rmmod-irdma"><a href="#rmmod-irdma" class="headerlink" title="rmmod irdma"></a>rmmod irdma</h1><p>Traffic may not be captured correctly if the irdma driver is loaded.</p>
+</li>
+<li><p>Start tcpdump on the monitoring host. For example:</p>
+<h1 id="tcpdump-nXX-i"><a href="#tcpdump-nXX-i" class="headerlink" title="tcpdump -nXX -i "></a>tcpdump -nXX -i <interface></interface></h1></li>
+<li><p>Run RDMA traffic between the 2 compute nodes. RDMA packets will appear in<br>tcpdump on the monitoring host.</p>
+</li>
+</ol>
+<hr>
+<h2 id="Known-Issues-Notes"><a href="#Known-Issues-Notes" class="headerlink" title="Known Issues/Notes"></a>Known Issues/Notes</h2><p>X722:</p>
+<ul>
+<li><p>Support for the Intel(R) Ethernet Connection X722 iWARP RDMA VF driver<br>(i40iwvf) has been discontinued.</p>
+</li>
+<li><p>There may be incompatible drivers in the initramfs image. You can either<br>update the image or remove the drivers from initramfs.</p>
+</li>
+</ul>
+<p>Specifically, look for i40e, ib_addr, ib_cm, ib_core, ib_mad, ib_sa, ib_ucm,<br>ib_uverbs, iw_cm, rdma_cm, rdma_ucm in the output of the following command:<br>  lsinitrd |less<br>If you see any of those modules, rebuild initramfs with the following command<br>and include the name of the module in the “” list. For example:<br>  dracut –force –omit-drivers “i40e ib_addr ib_cm ib_core ib_mad ib_sa<br>  ib_ucm ib_uverbs iw_cm rdma_cm rdma_ucm”</p>
+<p>E810:</p>
+<ul>
+<li><p>Linux SRIOV for RDMA on E810 is currently not supported.</p>
+</li>
+<li><p>RDMA is not supported when E810 is configured for more than 4 ports.</p>
+</li>
+<li><p>E810 is limited to 4 traffic classes (TCs), one of which may be enabled for<br>priority flow control (PFC).</p>
+</li>
+<li><p>When using RoCEv2 on Linux kernel version 5.9 or earlier, some iSER operations<br>may experience errors related to iSER’s handling of work requests. To work<br>around this issue, set the E810 fragment_count_limit devlink parameter to 13.<br>Refer to the “Devlink Configuration” section for details on setting devlink<br>parameters.</p>
+</li>
+</ul>
+<p>X722 and E810:</p>
+<ul>
+<li><p>Some commands (such as ‘tc qdisc add’ and ‘ethtool -L’) will cause the ice<br>driver to close the associated RDMA interface and reopen it. This will disrupt<br>RDMA traffic for a few seconds until the RDMA interface is available again.</p>
+</li>
+<li><p>NOTE: Installing the ice driver, on RHEL, currently installs ice into initrd.<br>The implication is that the ice driver will be loaded on boot. The installation<br>process will also install any currently installed version of irdma into initrd.<br>This might result in an unintended version of irdma being installed. Depending<br>on your desired configuration and behavior of ice and irdma please look at the<br>following instructions to ensure the desired drivers are installed correctly.</p>
+<p>  A. Desired that both ice and irdma are loaded on boot (default)</p>
+<pre><code>  1. Follow installation procedure for the ice driver
+  2. Follow installation procedure for the irdma driver</code></pre>
+<p>  B. Desired that only ice driver is loaded on boot</p>
+<pre><code>  1. Untar ice driver
+  2. Follow installation procedure for ice driver
+  3. Untar irdma driver
+  4. Follow installation procedure for irdma driver
+  5. % dracut --force --omit-drivers &quot;irdma&quot;</code></pre>
+<p>  C. Desired that neither ice nor irdma is loaded on boot</p>
+<pre><code>  1. Perform all steps in B
+  2. % dracut --force --omit-drivers &quot;ice irdma&quot;</code></pre>
+</li>
+</ul>
+<hr>
+<h2 id="Support"><a href="#Support" class="headerlink" title="Support"></a>Support</h2><p>For general information, go to the Intel support website at:<br><a href="http://www.intel.com/support/" target="_blank" rel="noopener">http://www.intel.com/support/</a> or the Intel Wired Networking project<br>hosted by Sourceforge at: <a href="http://sourceforge.net/projects/e1000" target="_blank" rel="noopener">http://sourceforge.net/projects/e1000</a></p>
+<p>If an issue is identified with the released source code on a supported kernel<br>with a supported adapter, email the specific information related to the issue<br>to <a href="mailto:&#101;&#49;&#48;&#48;&#x30;&#x2d;&#114;&#x64;&#109;&#x61;&#x40;&#x6c;&#x69;&#115;&#116;&#115;&#46;&#115;&#x6f;&#117;&#114;&#x63;&#101;&#x66;&#111;&#114;&#103;&#x65;&#x2e;&#110;&#x65;&#116;">&#101;&#49;&#48;&#48;&#x30;&#x2d;&#114;&#x64;&#109;&#x61;&#x40;&#x6c;&#x69;&#115;&#116;&#115;&#46;&#115;&#x6f;&#117;&#114;&#x63;&#101;&#x66;&#111;&#114;&#103;&#x65;&#x2e;&#110;&#x65;&#116;</a></p>
+<hr>
+<h2 id="License"><a href="#License" class="headerlink" title="License"></a>License</h2><p>This software is available to you under a choice of one of two<br>licenses. You may choose to be licensed under the terms of the GNU<br>General Public License (GPL) Version 2, available from the file<br>COPYING in the main directory of this source tree, or the<br>OpenFabrics.org BSD license below:</p>
+<p>  Redistribution and use in source and binary forms, with or<br>  without modification, are permitted provided that the following<br>  conditions are met:</p>
+<ul>
+<li><p>Redistributions of source code must retain the above<br>copyright notice, this list of conditions and the following<br>disclaimer.</p>
+</li>
+<li><p>Redistributions in binary form must reproduce the above<br>copyright notice, this list of conditions and the following<br>disclaimer in the documentation and/or other materials<br>provided with the distribution.</p>
+</li>
+</ul>
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,<br>EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF<br>MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND<br>NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS<br>BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN<br>ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN<br>CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<br>SOFTWARE.</p>
+<hr>
+<h2 id="Trademarks"><a href="#Trademarks" class="headerlink" title="Trademarks"></a>Trademarks</h2><p>Intel is a trademark or registered trademark of Intel Corporation<br>or its subsidiaries in the United States and/or other countries.</p>
+<ul>
+<li>Other names and brands may be claimed as the property of others</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1404859281731123"
+     data-ad-slot="6219253750"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/03/24/%E7%B3%BB%E7%BB%9F%E5%AE%A1%E8%AE%A1-audit%E4%B8%8EFalco/" rel="next" title="系统审计-audit与Falco">
+                <i class="fa fa-chevron-left"></i> 系统审计-audit与Falco
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">89</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:wangdk789@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://bingerambo.com/" title="Binge Blog" target="_blank">Binge Blog</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://47.94.14.169:8080/home.html" title="林夕-博客" target="_blank">林夕-博客</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Contents"><span class="nav-number">1.</span> <span class="nav-text">Contents</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Overview"><span class="nav-number">2.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prerequisites"><span class="nav-number">3.</span> <span class="nav-text">Prerequisites</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Supported-OS-List"><span class="nav-number">4.</span> <span class="nav-text">Supported OS List</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Building-and-Installation"><span class="nav-number">5.</span> <span class="nav-text">Building and Installation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Confirm-RDMA-functionality"><span class="nav-number">6.</span> <span class="nav-text">Confirm RDMA functionality</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iWARP-RoCEv2-Selection"><span class="nav-number">7.</span> <span class="nav-text">iWARP&#x2F;RoCEv2 Selection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iWARP-Port-Mapper-iwpmd"><span class="nav-number">8.</span> <span class="nav-text">iWARP Port Mapper (iwpmd)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flow-Control-Settings"><span class="nav-number">9.</span> <span class="nav-text">Flow Control Settings</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ECN-Configuration"><span class="nav-number">10.</span> <span class="nav-text">ECN Configuration</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Devlink-Configuration"><span class="nav-number">11.</span> <span class="nav-text">Devlink Configuration</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Memory-Requirements"><span class="nav-number">12.</span> <span class="nav-text">Memory Requirements</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Resource-Profile-Limits"><span class="nav-number">13.</span> <span class="nav-text">Resource Profile Limits</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Resource-Limits-Selector"><span class="nav-number">14.</span> <span class="nav-text">Resource Limits Selector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RDMA-Statistics"><span class="nav-number">15.</span> <span class="nav-text">RDMA Statistics</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#perftest"><span class="nav-number">16.</span> <span class="nav-text">perftest</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPI-Testing"><span class="nav-number">17.</span> <span class="nav-text">MPI Testing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Performance"><span class="nav-number">18.</span> <span class="nav-text">Performance</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Interoperability"><span class="nav-number">19.</span> <span class="nav-text">Interoperability</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dynamic-Tracing"><span class="nav-number">20.</span> <span class="nav-text">Dynamic Tracing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dynamic-Debug"><span class="nav-number">21.</span> <span class="nav-text">Dynamic Debug</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Capturing-RDMA-Traffic-with-tcpdump"><span class="nav-number">22.</span> <span class="nav-text">Capturing RDMA Traffic with tcpdump</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rmmod-irdma"><span class="nav-number"></span> <span class="nav-text">rmmod irdma</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tcpdump-nXX-i"><span class="nav-number"></span> <span class="nav-text">tcpdump -nXX -i </span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Known-Issues-Notes"><span class="nav-number">1.</span> <span class="nav-text">Known Issues&#x2F;Notes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Support"><span class="nav-number">2.</span> <span class="nav-text">Support</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#License"><span class="nav-number">3.</span> <span class="nav-text">License</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Trademarks"><span class="nav-number">4.</span> <span class="nav-text">Trademarks</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DavidStack</span>
+
+  <!-- <div class="beian">
+  </div> -->
+ 
+  <div class="BbeiAn-info">
+    鲁ICP备 -
+    <a target="_blank"  href="https://beian.miit.gov.cn">16023683号-1</a>
+  </div>
+
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
