@@ -4056,4 +4056,19 @@ X722 (4 ports):
     <content><![CDATA[<p><a href="https://www.aliyun.com/daily-act/ecs/activity_selection?userCode=f4wsplfj" target="_blank" rel="noopener">阿里云服务器 推荐</a></p>
 ]]></content>
   </entry>
+  <entry>
+    <title>MMIO内存映射IO</title>
+    <url>/2022/05/18/MMIO%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84IO/</url>
+    <content><![CDATA[<h2 id="啥是MMIO啊"><a href="#啥是MMIO啊" class="headerlink" title="啥是MMIO啊"></a>啥是MMIO啊</h2><p>MMIO（内存映射IO），是PCI规范的一部分，IO设备被在内存空间，而不是放在IO空间，处理器的角度看，内存映射I/O后系统设备访问起来和内存一样。这样访问AGP/PCI-E显卡上的帧缓存，BIOS，PCI设备就可以使用读写内存一样的汇编指令完成，简化了程序设计的难度和接口的复杂性。I/O作为CPU和外设交流的一个渠道，主要分为两种，一种是Port I/O，一种是MMIO(Memory mapping I/O),MMIO就是通过外围设备映射到内存空间，便于CPU的访问。I/O作为CPU和外设交流的一个渠道，主要分为两种，一种是Port I/O，一种是MMIO(Memory mapping I/O)。前者就是我们常说的I/O端口，它实际上的应该被称为I/O地址空间。</p>
+<p>简而言之，MMIO就是通过将外围设备映射到内存空间，便于CPU的访问。</p>
+<h2 id="PortIO和MMIO-的主要区别"><a href="#PortIO和MMIO-的主要区别" class="headerlink" title="PortIO和MMIO 的主要区别"></a>PortIO和MMIO 的主要区别</h2><ol>
+<li><p>前者不占用CPU的物理地址空间，后者占有（这是对x86架构说的，一些架构，如IA64，port I/O占用物理地址空间）。</p>
+</li>
+<li><p>前者是顺序访问。也就是说在一条I/O指令完成前，下一条指令不会执行。例如通过Port I/O对设备发起了操作，造成了设备寄存器状态变化，这个变化在下一条指令执行前生效。uncache的MMIO通过uncahce memory的特性保证顺序性。</p>
+</li>
+<li><p>使用方式不同，由于port I/O有独立的64K I/O地址空间，但CPU的地址线只有一套，所以必须区分地址属于物理地址空间还是I/O地址空间。</p>
+</li>
+</ol>
+]]></content>
+  </entry>
 </search>
