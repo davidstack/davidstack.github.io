@@ -4104,4 +4104,39 @@ X722 (4 ports):
 <p>转载地址(<a href="https://www.zhihu.com/question/63219175" target="_blank" rel="noopener">https://www.zhihu.com/question/63219175</a>)</p>
 ]]></content>
   </entry>
+  <entry>
+    <title>32位浮点数</title>
+    <url>/2022/07/21/32%E4%BD%8D%E6%B5%AE%E7%82%B9%E6%95%B0/</url>
+    <content><![CDATA[<p>在AI中常提32位浮点数、16位浮点数，混合精度。。这里重点说一下32位浮点数的表示<br>先来一张图</p>
+<p>  <img src="/2022/07/21/32%E4%BD%8D%E6%B5%AE%E7%82%B9%E6%95%B0/32.png" alt="avatar"></p>
+<p>浮点数的计算方式<br><img src="/2022/07/21/32%E4%BD%8D%E6%B5%AE%E7%82%B9%E6%95%B0/1.png" alt="avatar"><br>其中s是符号位，e是指数位，m是有效数位组成的数。<br>m的计算方式是<br><img src="/2022/07/21/32%E4%BD%8D%E6%B5%AE%E7%82%B9%E6%95%B0/2.png" alt="avatar"></p>
+<p>所以上图表示的数字就是<br><img src="/2022/07/21/32%E4%BD%8D%E6%B5%AE%E7%82%B9%E6%95%B0/3.png" alt="avatar"></p>
+<p>采用这种表示方式的结果是，两个浮点数之间的“间隔”是均匀的。什么意思？</p>
+<p>比如说，我想表示浮点数1的话，那么我的二进制位就是：</p>
+<p><code>0 01111111 00000000000000000000000</code></p>
+<p>我想表示2的话，二进制位就是</p>
+<p><code>0 10000000 0000000000000000000000</code></p>
+<p>1和2之间，我能表示的数是有限的，比1大的浮点数，最小的值我只能取到</p>
+<p><code>0 01111111 00000000000000000000001</code></p>
+<p>也就是上述的m是2的-23次方，这就是浮点数的“精度”,于是，你可以看到c++标准库中有一个这个函数：</p>
+<p><code>std::numeric_limits&lt;float&gt;::epsilon()</code></p>
+<p>这个值就是2的-23次方！</p>
+<p>还有一点，很明显，用上面的式子，我们没法把值精确地表示0，这显然是无法接受的。于是浮点标准就对e=0的情况做了额外的规定，也就是说当e等于0的时候浮点值就不是乘以1.m，而是乘以0.m。也就是说，如果有效值m是0的话，那么浮点值表示的数字就是0，没有歧义！</p>
+<p>接着，如果1.m的1没有的话，我们能表示的最小的值就是0.000…1(2进制)*2(-126)，也就是2(-126) * 2^(-23)，大约是1.4012985 * 10 ^ (-45)。</p>
+<p>我用下面的代码尝试做了输出：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">std::cout.precision(15);</span><br><span class="line"></span><br><span class="line">uint8_t array[4] &#x3D; &#123;0&#125;;</span><br><span class="line">array[3] &#x3D; 0x3F; array[2] &#x3D; 0x80;</span><br><span class="line">float* f &#x3D; reinterpret_cast&lt;float*&gt;(array);</span><br><span class="line">std::cout &lt;&lt; &quot;f &#x3D; &quot; &lt;&lt; *f &lt;&lt;std::endl;</span><br><span class="line"></span><br><span class="line">uint8_t array1[4] &#x3D; &#123;0&#125;;</span><br><span class="line">array1[3] &#x3D; 0x3F; array1[2] &#x3D; 0x80; array1[0] &#x3D; 0x1;</span><br><span class="line">float* f1 &#x3D; reinterpret_cast&lt;float*&gt;(array1);</span><br><span class="line">std::cout &lt;&lt; &quot;f1 &#x3D; &quot; &lt;&lt; *f1 &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">uint8_t array2[4] &#x3D; &#123;0&#125;;</span><br><span class="line">array2[2] &#x3D; 0x7F; array2[1] &#x3D; 0xFF; array2[0] &#x3D; 0xFF;</span><br><span class="line">float* f2 &#x3D; reinterpret_cast&lt;float*&gt;(array2);</span><br><span class="line">std::cout &lt;&lt; &quot;f2 &#x3D; &quot; &lt;&lt; *f2 &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">uint8_t array3[4] &#x3D; &#123;0&#125;;</span><br><span class="line">array3[0] &#x3D; 0x1;</span><br><span class="line">float* f3 &#x3D; reinterpret_cast&lt;float*&gt;(array3);</span><br><span class="line">std::cout &lt;&lt; &quot;f3 &#x3D; &quot; &lt;&lt; *f3 &lt;&lt; std::endl;</span><br></pre></td></tr></table></figure>
+<p>结果是：<br><img src="/2022/07/21/32%E4%BD%8D%E6%B5%AE%E7%82%B9%E6%95%B0/4.png" alt="avatar"></p>
+<p>与预想的一致。</p>
+<p>最后，IEEE 754标准保证-0.0严格等于0.0！</p>
+<p>如果e等于255，这种情况同样会被特殊处理。e=255，m=0的话，这就表示无限大，用cout输出就是inf。但如果e=255，m!=0的话，那么这就是一个无效值，输出的结果是nan，尝试代码和结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">uint8_t array4[4] &#x3D; &#123;0&#125;;</span><br><span class="line">array4[3] &#x3D; 0x7F; array4[2] &#x3D; 0x80;</span><br><span class="line">float* f4 &#x3D; reinterpret_cast&lt;float*&gt;(array4);</span><br><span class="line">std::cout &lt;&lt; &quot;f4 &#x3D; &quot; &lt;&lt; *f4 &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">uint8_t array5[4] &#x3D; &#123;0&#125;;</span><br><span class="line">array5[3] &#x3D; 0x7F; array5[2] &#x3D; 0x80; array5[0] &#x3D; 0x3F;</span><br><span class="line">float* f5 &#x3D; reinterpret_cast&lt;float*&gt;(array5);</span><br><span class="line">std::cout &lt;&lt; &quot;f5 &#x3D; &quot; &lt;&lt; *f5 &lt;&lt; std::endl;</span><br></pre></td></tr></table></figure>
+<p><img src="/2022/07/21/32%E4%BD%8D%E6%B5%AE%E7%82%B9%E6%95%B0/5.png" alt="avatar"></p>
+<p>于是，我们能表示的最大有效值是1.1111111(二进制）* 2 ^ 127，也就是3.402823… * 10^38。测试代码和结果如下：</p>
+<pre><code>uint8_t array6[4] = {0};
+array6[3] = 0x7F; array6[2] = 0x7F; array6[1] = 0xFF; array6[0] = 0xFF;
+float* f6 = reinterpret_cast&lt;float*&gt;(array6);
+std::cout &lt;&lt; &quot;f6 = &quot; &lt;&lt; *f6 &lt;&lt; std::endl;</code></pre>
+<p><img src="/2022/07/21/32%E4%BD%8D%E6%B5%AE%E7%82%B9%E6%95%B0/6.png" alt="avatar"></p>
+]]></content>
+  </entry>
 </search>
