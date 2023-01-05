@@ -83,18 +83,16 @@
 
 
 
-<meta name="description" content="title: Sysdig 项目date: 2021-01-26 19:17:46tags: Linux  sysdig相当于strace + tcpdump + lsof + htop + iftop 以及其他工具的合集 ，除此之外其还能对容器如docker、coreOS、LXC进行监控，收集了一些用法，具体可以参考这里 工作原理sysdig 通过在内核的 driver 模块注册系统调用的 h">
+<meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Sysdig-项目">
-<meta property="og:url" content="https://damonyi.cc/2021/01/26/Sysdig-%E9%A1%B9%E7%9B%AE/index.html">
+<meta property="og:title" content="Hello World">
+<meta property="og:url" content="https://damonyi.cc/2022/08/31/hello-world/index.html">
 <meta property="og:site_name" content="云里雾里">
-<meta property="og:description" content="title: Sysdig 项目date: 2021-01-26 19:17:46tags: Linux  sysdig相当于strace + tcpdump + lsof + htop + iftop 以及其他工具的合集 ，除此之外其还能对容器如docker、coreOS、LXC进行监控，收集了一些用法，具体可以参考这里 工作原理sysdig 通过在内核的 driver 模块注册系统调用的 h">
+<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://damonyi.cc/2021/01/26/Sysdig-%E9%A1%B9%E7%9B%AE/1.png">
-<meta property="article:published_time" content="2021-01-26T11:17:46.537Z">
-<meta property="article:modified_time" content="2021-01-29T00:16:00.158Z">
+<meta property="article:published_time" content="2022-08-31T08:26:34.667Z">
+<meta property="article:modified_time" content="2022-08-29T17:31:48.333Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://damonyi.cc/2021/01/26/Sysdig-%E9%A1%B9%E7%9B%AE/1.png">
 
 
 
@@ -126,14 +124,14 @@
 
 
 
-  <link rel="canonical" href="https://damonyi.cc/2021/01/26/Sysdig-项目/"/>
+  <link rel="canonical" href="https://damonyi.cc/2022/08/31/hello-world/"/>
 
 
 <script data-ad-client="ca-pub-1404859281731123" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
 
 
-  <title>Sysdig-项目 | 云里雾里</title>
+  <title>Hello World | 云里雾里</title>
   
 
 
@@ -294,7 +292,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://damonyi.cc/2021/01/26/Sysdig-%E9%A1%B9%E7%9B%AE/">
+    <link itemprop="mainEntityOfPage" href="https://damonyi.cc/2022/08/31/hello-world/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -311,7 +309,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Sysdig-项目</h2>
+          <h2 class="post-title" itemprop="name headline">Hello World</h2>
         
 
         <div class="post-meta">
@@ -323,8 +321,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-01-26T19:17:46+08:00">
-                2021-01-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-08-31T16:26:34+08:00">
+                2022-08-31
               </time>
             
 
@@ -360,7 +358,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.1k字
+                  73字
                 </span>
               
 
@@ -376,7 +374,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  5分钟
+                  1分钟
                 </span>
               
             </div>
@@ -397,125 +395,19 @@
       
 
       
-        <hr>
-<p>title: Sysdig 项目<br>date: 2021-01-26 19:17:46<br>tags: Linux</p>
-<hr>
-<p>sysdig相当于strace + tcpdump + lsof + htop + iftop 以及其他工具的合集 ，除此之外其还能对容器如docker、coreOS、LXC进行监控，收集了一些用法，具体可以参考<a href="https://blog.csdn.net/vic_qxz/article/details/107761255?utm_medium=distribute.pc_relevant.none-task-blog-searchFromBaidu-3.control&depth_1-utm_source=distribute.pc_relevant.none-task-blog-searchFromBaidu-3.control" target="_blank" rel="noopener">这里</a></p>
-<h2 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h2><p>sysdig 通过在内核的 driver 模块注册系统调用的 hook，这样当有系统调用发生和完成的时候，它会把系统调用信息拷贝到特定的 buffer，然后用户模块的组件对数据信息处理（解压、解析、过滤等），并最终通过 sysdig 命令行和用户进行交互。如下图所示：<br> <img src="/2021/01/26/Sysdig-%E9%A1%B9%E7%9B%AE/1.png" alt="avatar"></p>
-<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><ol>
-<li><p>网络<br> 查看占用网络带宽最多的进程：</p>
-<p> sysdig -c topprocs_net</p>
-<p> 显示主机192.168.0.1的网络传输数据：</p>
-<p> sysdig -s2000 -X -c echo_fds fd.cip=192.168.0.1</p>
-<p> 这里显示网络传输功能，实际效果和tcpdump抓包是一样的。而且其本身也支持sysdig -w dump.scap抓包保存（可以配置-X或-A使用），抓好包也支持sysdir -r dump.scap读取。</p>
-<p> 查看连接最多的服务器端口：</p>
-<p> in terms of established connections:</p>
-<p> sysdig -c fdcount_by fd.sport “evt.type=accept”</p>
-<p> in terms of total bytes:</p>
-<p> sysdig -c fdbytes_by fd.sport</p>
-<p> 查看客户端连接最多的ip：</p>
-<p> in terms of established connections</p>
-<p> sysdig -c fdcount_by fd.cip “evt.type=accept”</p>
-<p> in terms of total bytes</p>
-<p> sysdig -c fdbytes_by fd.cip</p>
-<p> 列出所有不是访问apache服务的访问连接：</p>
-<p> sysdig -p”%proc.name %fd.name” “evt.type=accept and proc.name!=httpd”</p>
-</li>
-<li><p>硬盘 I/O</p>
-<p> 查看使用硬盘带宽最多的进程：</p>
-<p> sysdig -c topprocs_file</p>
-<p> 列出使用大量文件描述符的进程</p>
-<p> sysdig -c fdcount_by proc.name “fd.type=file”</p>
-<p> See the top files in terms of read+write bytes</p>
-<p> sysdig -c topfiles_bytes</p>
-<p> Print the top files that apache has been reading from or writing to</p>
-<p> sysdig -c topfiles_bytes proc.name=httpd</p>
-<p> Basic opensnoop: snoop file opens as they occur</p>
-<p> sysdig -p “%12user.name %6proc.pid %12proc.name %3fd.num %fd.typechar %fd.name” evt.type=open</p>
-<p> See the top directories in terms of R+W disk activity</p>
-<p> sysdig -c fdbytes_by fd.directory “fd.type=file”</p>
-<p> See the top files in terms of R+W disk activity in the /tmp directory</p>
-<p> sysdig -c fdbytes_by fd.filename “fd.directory=/tmp/“</p>
-<p> Observe the I/O activity on all the files named ‘passwd’</p>
-<p> sysdig -A -c echo_fds “fd.filename=passwd”</p>
-<p> Display I/O activity by FD type</p>
-<p> sysdig -c fdbytes_by fd.type</p>
-</li>
-<li><p>进程和CPU使用率</p>
-<p> See the top processes in terms of CPU usage</p>
-<p> sysdig -c topprocs_cpu</p>
-<p> See the top processes for CPU 0</p>
-<p> sysdig -c topprocs_cpu evt.cpu=0</p>
-<p> Observe the standard output of a process</p>
-<p> sysdig -s4096 -A -c stdout proc.name=cat</p>
-</li>
-</ol>
-<p>4、应用</p>
-<pre><code>查看机器所有的HTTP请求
+        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
 
-sudo sysdig -s 2000 -A -c echo_fds fd.port=80 and evt.buffer contains GET
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
 
-查看机器所有的SQL select查询
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
 
-sudo sysdig -s 2000 -A -c echo_fds evt.buffer contains SELECT
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 
-See queries made via apache to an external MySQL server happening in real time
-
-sysdig -s 2000 -A -c echo_fds fd.sip=192.168.30.5 and proc.name=apache2 and evt.buffer contains SELECT</code></pre>
-<ol start="5">
-<li><p>性能和错误</p>
-<p> See the files where most time has been spent</p>
-<p> sysdig -c topfiles_time</p>
-<p> See the files where apache spent most time</p>
-<p> sysdig -c topfiles_time proc.name=httpd</p>
-<p> See the top processes in terms of I/O errors</p>
-<p> sysdig -c topprocs_errors</p>
-<p> See the top files in terms of I/O errors</p>
-<p> sysdig -c topfiles_errors</p>
-<p> See all the failed disk I/O calls</p>
-<p> sysdig fd.type=file and evt.failed=true</p>
-<p> See all the failed file opens by httpd</p>
-<p> sysdig “proc.name=httpd and evt.type=open and evt.failed=true”</p>
-<p> See the system calls where most time has been spent</p>
-<p> sysdig -c topscalls_time</p>
-<p> See the top system calls returning errors</p>
-<p> sysdig -c topscalls “evt.failed=true”</p>
-<p> snoop failed file opens as they occur</p>
-<p> sysdig -p “%12user.name %6proc.pid %12proc.name %3fd.num %fd.typechar %fd.name” evt.type=open and evt.failed=true</p>
-<p> Print the file I/O calls that have a latency greater than 1ms:</p>
-<p> sysdig -c fileslower 1</p>
-</li>
-<li><p>安全</p>
-<p> Show the directories that the user “root” visits</p>
-<p> sysdig -p”%evt.arg.path” “evt.type=chdir and user.name=root”</p>
-<p> Observe ssh activity</p>
-<p> sysdig -A -c echo_fds fd.name=/dev/pretmx and proc.name=sshd</p>
-<p> Show every file open that happens in /etc</p>
-<p> sysdig evt.type=open and fd.name contains /etc</p>
-<p> Show the ID of all the login shells that have launched the “tar” command</p>
-<p> sysdig -r file.scap -c list_login_shells tar</p>
-<p> Show all the commands executed by the login shell with the given ID</p>
-<p> sysdig -r trace.scap.gz -c spy_users proc.loginshellid=5459</p>
-</li>
-<li><p>容器</p>
-<p> 查看机器上运行的容器列表及其资源使用情况</p>
-<p> sudo csysdig -vcontainers</p>
-<p> 查看容器上下文的进程列表</p>
-<p> sudo csysdig -pc</p>
-<p> 查看运行在wordpress1容器里CPU的使用率</p>
-<p> sudo sysdig -pc -c topprocs_cpu container.name=wordpress1</p>
-<p> 查看运行在wordpress1容器里网络带宽的使用率</p>
-<p> sudo sysdig -pc -c topprocs_net container.name=wordpress1</p>
-<p> 查看在wordpress1容器里使用网络带宽最多的进程</p>
-<p> sudo sysdig -pc -c topprocs_net container.name=wordpress1</p>
-<p> 查看在wordpress1 容器里占用 I/O 字节最多的文件</p>
-<p> sudo sysdig -pc -c topfiles_bytes container.name=wordpress1</p>
-<p> 查看在wordpress1 容器里网络连接的排名情况</p>
-<p> sudo sysdig -pc -c topconns container.name=wordpress1</p>
-<p> 显示wordpress1容器里所有命令执行的情况</p>
-<p> sudo sysdig -pc -c spy_users container.name=wordpress1</p>
-</li>
-</ol>
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 
       
     </div>
@@ -549,8 +441,8 @@ sysdig -s 2000 -A -c echo_fds fd.sip=192.168.30.5 and proc.name=apache2 and evt.
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2021/01/26/%E4%BB%8B%E7%BB%8DWASM/" rel="next" title="介绍WASM">
-                <i class="fa fa-chevron-left"></i> 介绍WASM
+              <a href="/2022/08/15/%E5%8A%A8%E6%80%81%E8%81%9A%E5%90%88%E9%9D%99%E6%80%81%E8%81%9A%E5%90%88/" rel="next" title="动态聚合静态聚合">
+                <i class="fa fa-chevron-left"></i> 动态聚合静态聚合
               </a>
             
           </div>
@@ -559,8 +451,8 @@ sysdig -s 2000 -A -c echo_fds fd.sip=192.168.30.5 and proc.name=apache2 and evt.
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2021/01/27/kubernetes-nfs-pvc/" rel="prev" title="kubernetes nfs pvc">
-                kubernetes nfs pvc <i class="fa fa-chevron-right"></i>
+              <a href="/2022/08/31/Sysdig-%E9%A1%B9%E7%9B%AE/" rel="prev" title="Sysdig-项目">
+                Sysdig-项目 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -711,7 +603,7 @@ sysdig -s 2000 -A -c echo_fds fd.sip=192.168.30.5 and proc.name=apache2 and evt.
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#工作原理"><span class="nav-number">1.</span> <span class="nav-text">工作原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用命令"><span class="nav-number">2.</span> <span class="nav-text">常用命令</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
             
 
           </div>
