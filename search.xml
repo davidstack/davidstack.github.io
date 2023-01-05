@@ -4286,4 +4286,28 @@ std::cout &lt;&lt; &quot;f6 = &quot; &lt;&lt; *f6 &lt;&lt; std::endl;</code></pr
     <content><![CDATA[<p><img src="/2022/08/15/%E5%8A%A8%E6%80%81%E8%81%9A%E5%90%88%E9%9D%99%E6%80%81%E8%81%9A%E5%90%88/1.jpg" alt="avatar"></p>
 ]]></content>
   </entry>
+  <entry>
+    <title>cgroup相关知识</title>
+    <url>/2023/01/05/cgroup%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86/</url>
+    <content><![CDATA[<h2 id="Systemd-依赖-cgroups"><a href="#Systemd-依赖-cgroups" class="headerlink" title="Systemd 依赖 cgroups"></a>Systemd 依赖 cgroups</h2><p>要理解 systemd 与 cgroups 的关系，我们需要先区分 cgroups 的两个方面：层级结构(A)和资源控制(B)。首先 cgroups 是以层级结构组织并标识进程的一种方式，同时它也是在该层级结构上执行资源限制的一种方式。我们简单的把 cgroups 的层级结构称为 A，把 cgrpups 的资源控制能力称为 B。<br>对于 systemd 来说，A 是必须的，如果没有 A，systemd 将不能很好的工作。而 B 则是可选的，如果你不需要对资源进行控制，那么在编译 Linux 内核时完全可以去掉 B 相关的编译选项。</p>
+<h2 id="Systemd-默认挂载的-cgroups-系统"><a href="#Systemd-默认挂载的-cgroups-系统" class="headerlink" title="Systemd 默认挂载的 cgroups 系统"></a>Systemd 默认挂载的 cgroups 系统</h2><p>在系统的开机阶段，systemd 会把支持的 controllers (subsystem 子系统)挂载到默认的 /sys/fs/cgroup/ 目录下面：<br><img src="/2023/01/05/cgroup%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86/1.png" alt="avatar"></p>
+<p>除了 systemd 目录外，其它目录都是对应的 subsystem。<br>/sys/fs/cgroup/systemd 目录是 systemd 维护的自己使用的非 subsystem 的 cgroups 层级结构。这玩意儿是 systemd 自己使用的，换句话说就是，并不允许其它的程序动这个目录下的内容。其实 /sys/fs/cgroup/systemd 目录对应的 cgroups 层级结构就是 systemd 用来使用 cgoups 中 feature A 的。<br><img src="/2023/01/05/cgroup%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86/2.png" alt="avatar"></p>
+<h2 id="Cgroup-的默认层级"><a href="#Cgroup-的默认层级" class="headerlink" title="Cgroup 的默认层级"></a>Cgroup 的默认层级</h2><p>通过将 cgroup 层级系统与 systemd unit 树绑定，systemd 可以把资源管理的设置从进程级别移至应用程序级别。因此，我们可以使用 systemctl 指令，或者通过修改 systemd unit 的配置文件来管理 unit 相关的资源。默认情况下，systemd 会自动创建 slice、scope 和 service unit 的层级.</p>
+<ol>
+<li>service： 一个或一组进程，由 systemd 依据 unit 配置文件启动。service 对指定进程进行封装，这样进程可以作为一个整体被启动或终止。</li>
+<li>scope：一组外部创建的进程。由进程通过 fork() 函数启动和终止、之后被 systemd 在运行时注册的进程，scope 会将其封装。例如：用户会话、 容器和虚拟机被认为是 scope。</li>
+<li>slice： 一组按层级排列的 unit。slice 并不包含进程，但会组建一个层级，并将 scope 和 service 都放置其中。真正的进程包含在 scope 或 service 中。在这一被划分层级的树中，每一个 slice 单位的名字对应通向层级中一个位置的路径。<br>我们可以通过 systemd-cgls 命令来查看 cgroups 的层级结构：<br><img src="/2023/01/05/cgroup%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86/3.png" alt="avatar"></li>
+</ol>
+<p>默认情况下，系统会创建四种 slice：</p>
+<ol>
+<li>-.slice：根 slice</li>
+<li>system.slice：所有系统 service 的默认位置</li>
+<li>user.slice：所有用户会话的默认位置</li>
+<li>machine.slice：所有虚拟机和 Linux 容器的默认位置</li>
+</ol>
+<h2 id="通过配置文件修改-cgroup"><a href="#通过配置文件修改-cgroup" class="headerlink" title="通过配置文件修改 cgroup"></a>通过配置文件修改 cgroup</h2><p>所有被 systemd 监管的 persistent cgroup(持久的 cgroup)都在 /usr/lib/systemd/system/ 目录中有一个 unit 配置文件。比如我们常见的 service 类型 unit 的配置文件。我们可以通过设置 unit 配置文件来控制应用程序的资源，persistent cgroup 的特点是即便系统重启，相关配置也会被保留。需要注意的是，scope unit 不能以此方式创建。下面让我们为 cron.service 添加 CPU 和内存相关的一些限制，编辑 /lib/systemd/system/cron.service 文件：<br><img src="/2023/01/05/cgroup%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86/4.png" alt="avatar"></p>
+<p>现在去查看 /sys/fs/cgroup/memory/system.slice/cron.service/memory.limit_in_bytes 和 /sys/fs/cgroup/cpu/system.slice/cron.service/cpu.shares 文件</p>
+<h2 id="Systemd-cgtop-命令"><a href="#Systemd-cgtop-命令" class="headerlink" title="Systemd-cgtop 命令"></a>Systemd-cgtop 命令</h2><p>类似于 top 命令，systemd-cgtop 命令显示 cgoups 的实时资源消耗情况：<br><img src="/2023/01/05/cgroup%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86/5.png" alt="avatar"></p>
+]]></content>
+  </entry>
 </search>
