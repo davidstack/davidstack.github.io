@@ -4310,4 +4310,30 @@ I1222 07:23:34.043137 78755 nvc_mount.c:412] mounting /proc/driver/nvidia/gpus/0
 <h2 id="Hyper-Q-技术"><a href="#Hyper-Q-技术" class="headerlink" title="Hyper-Q 技术"></a>Hyper-Q 技术</h2><p>为了解决多个Kernel 函数同时在GPU中运行的问题，Nvidia 推出了Hyper-Q这个硬件技术，具体可以参考下面的ppt。目前实行多进程同时运行在GPU的方法是基于NVIDIA的MPS技术</p>
 <object data="./20191031_MPS_davidwu.pdf" type="application/pdf" width="100%" height="877px"></object>]]></content>
   </entry>
+  <entry>
+    <title>keepalived技术原理</title>
+    <url>/2023/03/02/keepalived%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/</url>
+    <content><![CDATA[<h2 id="keepalived本质作用"><a href="#keepalived本质作用" class="headerlink" title="keepalived本质作用"></a>keepalived本质作用</h2><p>  <img src="/2023/03/02/keepalived%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/2.png" alt="avatar"></p>
+<p>Keepalived的体系结构从整体上分为两层，分别是用户空间层（User Space）和内核空间层（Kernel Space）</p>
+<p>内核空间层： 处于最底层，它包括IPVS和NETLINK两个模块。</p>
+<ol>
+<li>IPVS模块是Keepalived引入的一个第三方模块，通过IPVS可以实现基于IP的负载均衡集群， 在Keepalived中，IPVS模块是可配置的，如果需要负载均衡功能，可以在编译Keepalived时打开负载均衡功能，反正，也可以通过配置编译参数关闭。Keepalived借助于第三方模块IPVS就可以很方便地搭建一套负载均衡系统，解决了ipvs不具备的高可用和健康状态检测的功能。是vrrp协议在Linux主机上以守护进程方式的实现，能够根据配置文件自动生成ipvs规则，能够对RS做健康状态检测；</li>
+<li>NETLINK模块主要用于实现一些高级路由框架和一些相关的网络功能，完成用户空间层Netlink Reflector模块发来的各种网络请求</li>
+</ol>
+<p>用户空间<br>   在用户空间层，Keepalived又分为四个部分，分别是Scheduler I/O Multiplexer、Memory Management、Control Plane和Core components。其中，Scheduler I/O Multiplexer是一个I/O复用分发调度器，它负责安排Keepalived所有内部的任务请求。Memory Management是一个内存管理机制，这个框架提供了访问内存的一些通用方法。Control Plane是Keepalived的控制面板，可以实现对配置文件进行编译和解析，Keepalived的配置文件解析比较特殊，它并不是一次解析所有模块的配置，而是只有在用到某模块时才解析相应的配置</p>
+<p>其中各个组件的功能介绍参考如下所示：</p>
+<p>  <font size="6">WatchDog </font>：WatchDog是计算机可靠性领域中一个极为简单又非常有效的检测工具，它的工作原理是针对被监视的目标设置一个计数器和一个阈值，WatchDog会自己增加此计数值，然后等待被监视的目标周期性地重置该计数值。一旦被监控目标发生错误，就无法重置此计数值，WatchDog就会检测到，于是就采取对应的恢复措施，例如重启或关闭。在Linux中很早就引入了WatchDog功能，而Keepalived正是通过WatchDog的运行机制来监控Checkers和VRRP进程的。</p>
+<p>  <font size="6">Checkers</font>：Keepalived最基础的功能，也是最主要的功能，可实现对服务器运行状态检测和故障隔离。</p>
+<p>  <font size="6">VRRP Stack</font>： Keepalived后来引入的VRRP功能，可以实现HA集群中失败切换（Failover）功能。Keepalived通过VRRP功能再结合LVS负载均衡软件即可部署一套高性能的负载均衡集群系统。</p>
+<p>  <font size="6">IPVS wrapper</font>： IPVS功能的一个实现。IPVS wrapper模块可以将设置好的IPVS规则发送到内核空间并提交给IPVS模块，最终实现IPVS模块的负载均衡功能。</p>
+<p>  <font size="6">Netlink Reflector</font>： 用来实现高可用集群中Failover时虚拟IP（VIP）的设置和切换。Netlink Reflector的所有请求最后都发送到内核空间的NETLINK模块来完成。</p>
+<h2 id="VRRP协议与工作原理"><a href="#VRRP协议与工作原理" class="headerlink" title="VRRP协议与工作原理"></a>VRRP协议与工作原理</h2><p>在现实的网络环境中。主机之间的通信都是通过配置静态路由或者(默认网关)来完成的，而主机之间的路由器一旦发生故障，通信就会失效，因此这种通信模式当中，路由器就成了一个单点瓶颈，为了解决这个问题，就引入了VRRP协议。VRRP协议是一种容错的主备模式的协议，保证当主机的下一跳路由出现故障时，由另一台路由器来代替出现故障的路由器进行工作，通过VRRP可以在网络发生故障时透明的进行设备切换而不影响主机之间的数据通信。</p>
+<h3 id="虚拟路由器"><a href="#虚拟路由器" class="headerlink" title="虚拟路由器"></a>虚拟路由器</h3><p>  虚拟路由器是VRRP备份组中所有路由器的集合，它是一个逻辑概念，并不是正真存在的。从备份组外面看备份组中的路由器，感觉组中的所有路由器就像一个一样，可以理解为在一个组中： 主路由器+所有备份路由器=虚拟路由器。虚拟路由器有一个虚拟的IP地址和MAC地址。主机将虚拟路由器当作默认网关。虚拟MAC地址的格式为00-00-5E-00-01-{VRID}。通常情况下，虚拟路由器回应ARP请求使用的是虚拟MAC地址，只有虚拟路由器做特殊配置的时候，才回应接口的真实MAC地址。<br>  <img src="/2023/03/02/keepalived%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/1.png" alt="avatar"></p>
+<h3 id="主路由器（MASTER）："><a href="#主路由器（MASTER）：" class="headerlink" title="主路由器（MASTER）："></a>主路由器（MASTER）：</h3><p>   虚拟路由器通过虚拟IP对外提供服务，而在虚拟路由器内部同一时间只有一台物理路由器对外提供服务，这台提供服务的物理路由器被称为主路由器。一般情况下Master是由选举算法产生，它拥有对外服务的虚拟IP，提供各种网络功能，如：ARP请求，ICMP数据转发等。</p>
+<p>  &emsp;&emsp; 备份路由器（BACKUP）：虚拟路由器中的其他物理路由器不拥有对外的虚拟IP，也不对外提供网络功能，仅接受MASTER的VRRP状态通告信息，这些路由器被称为备份路由器。当主路由器失败时，处于BACKUP角色的备份路由器将重新进行选举，产生一个新的主路由器进入MASTER角色，继续提供对外服务，整个切换对用户来说是完全透明的。</p>
+<h2 id="解决VIP从一个master迁移到另一个另一个backup的问题"><a href="#解决VIP从一个master迁移到另一个另一个backup的问题" class="headerlink" title="解决VIP从一个master迁移到另一个另一个backup的问题"></a>解决VIP从一个master迁移到另一个另一个backup的问题</h2><h3 id="问题描述："><a href="#问题描述：" class="headerlink" title="问题描述："></a>问题描述：</h3><p>  当VIP在master点时，此时局域网内的客户端存储的是VIP所在的master的MAC地址，而当master宕机，VIP迁移到backup节点时，局域网内的客户端保留的VIP所对应的MAC地址依然是master的MAC地址，这时局域网内的客户端向外发送信息时还是会去找master<br>方法一arp欺骗：<br>        &emsp;&emsp;每一主机在局域网中都会自动不断接收网络中的各种广播信息，尤其是arp的解析广播信息，并且收到一个arp解析广播信息后，主机都会与自己的arp缓存做比对。例如一个主机在局域网内广播1.1.1.1对应的MAC地址是多少，1.1.1.1这个主机收到广播后就会广播响应，此时在同一局域网内的其他主机也可以收到主机1.1.1.1的回应，其他主机就会把1.1.1.1的回应广播与自己arp缓存进行对比，如果MAC不一致，这个主机就做修改。鉴于此方法，任何时刻当VIP从一个主机迁移到另一个主机时，那么转移到的主机(A)就来一个自问自答的arp广播，即主机(比如是A)会广播问：A主机IP对应的MAC地址是什么，这时A再回答具体是什么，那么在同一个局域网中的其他主机听到这个arp广播后就会自动更新A的IP所对应的MAC地址<br>方法二 VMAC:<br>        &emsp;&emsp; virtual MAC是使用物理MAC，最终还要结合arp欺骗</p>
+<h3 id="VRRP-工作过程"><a href="#VRRP-工作过程" class="headerlink" title="VRRP 工作过程"></a>VRRP 工作过程</h3><p>&emsp;&emsp; (1) 虚拟路由器中的路由器根据优先级选举出Master。Master路由器通过发送欺骗ARP报文，将自己的虚拟MAC地址通知给与它连接的设备或者主机，从而承担报文转发任务；(假如路由器的优先级一样，就根据主机的IP地址大小进行选择，IP地址大的是master)<br>&emsp;&emsp;(2)Master路由器周期性发送VRRP报文，以公布其配置信息（优先级等）和工作状况；<br>&emsp;&emsp;(3)如果Master路由器出现故障，虚拟路由器中的Backup路由器将根据优先级重新选举新的Master；因为可能会有多个Backup路由器。<br>&emsp;&emsp;(4)虚拟路由器状态切换时，Master路由器由一台设备切换为另外一台设备，新的Master路由器只是简单地发送一个携带虚拟路由器的MAC地址和虚拟IP地址信息的欺骗ARP报文，这样就可以更新与它连接的主机或设备中的ARP相关信息。网络中的主机感知不到Master路由器已经切换为另外一台设备。<br>&emsp;&emsp;(5)Backup路由器的优先级高于Master路由器时，由Backup路由器的工作方式（抢占方式和非抢占方式）决定是否重新选举Master。</p>
+<p>由此可见，为了保证Master路由器和Backup路由器能够协调工作，VRRP需要实现以下功能：<br>a. Master路由器的选举；<br>b. Master路由器状态的通告；<br>c. 同时，为了提高安全性，VRRP还提供了认证功能；</p>
+]]></content>
+  </entry>
 </search>
