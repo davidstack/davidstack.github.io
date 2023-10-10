@@ -4336,4 +4336,30 @@ I1222 07:23:34.043137 78755 nvc_mount.c:412] mounting /proc/driver/nvidia/gpus/0
 <p>由此可见，为了保证Master路由器和Backup路由器能够协调工作，VRRP需要实现以下功能：<br>a. Master路由器的选举；<br>b. Master路由器状态的通告；<br>c. 同时，为了提高安全性，VRRP还提供了认证功能；</p>
 ]]></content>
   </entry>
+  <entry>
+    <title>大模型微调技术</title>
+    <url>/2023/10/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%8A%80%E6%9C%AF/</url>
+    <content><![CDATA[<h2 id="LORA-低秩自适应"><a href="#LORA-低秩自适应" class="headerlink" title="LORA(低秩自适应)"></a>LORA(低秩自适应)</h2><p>LoRA 允许我们通过优化适应过程中密集层变化的秩分解矩阵，来间接训练神经网络中的一些密集层，同时保持预先训练的权重不变。<br>LoRA 的思想很简单:<br>  在原始 PLM (Pre-trained Language Model) 旁边增加一个旁路，做一个降维再升维的操作，来模拟所谓的intrinsic rank。训练的时候固定 PLM 的参数，只训练降维矩阵A 与升维矩阵B 。而模型的输入输出维度不变，输出时将BA与 PLM 的参数叠加。矩阵A用随机高斯分布初始化 ，矩阵B用 0 矩阵初始化 ，保证训练的开始此旁路矩阵依然是 0 矩阵。<br><img src="/2023/10/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%8A%80%E6%9C%AF/1.png" alt="avatar"></p>
+<p>优势：</p>
+<ol>
+<li>参数量较全参数微调（Fine-Tuning）显著降低，参数量和现有高效参数微调方法持平或更低。</li>
+<li>性能优于其它参数高效微调方法，和全参数微调（Fine-Tuning）基本持平甚至更高。</li>
+</ol>
+<p>目前 LORA 已经被 HuggingFace 集成在了 PEFT（Parameter-Efficient Fine-Tuning） 代码库里。</p>
+<h2 id="Adapte-Tuning"><a href="#Adapte-Tuning" class="headerlink" title="Adapte Tuning"></a>Adapte Tuning</h2><p>如下图所示的 Adapter 结构，将其嵌入 Transformer 的结构里面，在训练时，固定住原来预训练模型的参数不变，只对新增的 Adapter 结构进行微调。同时为了保证训练的高效性（也就是尽可能少的引入更多参数），他们将 Adapter 设计为这样的结构：</p>
+<p>首先是一个 down-project 层将高维度特征映射到低维特征<br>然后过一个非线形层之后，再用一个 up-project 结构将低维特征映射回原来的高维特征<br>同时也设计了 skip-connection 结构，确保了在最差的情况下能够退化为identity（类似残差结构）。<br><img src="/2023/10/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%8A%80%E6%9C%AF/2.png" alt="avatar"></p>
+<h2 id="Prefix-Tuning"><a href="#Prefix-Tuning" class="headerlink" title="Prefix Tuning"></a>Prefix Tuning</h2><p>与Full-finetuning 更新所有参数的方式不同，该方法是在输入 token 之前构造一段任务相关的 virtual tokens 作为 Prefix，然后训练的时候只更新 Prefix 部分的参数，而 Transformer 中的其他部分参数固定。该方法其实和构造 Prompt 类似，只是 Prompt 是人为构造的“显式”的提示，并且无法更新参数，而Prefix 则是可以学习的“隐式”的提示。同时，为了防止直接更新 Prefix 的参数导致训练不稳定的情况，他们在 Prefix 层前面加了 MLP 结构(相当于将Prefix 分解为更小维度的 Input 与 MLP 的组合后输出的结果)，训练完成后，只保留 Prefix 的参数。<br><img src="/2023/10/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%8A%80%E6%9C%AF/3.png" alt="avatar"></p>
+<h2 id="Prompt-Tuning"><a href="#Prompt-Tuning" class="headerlink" title="Prompt Tuning"></a>Prompt Tuning</h2><p>该方法可以看作是 Prefix Tuning 的简化版本，只在输入层加入 prompt tokens，并不需要加入 MLP 进行调整来解决难训练的问题，主要在 T5 预训练模型上做实验。似乎只要预训练模型足够强大，其他的一切都不是问题,随着预训练模型参数量的增加，Prompt Tuning的方法会逼近 Fine-tune 的结果。固定预训练参数，为每一个任务额外添加一个或多个 embedding，之后拼接 query 正常输入 LLM，并只训练这些 embedding。左图为单任务全参数微调，右图为 Prompt tuning。<br><img src="/2023/10/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%8A%80%E6%9C%AF/4.png" alt="avatar"></p>
+<h2 id="P-Tuning-v1"><a href="#P-Tuning-v1" class="headerlink" title="P-Tuning v1"></a>P-Tuning v1</h2><p>P-tuning 依然是固定 LLM 参数，利用多层感知机和 LSTM 对 Prompt 进行编码，编码之后与其他向量进行拼接之后正常输入 LLM。<br><img src="/2023/10/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%8A%80%E6%9C%AF/5.png" alt="avatar"></p>
+<h2 id="P-Tuning-v2"><a href="#P-Tuning-v2" class="headerlink" title="P-Tuning v2"></a>P-Tuning v2</h2><p>P-Tuning v2 的目标就是要让 Prompt Tuning 能够在不同参数规模的预训练模型、针对不同下游任务的结果上都达到匹敌 Fine-tuning 的结果</p>
+<p>相比 Prompt Tuning 和 P-tuning 的方法， P-tuning v2 方法在多层加入了 Prompts tokens 作为输入，带来两个方面的好处：</p>
+<ol>
+<li>带来更多可学习的参数（从 P-tuning 和 Prompt Tuning 的0.1%增加到0.1%-3%），同时也足够 parameter-efficient。</li>
+<li>加入到更深层结构中的 Prompt 能给模型预测带来更直接的影响。</li>
+</ol>
+<p><img src="/2023/10/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%8A%80%E6%9C%AF/6.png" alt="avatar"></p>
+<h2 id="AdaLoRA"><a href="#AdaLoRA" class="headerlink" title="AdaLoRA"></a>AdaLoRA</h2><p>预训练语言模型中的不同权重参数对下游任务的贡献是不同的。因此需要更加智能地分配参数预算，以便在微调过程中更加高效地更新那些对模型性能贡献较大的参数。具体来说，通过奇异值分解将权重矩阵分解为增量矩阵，并根据新的重要性度量动态地调整每个增量矩阵中奇异值的大小。这样可以使得在微调过程中只更新那些对模型性能贡献较大或必要的参数，从而提高了模型性能和参数效率。</p>
+<p>  参考文章：<br>  <a href="https://zhuanlan.zhihu.com/p/623543497" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/623543497</a><br>  <a href="https://zhuanlan.zhihu.com/p/627642632" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/627642632</a></p>
+]]></content>
+  </entry>
 </search>
