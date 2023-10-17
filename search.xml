@@ -4362,4 +4362,19 @@ I1222 07:23:34.043137 78755 nvc_mount.c:412] mounting /proc/driver/nvidia/gpus/0
 <p>  参考文章：<br>  <a href="https://zhuanlan.zhihu.com/p/623543497" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/623543497</a><br>  <a href="https://zhuanlan.zhihu.com/p/627642632" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/627642632</a></p>
 ]]></content>
   </entry>
+  <entry>
+    <title>双网卡节点跳板机配置</title>
+    <url>/2023/10/17/%E5%8F%8C%E7%BD%91%E5%8D%A1%E8%8A%82%E7%82%B9%E8%B7%B3%E6%9D%BF%E6%9C%BA%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<p><img src="/2023/10/17/%E5%8F%8C%E7%BD%91%E5%8D%A1%E8%8A%82%E7%82%B9%E8%B7%B3%E6%9D%BF%E6%9C%BA%E9%85%8D%E7%BD%AE/1.png" alt="avatar"></p>
+<p>1、在双网卡节点（需要设置外网网卡为默认网卡） 进行以下配置<br>首先linux默认是关闭ip包转发的功能，需要开启一下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cat  &#x2F;etc&#x2F;sysctl.conf</span><br><span class="line">net.ipv4.ip_forward&#x3D;1</span><br></pre></td></tr></table></figure>
+<p>执行命令使该配置立即生效：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sysctl -p</span><br></pre></td></tr></table></figure>
+<p>2、在双网卡节点开启转发功能，将非本机地址的ip包修改源地址后从连网的网口发出去，其中eth0为可以访问外网的端口</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE</span><br></pre></td></tr></table></figure>
+<p>3、双网卡节点如果开启防火墙,内网节点需要DNS服务时，需要将内网网段添加到trustedzone</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">firewall-cmd --zone&#x3D;trusted --add-source&#x3D;192.168.1.0&#x2F;24 --permanent</span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+<p>4、在内网节点，需要将双网卡节点的内网IP配置为网关，如上图所示，需要将192.168.1.100作为内网节点PC-B、PC-C的网关</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">TYPE&#x3D;Ethernet</span><br><span class="line">PROXY_METHOD&#x3D;none</span><br><span class="line">BROWSER_ONLY&#x3D;no</span><br><span class="line">BOOTPROTO&#x3D;static</span><br><span class="line">DEFROUTE&#x3D;yes</span><br><span class="line">IPV4_FAILURE_FATAL&#x3D;no</span><br><span class="line">IPV6INIT&#x3D;yes</span><br><span class="line">IPV6_AUTOCONF&#x3D;yes</span><br><span class="line">IPV6_DEFROUTE&#x3D;yes</span><br><span class="line">IPV6_FAILURE_FATAL&#x3D;no</span><br><span class="line">IPV6_ADDR_GEN_MODE&#x3D;stable-privacy</span><br><span class="line">NAME&#x3D;eth1</span><br><span class="line">DEVICE&#x3D;eth1</span><br><span class="line">ONBOOT&#x3D;yes</span><br><span class="line">IPADDR&#x3D;192.168.1.110</span><br><span class="line">PREFIX&#x3D;24</span><br><span class="line">GATEWAY&#x3D;192.168.1.100</span><br><span class="line">DNS1&#x3D;223.5.5.5</span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
 </search>
