@@ -97,7 +97,7 @@
 <meta property="og:image" content="https://damonyi.cc/2023/10/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%8A%80%E6%9C%AF/5.png">
 <meta property="og:image" content="https://damonyi.cc/2023/10/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%8A%80%E6%9C%AF/6.png">
 <meta property="article:published_time" content="2023-10-09T08:15:05.000Z">
-<meta property="article:modified_time" content="2023-10-10T11:07:32.775Z">
+<meta property="article:modified_time" content="2023-10-24T07:54:06.811Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://damonyi.cc/2023/10/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%8A%80%E6%9C%AF/1.png">
 
@@ -365,7 +365,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.2k字
+                  1.5k字
                 </span>
               
 
@@ -381,7 +381,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  4分钟
+                  5分钟
                 </span>
               
             </div>
@@ -422,6 +422,8 @@
 </ol>
 <p><img src="/2023/10/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%8A%80%E6%9C%AF/6.png" alt="avatar"></p>
 <h2 id="AdaLoRA"><a href="#AdaLoRA" class="headerlink" title="AdaLoRA"></a>AdaLoRA</h2><p>预训练语言模型中的不同权重参数对下游任务的贡献是不同的。因此需要更加智能地分配参数预算，以便在微调过程中更加高效地更新那些对模型性能贡献较大的参数。具体来说，通过奇异值分解将权重矩阵分解为增量矩阵，并根据新的重要性度量动态地调整每个增量矩阵中奇异值的大小。这样可以使得在微调过程中只更新那些对模型性能贡献较大或必要的参数，从而提高了模型性能和参数效率。</p>
+<h2 id="Supervised-fine-tuning-SFT"><a href="#Supervised-fine-tuning-SFT" class="headerlink" title="Supervised fine-tuning(SFT)"></a>Supervised fine-tuning(SFT)</h2><p> 有监督微调，意味着使用有标签的数据来调整一个已预训练好的语言模型（LLM），使其更适应某一特定任务。通常LLM的预训练是无监督的，但微调过程往往是有监督的。当进行有监督微调时，模型权重会根据与真实标签的差异进行调整。通过这个微调过程，模型能够捕捉到标签数据中特定于某一任务的模式和特点。使得模型更加精确，更好地适应某一特定任务。</p>
+<h2 id="奖励模型的训练"><a href="#奖励模型的训练" class="headerlink" title="奖励模型的训练"></a>奖励模型的训练</h2><p>在大语言模型完成 SFT 监督微调后，下一阶段是构建一个奖励模型来对问答对作出得分评价。奖励模型源于强化学习中的奖励函数，能对当前的状态刻画一个分数，来说明这个状态产生的价值有多少。在大语言模型微调中的奖励模型是对输入的问题和答案计算出一个分数。输入的答案与问题匹配度越高，则奖励模型输出的分数也越高。奖励模型（RM 模型）将 SFT 模型最后一层的 softmax 去掉，即最后一层不用 softmax，改成一个线性层。RM 模型的输入是问题和答案，输出是一个标量即分数。</p>
 <p>  参考文章：<br>  <a href="https://zhuanlan.zhihu.com/p/623543497" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/623543497</a><br>  <a href="https://zhuanlan.zhihu.com/p/627642632" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/627642632</a></p>
 
       
@@ -618,7 +620,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#LORA-低秩自适应"><span class="nav-number">1.</span> <span class="nav-text">LORA(低秩自适应)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Adapte-Tuning"><span class="nav-number">2.</span> <span class="nav-text">Adapte Tuning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prefix-Tuning"><span class="nav-number">3.</span> <span class="nav-text">Prefix Tuning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prompt-Tuning"><span class="nav-number">4.</span> <span class="nav-text">Prompt Tuning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#P-Tuning-v1"><span class="nav-number">5.</span> <span class="nav-text">P-Tuning v1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#P-Tuning-v2"><span class="nav-number">6.</span> <span class="nav-text">P-Tuning v2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AdaLoRA"><span class="nav-number">7.</span> <span class="nav-text">AdaLoRA</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#LORA-低秩自适应"><span class="nav-number">1.</span> <span class="nav-text">LORA(低秩自适应)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Adapte-Tuning"><span class="nav-number">2.</span> <span class="nav-text">Adapte Tuning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prefix-Tuning"><span class="nav-number">3.</span> <span class="nav-text">Prefix Tuning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prompt-Tuning"><span class="nav-number">4.</span> <span class="nav-text">Prompt Tuning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#P-Tuning-v1"><span class="nav-number">5.</span> <span class="nav-text">P-Tuning v1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#P-Tuning-v2"><span class="nav-number">6.</span> <span class="nav-text">P-Tuning v2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AdaLoRA"><span class="nav-number">7.</span> <span class="nav-text">AdaLoRA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Supervised-fine-tuning-SFT"><span class="nav-number">8.</span> <span class="nav-text">Supervised fine-tuning(SFT)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#奖励模型的训练"><span class="nav-number">9.</span> <span class="nav-text">奖励模型的训练</span></a></li></ol></div>
             
 
           </div>
