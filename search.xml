@@ -4379,4 +4379,9 @@ I1222 07:23:34.043137 78755 nvc_mount.c:412] mounting /proc/driver/nvidia/gpus/0
 <p>4、在内网节点，需要将双网卡节点的内网IP配置为网关，如上图所示，需要将192.168.1.100作为内网节点PC-B、PC-C的网关</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">TYPE&#x3D;Ethernet</span><br><span class="line">PROXY_METHOD&#x3D;none</span><br><span class="line">BROWSER_ONLY&#x3D;no</span><br><span class="line">BOOTPROTO&#x3D;static</span><br><span class="line">DEFROUTE&#x3D;yes</span><br><span class="line">IPV4_FAILURE_FATAL&#x3D;no</span><br><span class="line">IPV6INIT&#x3D;yes</span><br><span class="line">IPV6_AUTOCONF&#x3D;yes</span><br><span class="line">IPV6_DEFROUTE&#x3D;yes</span><br><span class="line">IPV6_FAILURE_FATAL&#x3D;no</span><br><span class="line">IPV6_ADDR_GEN_MODE&#x3D;stable-privacy</span><br><span class="line">NAME&#x3D;eth1</span><br><span class="line">DEVICE&#x3D;eth1</span><br><span class="line">ONBOOT&#x3D;yes</span><br><span class="line">IPADDR&#x3D;192.168.1.110</span><br><span class="line">PREFIX&#x3D;24</span><br><span class="line">GATEWAY&#x3D;192.168.1.100</span><br><span class="line">DNS1&#x3D;223.5.5.5</span><br></pre></td></tr></table></figure>]]></content>
   </entry>
+  <entry>
+    <title>python编程规范</title>
+    <url>/2024/03/27/python%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/</url>
+    <content><![CDATA[]]></content>
+  </entry>
 </search>
