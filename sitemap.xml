@@ -739,13 +739,6 @@
 
   
   <url>
-    <loc>https://damonyi.cc/tags/Kubernetes/</loc>
-    <lastmod>2024-03-27</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://damonyi.cc/tags/docker/</loc>
     <lastmod>2024-03-27</lastmod>
     <changefreq>daily</changefreq>
@@ -781,7 +774,7 @@
   </url>
   
   <url>
-    <loc>https://damonyi.cc/tags/kubernetes-%E7%BD%91%E7%BB%9C/</loc>
+    <loc>https://damonyi.cc/tags/Kubernetes/</loc>
     <lastmod>2024-03-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -789,6 +782,13 @@
   
   <url>
     <loc>https://damonyi.cc/tags/Pod/</loc>
+    <lastmod>2024-03-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://damonyi.cc/tags/kubernetes-%E7%BD%91%E7%BB%9C/</loc>
     <lastmod>2024-03-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
