@@ -397,6 +397,7 @@ std::cout &lt;&lt; &quot;f6 = &quot; &lt;&lt; *f6 &lt;&lt; std::endl;</code></pr
 </ol>
 <p>启动镜像。-i 代表打开标准输入 -t 虚拟一个窗口 /bin/bash启动镜像执行的命令</p>
 <h2 id="进入容器命名空间"><a href="#进入容器命名空间" class="headerlink" title="进入容器命名空间"></a>进入容器命名空间</h2><p>获取容器的init pid<br>cat /run/containerd/io.containerd.runtime.v1.linux/moby/7208ab53697925439605bca93718c6158db354909fedbe7a1f96ddcd5d5563db/init.pid<br>18399<br>进入mount 命名空间,可以直接查看容器的目录空间<br>nsenter -t 18399 -m<br>进入</p>
+<h2 id="获取节点全部镜像push"><a href="#获取节点全部镜像push" class="headerlink" title="获取节点全部镜像push"></a>获取节点全部镜像push</h2><p> docker images|grep iamgetag |awk ‘{print $1}’|while read image_id;do docker push $image_id; done</p>
 <h2 id="docker-NET-ADMIN-权限"><a href="#docker-NET-ADMIN-权限" class="headerlink" title="docker NET_ADMIN 权限"></a>docker NET_ADMIN 权限</h2><p>允许在容器内进行一些网络的操作权限，在某些情况下如果容器具有该权限后，会操作宿主机的网络(为容器设置–net=host时，会对宿主机网络带来安全隐患)</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">For interacting with the network stack, instead of using --privileged they should use --cap-add&#x3D;NET_ADMIN to modify the network interfaces.</span><br><span class="line">CAP_NET_ADMIN lets you use the SIOCETHTOOL ioctl() on any network device inside the namespace. This includes commands like ETHTOOL_FLASHDEV, i.e. ethtool -f</span><br></pre></td></tr></table></figure>
 
