@@ -83,15 +83,15 @@
 
 
 
-<meta name="description" content="TensorFlow 支持占位符placeholder。占位符并没有初始值，它只会分配必要的内存。在会话中，占位符可以使用 feed_dict 馈送数据。 feed_dict是一个字典，在字典中需要给出每一个用到的占位符的取值。 在训练神经网络时需要每次提供一个批量的训练样本，如果每次迭代选取的数据要通过常量表示，那么TensorFlow 的计算图会非常大。因为每增加一个常量，TensorFlow">
+<meta name="description" content="雾里云里">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Tensorflow中的placeholder和feed_dict">
-<meta property="og:url" content="https://damonyi.cc/2020/09/15/Tensorflow%E4%B8%AD%E7%9A%84placeholder%E5%92%8Cfeed-dict/index.html">
+<meta property="og:title" content="The More Features You Add...">
+<meta property="og:url" content="https://damonyi.cc/2024/11/23/The-More-Features-You-Add/index.html">
 <meta property="og:site_name" content="云里雾里">
-<meta property="og:description" content="TensorFlow 支持占位符placeholder。占位符并没有初始值，它只会分配必要的内存。在会话中，占位符可以使用 feed_dict 馈送数据。 feed_dict是一个字典，在字典中需要给出每一个用到的占位符的取值。 在训练神经网络时需要每次提供一个批量的训练样本，如果每次迭代选取的数据要通过常量表示，那么TensorFlow 的计算图会非常大。因为每增加一个常量，TensorFlow">
+<meta property="og:description" content="雾里云里">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-09-15T12:50:33.000Z">
-<meta property="article:modified_time" content="2022-08-29T17:32:07.658Z">
+<meta property="article:published_time" content="2024-11-23T03:12:06.000Z">
+<meta property="article:modified_time" content="2024-11-23T03:12:06.689Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -124,14 +124,14 @@
 
 
 
-  <link rel="canonical" href="https://damonyi.cc/2020/09/15/Tensorflow中的placeholder和feed-dict/"/>
+  <link rel="canonical" href="https://damonyi.cc/2024/11/23/The-More-Features-You-Add/"/>
 
 
 <script data-ad-client="ca-pub-1404859281731123" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
 
 
-  <title>Tensorflow中的placeholder和feed_dict | 云里雾里</title>
+  <title>The More Features You Add... | 云里雾里</title>
   
 
 
@@ -292,7 +292,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://damonyi.cc/2020/09/15/Tensorflow%E4%B8%AD%E7%9A%84placeholder%E5%92%8Cfeed-dict/">
+    <link itemprop="mainEntityOfPage" href="https://damonyi.cc/2024/11/23/The-More-Features-You-Add/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -309,7 +309,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Tensorflow中的placeholder和feed_dict</h2>
+          <h2 class="post-title" itemprop="name headline">The More Features You Add...</h2>
         
 
         <div class="post-meta">
@@ -321,8 +321,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-15T20:50:33+08:00">
-                2020-09-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2024-11-23T11:12:06+08:00">
+                2024-11-23
               </time>
             
 
@@ -358,7 +358,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  507字
+                  0字
                 </span>
               
 
@@ -374,7 +374,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  2分钟
+                  1分钟
                 </span>
               
             </div>
@@ -395,14 +395,7 @@
       
 
       
-        <p>TensorFlow 支持占位符placeholder。占位符并没有初始值，它只会分配必要的内存。在会话中，占位符可以使用 feed_dict 馈送数据。 feed_dict是一个字典，在字典中需要给出每一个用到的占位符的取值。 在训练神经网络时需要每次提供一个批量的训练样本，如果每次迭代选取的数据要通过常量表示，那么TensorFlow 的计算图会非常大。因为每增加一个常量，TensorFlow 都会在计算图中增加一个结点。所以说拥有几百万次迭代的神经网络会拥有极其庞大的计算图，而占位符却可以解决这一点，它只会拥有占位符这一个结点。 placeholder函数的定义为 </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tf.placeholder(dtype, shape&#x3D;None, name&#x3D;None)&#96;</span><br></pre></td></tr></table></figure>
-<p>参数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dtype：数据类型。常用的是tf.int32，tf.float32，tf.float64，tf.string等数据类型。 </span><br><span class="line">shape：数据形状。默认是None，也就是一维值。 也可以表示多维，比如要表示2行3列则应设为[2, 3]。 形如[None, 3]表示列是3，行不定。 </span><br><span class="line">name：名称。 返回：Tensor类型&#96;</span><br></pre></td></tr></table></figure>
-<p> ##例1<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf </span><br><span class="line">x &#x3D; tf.placeholder(tf.string) </span><br><span class="line">with tf.Session() as sess: </span><br><span class="line">  output &#x3D; sess.run(x, feed_dict&#x3D;&#123;x: &#39;Hello World&#39;&#125;) </span><br><span class="line">  print(output)</span><br><span class="line">  &#96;</span><br></pre></td></tr></table></figure><br> 运行结果：<br>    <code>Hello World</code><br>##例2 </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf </span><br><span class="line">x &#x3D; tf.placeholder(tf.string) </span><br><span class="line">y &#x3D; tf.placeholder(tf.int32) </span><br><span class="line">z &#x3D; tf.placeholder(tf.float32) </span><br><span class="line">with tf.Session() as sess: </span><br><span class="line">  output &#x3D; sess.run(x, feed_dict &#x3D; &#123;x :&#39;Hello World&#39;, y:123, z:45.67&#125;) </span><br><span class="line">  print(output) </span><br><span class="line">  output &#x3D; sess.run(y, feed_dict &#x3D; &#123;x :&#39;Hello World&#39;, y:123, z:45.67&#125;) </span><br><span class="line">  print(output) </span><br><span class="line">  output &#x3D; sess.run(z, feed_dict &#x3D; &#123;x :&#39;Hello World&#39;, y:123, z:45.67&#125;) </span><br><span class="line">  print(output) </span><br><span class="line">&#96;&#96;&#96;&#96;  </span><br><span class="line"> 运行结果：</span><br></pre></td></tr></table></figure>
-<p>  Hello Word 123 45.66999816894531`<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">##例3：</span><br></pre></td></tr></table></figure><br> import tensorflow as tf<br> import numpy as np<br> x = tf.placeholder(tf.float32, shape=(3, 3))<br> y = tf.matmul(x, x) with tf.Session() as sess:<br>   rand_array = np.random.rand(3, 3)<br>   print(sess.run(y, feed_dict = {x: rand_array}))</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">运行结果：</span><br><span class="line">&#96;&#96;&#96;&#96; </span><br><span class="line">\[\[0.62475741 0.40487182 0.5968855 \] </span><br><span class="line">\[0.17491265 0.08546661 0.23616122\] </span><br><span class="line">\[0.53931886 0.24997233 0.56168258\]\]\</span><br></pre></td></tr></table></figure>
+        
       
     </div>
     
@@ -435,8 +428,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/09/15/WiWarden%E5%90%AF%E5%8A%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" rel="next" title="WiWarden启动源码分析">
-                <i class="fa fa-chevron-left"></i> WiWarden启动源码分析
+              <a href="/2024/11/23/%E8%BD%AC%E5%82%85%E7%9B%9B%E5%9B%9E%E5%BF%86%E5%BD%95/" rel="next" title="转傅盛回忆录">
+                <i class="fa fa-chevron-left"></i> 转傅盛回忆录
               </a>
             
           </div>
@@ -444,10 +437,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/09/15/Spring%E7%9A%84IOC%E4%B8%8EAOP%EF%BC%88%E8%BD%AC%E8%BD%BD%EF%BC%89/" rel="prev" title="Spring的IOC与AOP（转载）">
-                Spring的IOC与AOP（转载） <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
