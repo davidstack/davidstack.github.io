@@ -5436,7 +5436,7 @@ I1222 07:23:34.043137 78755 nvc_mount.c:412] mounting /proc/driver/nvidia/gpus/0
 ]]></content>
   </entry>
   <entry>
-    <title>The More Features You Add...</title>
+    <title>The More Features You Add</title>
     <url>/2024/11/23/The-More-Features-You-Add/</url>
     <content><![CDATA[<p>正如Dave Fore曾经说过：“功能是软件开发和市场营销的货币。”在任何软件公司待上一段时间，你就会开始认同这种观点。但随之而来的是后果……</p>
 <h2 id="功能膨胀"><a href="#功能膨胀" class="headerlink" title="功能膨胀"></a>功能膨胀</h2><p>其中第一个后果就是功能膨胀：可以宽泛地定义为“不断添加一个又一个小功能，直到整个产品被它们淹没”。这听起来像是一件坏事，那么为什么它还在持续发生呢？</p>
